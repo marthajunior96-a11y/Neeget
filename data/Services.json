@@ -1,5 +1,4 @@
 [
-    
     {
         "id": 5,
         "category_id": 3,
@@ -8,7 +7,9 @@
         "description": "Basic electrical repairs including outlet installation, switch replacement, and light fixture installation.",
         "price": 75.0,
         "location": "Downtown, Midtown",
-        "status": "pending"
+        "status": "pending",
+        "flagged_reason": null,
+        "admin_notes": null
     },
     {
         "id": 6,
@@ -18,6 +19,8 @@
         "description": "Basic electrical repairs including outlet installation, switch replacement, and light fixture installation.",
         "price": 22.0,
         "location": "Dhaka,Bangladesh",
-        "status": "pending"
+        "status": "pending",
+        "flagged_reason": null,
+        "admin_notes": null
     }
 ]

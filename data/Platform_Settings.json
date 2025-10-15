@@ -1,0 +1,56 @@
+[
+    {
+        "id": 1,
+        "setting_key": "platform_fee_percentage",
+        "setting_value": "10",
+        "setting_type": "number",
+        "description": "Platform fee percentage charged on each transaction",
+        "updated_at": "2025-10-15T16:16:17.683844",
+        "updated_by": null
+    },
+    {
+        "id": 2,
+        "setting_key": "payment_methods",
+        "setting_value": "[\"bkash\", \"nagad\", \"card\"]",
+        "setting_type": "json",
+        "description": "Available payment methods",
+        "updated_at": "2025-10-15T16:16:17.683873",
+        "updated_by": null
+    },
+    {
+        "id": 3,
+        "setting_key": "terms_conditions",
+        "setting_value": "Terms and conditions will be updated here.",
+        "setting_type": "text",
+        "description": "Platform terms and conditions",
+        "updated_at": "2025-10-15T16:16:17.683877",
+        "updated_by": null
+    },
+    {
+        "id": 4,
+        "setting_key": "privacy_policy",
+        "setting_value": "Privacy policy will be updated here.",
+        "setting_type": "text",
+        "description": "Platform privacy policy",
+        "updated_at": "2025-10-15T16:16:17.683879",
+        "updated_by": null
+    },
+    {
+        "id": 5,
+        "setting_key": "min_service_price",
+        "setting_value": "10",
+        "setting_type": "number",
+        "description": "Minimum service price allowed",
+        "updated_at": "2025-10-15T16:16:17.683882",
+        "updated_by": null
+    },
+    {
+        "id": 6,
+        "setting_key": "max_service_price",
+        "setting_value": "10000",
+        "setting_type": "number",
+        "description": "Maximum service price allowed",
+        "updated_at": "2025-10-15T16:16:17.683889",
+        "updated_by": null
+    }
+]
