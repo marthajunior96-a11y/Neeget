@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Platform Settings{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Platform Settings</h1>
+    <table class="table mt-4">
+        <thead>
+            <tr><th>Setting</th><th>Value</th><th>Description</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for setting in settings %}
+            <tr>
+                <td><strong>{{ setting.setting_key }}</strong></td>
+                <td>{{ setting.setting_value }}</td>
+                <td>{{ setting.description }}</td>
+                <td><a href="{{ url_for('admin.edit_setting', setting_id=setting.id) }}" class="btn btn-sm btn-primary">Edit</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

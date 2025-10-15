@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Booking Management{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Booking Management</h1>
+    <form method="GET" class="mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <select name="status" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="accepted">Accepted</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Booking ID">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+    <table class="table">
+        <thead>
+            <tr><th>ID</th><th>Service</th><th>User</th><th>Provider</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.service_name }}</td>
+                <td>{{ booking.user_name }}</td>
+                <td>{{ booking.provider_name }}</td>
+                <td>{{ booking.booking_date[:10] if booking.booking_date else 'N/A' }}</td>
+                <td><span class="badge badge-info">{{ booking.booking_status }}</span></td>
+                <td>
+                    {% if booking.booking_status not in ['completed', 'cancelled'] %}
+                        <form method="POST" action="{{ url_for('admin.complete_booking', booking_id=booking.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin.cancel_booking', booking_id=booking.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Respond to Review{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Respond to Review</h1>
+    <div class="card mb-3">
+        <div class="card-body">
+            <p><strong>Rating:</strong> {{ review.rating }} stars</p>
+            <p><strong>Comment:</strong> {{ review.comment }}</p>
+        </div>
+    </div>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label>Admin Response</label>
+            {{ form.admin_response(class="form-control", rows=5) }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save Response</button>
+        <a href="{{ url_for('admin.manage_reviews') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

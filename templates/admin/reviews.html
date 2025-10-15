@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Review Management{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Review Management</h1>
+    <form method="GET" class="mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <select name="rating" class="form-control">
+                    <option value="">All Ratings</option>
+                    <option value="5">5 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="2">2 Stars</option>
+                    <option value="1">1 Star</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="flagged" class="form-control">
+                    <option value="">All Reviews</option>
+                    <option value="yes">Flagged Only</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+    <table class="table">
+        <thead>
+            <tr><th>ID</th><th>User</th><th>Provider</th><th>Rating</th><th>Comment</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for review in reviews %}
+            <tr>
+                <td>{{ review.id }}</td>
+                <td>{{ review.user_name }}</td>
+                <td>{{ review.provider_name }}</td>
+                <td>{{ review.rating }} ⭐</td>
+                <td>{{ review.comment[:50] }}...</td>
+                <td>
+                    {% if review.is_flagged %}
+                        <span class="badge badge-danger">Flagged</span>
+                    {% else %}
+                        <span class="badge badge-success">OK</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not review.is_flagged %}
+                        <a href="{{ url_for('admin.flag_review', review_id=review.id) }}" class="btn btn-sm btn-warning">Flag</a>
+                    {% else %}
+                        <form method="POST" action="{{ url_for('admin.unflag_review', review_id=review.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-info">Unflag</button>
+                        </form>
+                    {% endif %}
+                    <a href="{{ url_for('admin.respond_to_review', review_id=review.id) }}" class="btn btn-sm btn-primary">Respond</a>
+                    <form method="POST" action="{{ url_for('admin.delete_review', review_id=review.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this review?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

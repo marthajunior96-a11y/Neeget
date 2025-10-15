@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Support Tickets{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Support Tickets</h1>
+    <table class="table mt-4">
+        <thead>
+            <tr><th>ID</th><th>User</th><th>Issue</th><th>Status</th><th>Created</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+            <tr>
+                <td>{{ ticket.id }}</td>
+                <td>{{ ticket.user.name if ticket.user else 'Unknown' }}</td>
+                <td>{{ ticket.issue_description[:50] }}...</td>
+                <td><span class="badge badge-{{ 'danger' if ticket.status == 'open' else 'info' }}">{{ ticket.status }}</span></td>
+                <td>{{ ticket.created_at[:10] if ticket.created_at else 'N/A' }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('admin.update_ticket_status', ticket_id=ticket.id) }}" style="display:inline;">
+                        <select name="status" class="form-control form-control-sm" style="display:inline; width:auto;" onchange="this.form.submit()">
+                            <option value="open" {{ 'selected' if ticket.status == 'open' else '' }}>Open</option>
+                            <option value="in_progress" {{ 'selected' if ticket.status == 'in_progress' else '' }}>In Progress</option>
+                            <option value="resolved" {{ 'selected' if ticket.status == 'resolved' else '' }}>Resolved</option>
+                            <option value="closed" {{ 'selected' if ticket.status == 'closed' else '' }}>Closed</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

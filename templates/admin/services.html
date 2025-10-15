@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Service Management{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Service Management</h1>
+    <form method="GET" class="mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <select name="status" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="pending_approval">Pending</option>
+                    <option value="flagged">Flagged</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Search...">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+    <table class="table">
+        <thead>
+            <tr><th>ID</th><th>Service</th><th>Provider</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for service in services %}
+            <tr>
+                <td>{{ service.id }}</td>
+                <td>{{ service.service_name }}</td>
+                <td>{{ service.provider_name }}</td>
+                <td>{{ service.category_name }}</td>
+                <td>${{ service.price }}</td>
+                <td><span class="badge badge-{{ 'success' if service.status == 'active' else 'warning' }}">{{ service.status }}</span></td>
+                <td>
+                    <a href="{{ url_for('admin.edit_service', service_id=service.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    {% if service.status == 'pending_approval' %}
+                        <form method="POST" action="{{ url_for('admin.approve_service', service_id=service.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                        </form>
+                    {% endif %}
+                    <a href="{{ url_for('admin.flag_service', service_id=service.id) }}" class="btn btn-sm btn-warning">Flag</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Platform Analytics</h1>
+    
+    <!-- User Stats -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>User Statistics</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4"><strong>Total Users:</strong> {{ analytics.user_stats.total_users }}</div>
+                <div class="col-md-4"><strong>Total Providers:</strong> {{ analytics.user_stats.total_providers }}</div>
+                <div class="col-md-4"><strong>Verified Users:</strong> {{ analytics.user_stats.verified_users }}</div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-4"><strong>Active:</strong> {{ analytics.user_stats.active_users }}</div>
+                <div class="col-md-4"><strong>Suspended:</strong> {{ analytics.user_stats.suspended_users }}</div>
+                <div class="col-md-4"><strong>Banned:</strong> {{ analytics.user_stats.banned_users }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Booking Stats -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>Booking Statistics</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3"><strong>Total:</strong> {{ analytics.booking_stats.total_bookings }}</div>
+                <div class="col-md-3"><strong>Completed:</strong> {{ analytics.booking_stats.completed_bookings }}</div>
+                <div class="col-md-3"><strong>Cancelled:</strong> {{ analytics.booking_stats.cancelled_bookings }}</div>
+                <div class="col-md-3"><strong>Pending:</strong> {{ analytics.booking_stats.pending_bookings }}</div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-4"><strong>Completion Rate:</strong> {{ analytics.booking_stats.completion_rate }}%</div>
+                <div class="col-md-4"><strong>Cancellation Rate:</strong> {{ analytics.booking_stats.cancellation_rate }}%</div>
+                <div class="col-md-4"><strong>Acceptance Rate:</strong> {{ analytics.booking_stats.acceptance_rate }}%</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Revenue Stats -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>Revenue Statistics</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3"><strong>Total Revenue:</strong> ${{ analytics.revenue_stats.total_revenue }}</div>
+                <div class="col-md-3"><strong>Platform Fees:</strong> ${{ analytics.revenue_stats.platform_fees }}</div>
+                <div class="col-md-3"><strong>Pending:</strong> ${{ analytics.revenue_stats.pending_payments }}</div>
+                <div class="col-md-3"><strong>Avg Booking:</strong> ${{ analytics.avg_booking_value }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Service Popularity -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>Service Popularity by Category</h5></div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr><th>Category</th><th>Bookings</th></tr>
+                </thead>
+                <tbody>
+                    {% for category, count in analytics.service_popularity.items() %}
+                    <tr>
+                        <td>{{ category }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Top Providers -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>Top Earning Providers</h5></div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr><th>Provider</th><th>Earnings</th><th>Rating</th><th>Reviews</th></tr>
+                </thead>
+                <tbody>
+                    {% for provider in analytics.top_providers %}
+                    <tr>
+                        <td>{{ provider.name }}</td>
+                        <td>${{ provider.earnings }}</td>
+                        <td>{{ provider.rating }} ⭐</td>
+                        <td>{{ provider.review_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Payment Methods -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>Payment Method Distribution</h5></div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr><th>Method</th><th>Count</th></tr>
+                </thead>
+                <tbody>
+                    {% for method, count in analytics.payment_method_dist.items() %}
+                    <tr>
+                        <td>{{ method }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

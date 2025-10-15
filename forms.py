@@ -72,3 +72,28 @@ class ReviewForm(FlaskForm):
 
 class SupportTicketForm(FlaskForm):
     issue_description = TextAreaField('Issue Description', validators=[DataRequired()])
+# Admin Forms
+class PlatformSettingForm(FlaskForm):
+    setting_value = StringField('Value', validators=[DataRequired()])
+
+class CategoryForm(FlaskForm):
+    category_name = StringField('Category Name', validators=[DataRequired(), Length(max=255)])
+    description = TextAreaField('Description', validators=[Optional()])
+    is_active = BooleanField('Active', default=True)
+    display_order = IntegerField('Display Order', validators=[Optional(), NumberRange(min=0)])
+
+class ServiceEditForm(FlaskForm):
+    service_name = StringField('Service Name', validators=[DataRequired(), Length(max=255)])
+    description = TextAreaField('Description')
+    price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0)])
+    location = StringField('Location', validators=[Length(max=255)])
+    status = SelectField('Status', choices=[('active', 'Active'), ('inactive', 'Inactive'), ('flagged', 'Flagged'), ('pending_approval', 'Pending Approval')], validators=[DataRequired()])
+
+class FlagForm(FlaskForm):
+    reason = TextAreaField('Reason for Flagging', validators=[DataRequired()])
+
+class AdminNoteForm(FlaskForm):
+    notes = TextAreaField('Admin Notes', validators=[DataRequired()])
+
+class ReviewModerationForm(FlaskForm):
+    admin_response = TextAreaField('Admin Response', validators=[Optional()])

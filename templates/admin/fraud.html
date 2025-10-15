@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Fraud Monitoring{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Fraud Monitoring</h1>
+    
+    <!-- Flagged Providers -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>Providers with Low Ratings</h5></div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr><th>Name</th><th>Avg Rating</th><th>Reviews</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for provider in flagged_providers %}
+                    <tr>
+                        <td>{{ provider.name }}</td>
+                        <td>{{ provider.avg_rating }} ⭐</td>
+                        <td>{{ provider.review_count }}</td>
+                        <td><a href="{{ url_for('admin.user_detail', user_id=provider.id) }}" class="btn btn-sm btn-info">Investigate</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Users with Cancellations -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>Users with Multiple Cancellations</h5></div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr><th>Name</th><th>Email</th><th>Cancellations</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for user in flagged_users %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.cancellation_count }}</td>
+                        <td><a href="{{ url_for('admin.flag_user', user_id=user.id) }}" class="btn btn-sm btn-warning">Flag</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Duplicate Accounts -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>Duplicate Accounts Detected</h5></div>
+        <div class="card-body">
+            {% for dup in duplicate_accounts %}
+            <div class="alert alert-warning">
+                <strong>{{ dup.type }}: {{ dup.identifier }}</strong><br>
+                Found in {{ dup.users|length }} accounts:
+                {% for user in dup.users %}
+                    <a href="{{ url_for('admin.user_detail', user_id=user.id) }}">{{ user.name }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Suspicious Payments -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>Suspicious Payment Patterns</h5></div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr><th>Name</th><th>Email</th><th>Failed Payments</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for user in suspicious_payments %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.failed_payment_count }}</td>
+                        <td><a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-info">Investigate</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Fake Review Suspects -->
+    <div class="card mt-4">
+        <div class="card-header"><h5>Potential Fake Review Accounts</h5></div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr><th>Name</th><th>Reviews</th><th>Pattern</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for user in fake_review_suspects %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.review_count }}</td>
+                        <td>{{ user.pattern }}</td>
+                        <td><a href="{{ url_for('admin.flag_user', user_id=user.id) }}" class="btn btn-sm btn-warning">Flag</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

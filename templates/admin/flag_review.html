@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Flag Review{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Flag Review</h1>
+    <div class="card mb-3">
+        <div class="card-body">
+            <p><strong>Rating:</strong> {{ review.rating }} stars</p>
+            <p><strong>Comment:</strong> {{ review.comment }}</p>
+        </div>
+    </div>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label>Reason for Flagging</label>
+            {{ form.reason(class="form-control", rows=5) }}
+        </div>
+        <button type="submit" class="btn btn-danger">Flag Review</button>
+        <a href="{{ url_for('admin.manage_reviews') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Edit Setting{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Edit {{ setting.setting_key }}</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label>{{ setting.description }}</label>
+            {{ form.setting_value(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{{ url_for('admin.settings') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
