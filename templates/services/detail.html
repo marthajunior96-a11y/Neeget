@@ -1,0 +1,500 @@
+{% extends "base.html" %}
+
+{% block title %}{{ service.service_name }} - Neeget{% endblock %}
+
+{% block mobile_title %}{{ service.service_name }}{% endblock %}
+
+{% block content %}
+<!-- Service Hero Section -->
+<section class="py-4" style="background: var(--primary-gradient);   padding-top: 100px;">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('index') }}" class="text-white-50">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('services.browse') }}" class="text-white-50">Services</a>
+                </li>
+                <li class="breadcrumb-item active text-white">{{ service.service_name }}</li>
+            </ol>
+        </nav>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 60px; height: 60px; font-size: 1.5rem; background: rgba(255,255,255,0.2);">
+                        <i class="fas fa-{{ 'home' if service.category_name == 'Home Services' else 'laptop-code' if service.category_name == 'Tech Services' else 'palette' if service.category_name == 'Creative Services' else 'graduation-cap' }}"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-weight-bold mb-1">{{ service.service_name }}</h1>
+                        <div class="d-flex align-items-center">
+                            <span class="badge badge-light mr-2">{{ service.category_name }}</span>
+                            {% if service.location %}
+                                <span class="text-white-50">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>{{ service.location }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-center">
+                    <div class="service-rating mr-4">
+                        <span class="text-warning">
+                            {% for i in range(average_rating | int) %}
+                                <i class="fas fa-star"></i>
+                            {% endfor %}
+                            {% if (average_rating % 1) >= 0.5 %}
+                                <i class="fas fa-star-half-alt"></i>
+                            {% endif %}
+                            {% for i in range(5 - average_rating | round(0, 'ceil') | int) %}
+                                <i class="far fa-star"></i>
+                            {% endfor %}
+                        </span>
+                        <span class="text-white ml-2">{{ "%.1f"|format(average_rating) }} ({{ review_count }} reviews)</span>
+                    </div>
+                    <div class="text-white">
+                        <i class="fas fa-shield-alt mr-1"></i>Verified Provider
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-3 mt-lg-0 text-lg-right">
+                <div class="price-display mb-3">
+                    <h2 class="text-white font-weight-bold mb-0">  ৳ {{ "%.2f"|format(service.price) }}</h2>
+                    <small class="text-white-50">Starting price</small>
+                </div>
+                {% if g.user and g.user.role == 'user' %}
+                    <a href="{{ url_for('bookings.book_service', service_id=service.id) }}" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-calendar-plus mr-2"></i>Book Now
+                    </a>
+                {% elif not g.user %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login to Book
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8 mb-4">
+            <!-- Service Description -->
+            <div class="creative-card mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <h3 class="creative-card-title mb-0">Service Description</h3>
+                </div>
+                
+                {% if service.description %}
+                    <p class="creative-card-text mb-4">{{ service.description }}</p>
+                {% endif %}
+                
+                <!-- Service Features -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success mr-2"></i>
+                            <span>Professional Service</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-clock text-primary mr-2"></i>
+                            <span>Flexible Scheduling</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-shield-alt text-success mr-2"></i>
+                            <span>Insured & Bonded</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-star text-warning mr-2"></i>
+                            <span>Top Rated Provider</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            {% if reviews %}
+                <div class="creative-card">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="d-flex align-items-center">
+                            <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h3 class="creative-card-title mb-0">Customer Reviews</h3>
+                        </div>
+                        <span class="badge badge-primary">{{ review_count }} reviews</span>
+                    </div>
+                    
+                    <!-- Review Summary -->
+                    <div class="review-summary mb-4 p-3" style="background: var(--bg-light); border-radius: var(--radius-lg);">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <h2 class="text-gradient font-weight-bold mb-1">{{ "%.1f"|format(average_rating) }}</h2>
+                                <div class="text-warning mb-2">
+                                    {% for i in range(average_rating | int) %}
+                                        <i class="fas fa-star"></i>
+                                    {% endfor %}
+                                    {% if (average_rating % 1) >= 0.5 %}
+                                        <i class="fas fa-star-half-alt"></i>
+                                    {% endif %}
+                                    {% for i in range(5 - average_rating | round(0, 'ceil') | int) %}
+                                        <i class="far fa-star"></i>
+                                    {% endfor %}
+                                </div>
+                                <small class="text-muted">Overall Rating</small>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="rating-breakdown">
+                                    {% for rating in [5, 4, 3, 2, 1] %}
+                                        {% set count = reviews | selectattr('rating', 'equalto', rating) | list | length %}
+                                        {% set percentage = (count / review_count * 100) | round(0) if review_count else 0 %}
+                                        <div class="d-flex align-items-center mb-1">
+                                            <span class="mr-2">{{ rating }}</span>
+                                            <i class="fas fa-star text-warning mr-2"></i>
+                                            <div class="progress flex-grow-1 mr-2" style="height: 8px;">
+                                                <div class="progress-bar bg-warning" style="width: {{ percentage }}%"></div>
+                                            </div>
+                                            <small class="text-muted">{{ percentage }}%</small>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Individual Reviews -->
+                    <div class="reviews-list">
+                        {% for review in reviews %}
+                            <div class="review-item p-3 mb-3" style="background: var(--bg-light); border-radius: var(--radius-lg);">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="review-avatar mr-3" style="width: 40px; height: 40px; background: var(--primary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                            {{ (review.user.name if review.user else 'A')[0] }}
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">{{ review.user.name if review.user else 'Anonymous' }}</h6>
+                                            <div class="text-warning">
+                                                {% for i in range(review.rating) %}
+                                                    <i class="fas fa-star"></i>
+                                                {% endfor %}
+                                                {% for i in range(5 - review.rating) %}
+                                                    <i class="far fa-star"></i>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">{{ review.created_at[:10] }}</small>
+                                </div>
+                                {% if review.comment %}
+                                    <p class="mb-0">{{ review.comment }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Provider Information -->
+            <div class="creative-card mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h5 class="creative-card-title mb-0">Service Provider</h5>
+                </div>
+                
+                <div class="provider-info">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="provider-avatar mr-3" style="width: 60px; height: 60px; background: var(--secondary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
+                            {{ service.provider_name[0] }}
+                        </div>
+                        <div>
+                            <h6 class="mb-1">{{ service.provider_name }}</h6>
+                            <p class="text-muted mb-0">Service Provider</p>
+                        </div>
+                    </div>
+                    
+                    <div class="provider-stats mb-3">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h6 class="text-gradient font-weight-bold mb-0">{{ completed_jobs }}</h6>
+                                    <small class="text-muted">Jobs</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h6 class="text-gradient font-weight-bold mb-0">{{ "%.1f"|format(average_rating) }}</h6>
+                                    <small class="text-muted">Rating</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h6 class="text-gradient font-weight-bold mb-0">{{ service.provider.experience or '2+' }}</h6>
+                                    <small class="text-muted">Years</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="verification-badge text-center p-3" style="background: rgba(40, 167, 69, 0.1); border-radius: var(--radius-lg);">
+                        <i class="fas fa-shield-alt text-success mb-2" style="font-size: 1.5rem;"></i>
+                        <p class="text-success font-weight-bold mb-0">Verified Provider</p>
+                        <small class="text-muted">Background checked & insured</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="creative-card mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h5 class="creative-card-title mb-0">Contact Information</h5>
+                </div>
+                
+                <div class="contact-info">
+                    <div class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-phone text-primary mr-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Phone</small>
+                                <span>{{ service.contact_number or 'Not provided' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-envelope text-primary mr-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Email</small>
+                                <span>{{ service.provider_email or 'Not provided' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-map-marker-alt text-primary mr-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Service Area</small>
+                                <span>{{ service.location or 'Location flexible' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-actions mt-3">
+                    <button class="btn btn-creative-primary btn-sm w-100 mb-2" onclick="startChat()">
+                        <i class="fas fa-comments mr-2"></i>Start Chat
+                    </button>
+                    <button class="btn btn-creative-secondary btn-sm w-100" onclick="callProvider()">
+                        <i class="fas fa-phone mr-2"></i>Call Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .breadcrumb-item a {
+        text-decoration: none;
+        transition: var(--transition-fast);
+    }
+    
+    .breadcrumb-item a:hover {
+        color: white !important;
+    }
+    
+    .service-rating .fas.fa-star {
+        font-size: 1.1rem;
+    }
+    
+    .price-display h2 {
+        font-size: 2.5rem;
+        line-height: 1;
+    }
+    
+    .review-summary {
+        border: 1px solid var(--border-color);
+    }
+    
+    .rating-breakdown .progress {
+        background-color: rgba(0,0,0,0.1);
+    }
+    
+    .review-item {
+        border: 1px solid var(--border-color);
+        transition: var(--transition-fast);
+    }
+    
+    .review-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .provider-avatar, .review-avatar {
+        box-shadow: var(--shadow-md);
+    }
+    
+    .provider-stats .stat-item {
+        padding: 0.5rem;
+    }
+    
+    .contact-item {
+        padding: 0.75rem;
+        background: var(--bg-light);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-color);
+    }
+    
+    .contact-actions .btn {
+        transition: var(--transition-fast);
+    }
+    
+    .contact-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .quick-actions .btn {
+        transition: var(--transition-fast);
+    }
+    
+    .quick-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .verification-badge {
+        border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+    
+    .expertise-tags .badge {
+        background: rgba(102, 126, 234, 0.1) !important;
+        color: var(--primary-color) !important;
+        font-weight: 500;
+    }
+    
+    @media (max-width: 768px) {
+        .price-display {
+            text-align: center;
+        }
+        
+        .provider-stats {
+            text-align: center;
+        }
+        
+        .contact-actions .btn,
+        .quick-actions .btn {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function startChat() {
+    window.location.href = "{{ url_for('chat.conversations') }}";
+}
+
+function callProvider() {
+    const phone = '{{ service.contact_number }}';
+    if (phone) {
+        window.location.href = `tel:${phone}`;
+    }
+}
+
+function saveService() {
+    if (window.creativeNeeget) {
+        window.creativeNeeget.saveService({{ service.id }});
+    } else {
+        alert('Service saved to favorites!');
+    }
+}
+
+function shareService() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ service.service_name }} - Neeget',
+            text: '{{ service.description[:100] }}...',
+            url: window.location.href
+        });
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Service link copied to clipboard!');
+        });
+    }
+}
+
+function reportService() {
+    if (confirm('Are you sure you want to report this service?')) {
+        alert('Thank you for your report. We will review it shortly.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Add loading states for buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (this.type === 'submit' || this.href) {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }, 2000);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

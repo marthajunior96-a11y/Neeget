@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Services - Neeget{% endblock %}
+
+{% block mobile_title %}Browse Services{% endblock %}
+
+{% block content %}
+<!-- Main Header -->
+<section class="py-4" style="background: var(--primary-gradient); padding-top: 80px;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h1 class="text-white font-weight-bold mb-0">
+                            <i class="fas fa-search mr-2"></i>Discover Amazing Services
+                        </h1>
+                        <p class="text-white-50 mb-0">Find the perfect service provider for your needs</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-light btn-sm mr-2" data-toggle="collapse" data-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                            <i class="fas fa-filter mr-1"></i>Filters
+                        </button>
+
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+                        <div class="creative-search">
+                            <i class="fas fa-search" style="color: var(--text-light); margin-left: 10px;"></i>
+                            <input type="text" class="creative-search-input" placeholder="Search services..." value="{{ request.args.get('q', '') }}">
+                            <button class="creative-search-btn">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+<!-- Filter Collapse -->
+<div class="container py-3">
+    <div class="collapse" id="filterCollapse">
+        <div class="creative-card p-3 mb-4">
+            <form method="GET" class="creative-form">
+                <div class="creative-form-group">
+                    <label class="creative-form-label">Category</label>
+                    <select class="form-control" name="category">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if request.args.get('category') == category.id|string %}selected{% endif %}>
+                                {{ category.category_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="creative-form-group">
+                    <label class="creative-form-label">Location</label>
+                    <input type="text" class="form-control" name="location" value="{{ request.args.get('location', '') }}" placeholder="Enter location">
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Min Price</label>
+                            <input type="number" class="form-control" name="min_price" value="{{ request.args.get('min_price', '') }}" step="0.01" min="0" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Max Price</label>
+                            <input type="number" class="form-control" name="max_price" value="{{ request.args.get('max_price', '') }}" step="0.01" min="0" placeholder="1000">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-creative-primary w-100 mb-2">
+                    <i class="fas fa-search mr-2"></i>Apply Filters
+                </button>
+                <a href="{{ url_for('services.browse') }}" class="btn btn-creative-secondary w-100">
+                    <i class="fas fa-times mr-2"></i>Clear All
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Services Grid -->
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-gradient font-weight-bold mb-1">Available Services</h2>
+            <p class="text-muted mb-0">{{ services|length }} services found</p>
+        </div>
+        <div class="d-flex align-items-center">
+            <label class="mr-2 mb-0 text-muted">Sort by:</label>
+            <select class="form-control form-control-sm" style="border-radius: var(--radius-lg);">
+                <option>Most Popular</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+                <option>Newest First</option>
+            </select>
+        </div>
+    </div>
+
+    {% if services %}
+        <div class="row">
+            {% for service in services %}
+                <div class="col-md-6 col-lg-4 mb-5">
+                    <div class="creative-card service-card h-100 animate-fade-in">
+                        <div class="service-card-header p-3 mb-3" style="background: rgba(102, 126, 234, 0.1); border-radius: var(--radius-md) var(--radius-md) 0 0;">
+                            <div class="d-flex align-items-center">
+                                <div class="service-icon mr-3" style="width: 40px; height: 40px; background: var(--primary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem;">
+                                    <i class="fas fa-{{ 'home' if service.category_name == 'Home Services' else 'laptop-code' if service.category_name == 'Tech Services' else 'palette' if service.category_name == 'Creative Services' else 'graduation-cap' }}"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="creative-card-title mb-0">{{ service.service_name }}</h5>
+                                    <small class="text-muted">by {{ service.provider_name }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-3">
+                            <p class="creative-card-text mb-3">
+                                {{ service.description[:120] }}{% if service.description|length > 120 %}...{% endif %}
+                            </p>
+                            <div class="service-meta mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-tag text-primary mr-2"></i>
+                                    <span class="badge badge-light">{{ service.category_name }}</span>
+                                </div>
+                                {% if service.location %}
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-map-marker-alt text-primary mr-2"></i>
+                                        <small class="text-muted">{{ service.location }}</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="price-display">
+                                    <h4 class="text-gradient font-weight-bold mb-0">  ৳ {{ "%.2f"|format(service.price) }}</h4>
+                                </div>
+                                <a href="{{ url_for('bookings.book_service', service_id=service.id) }}" class="btn btn-creative-primary btn-sm">
+                                    <i class="fas fa-calendar-plus mr-1"></i>Book
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="Services pagination">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" style="border-radius: var(--radius-lg) 0 0 var(--radius-lg);">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" style="border-radius: 0 var(--radius-lg) var(--radius-lg) 0;">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    {% else %}
+        <div class="empty-state text-center py-5">
+            <div class="empty-icon mb-3" style="font-size: 4rem; color: var(--text-light);">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3 class="text-gradient font-weight-bold mb-3">No Services Found</h3>
+            <p class="text-muted mb-4">We couldn't find any services matching your criteria. Try adjusting your filters or browse all categories.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ url_for('services.browse') }}" class="btn btn-creative-primary">
+                    <i class="fas fa-list mr-2"></i>View All Services
+                </a>
+                <a href="{{ url_for('index') }}" class="btn btn-creative-secondary">
+                    <i class="fas fa-home mr-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    .service-card {
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .service-card-header {
+        padding: 1rem;
+        background: rgba(102, 126, 234, 0.1);
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+    }
+    
+    .card-footer {
+        padding: 1rem;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .service-meta {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+    }
+    
+    .price-display h4 {
+        line-height: 1.2;
+    }
+    
+    .badge-light {
+        background: rgba(102, 126, 234, 0.1) !important;
+        color: var(--primary-color) !important;
+        font-weight: 500;
+    }
+    
+    .pagination .page-link {
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        padding: 0.5rem 0.75rem;
+        margin: 0 2px;
+        border-radius: var(--radius-md) !important;
+        transition: var(--transition-fast);
+    }
+    
+    .pagination .page-item.active .page-link {
+        background: var(--primary-gradient);
+        border-color: var(--primary-color);
+        color: white;
+    }
+    
+    .pagination .page-link:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .creative-search {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    
+    .creative-search-input {
+        flex-grow: 1;
+        padding: 0.5rem 1rem 0.5rem 2.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-size: 0.9rem;
+        transition: border-color 0.3s ease;
+    }
+    
+    .creative-search-input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+    }
+    
+    .creative-search-btn {
+        padding: 0.5rem 1rem;
+        background: var(--primary-gradient);
+        border: none;
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    
+    .creative-search-btn:hover {
+        background: var(--primary-color-dark);
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-in forwards;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+        .service-card {
+            margin-bottom: 2rem;
+        }
+        
+        .d-flex.justify-content-between.align-items-center {
+            flex-direction: column;
+            align-items: stretch !important;
+        }
+        
+        .creative-search {
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .price-display {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.querySelector('.creative-search-input');
+    const searchBtn = document.querySelector('.creative-search-btn');
+    
+    if (searchInput && searchBtn) {
+        const performSearch = () => {
+            const query = searchInput.value.trim();
+            const currentUrl = new URL(window.location);
+            if (query) {
+                currentUrl.searchParams.set('q', query);
+            } else {
+                currentUrl.searchParams.delete('q');
+            }
+            window.location.href = currentUrl.toString();
+        };
+        
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+    
+    // Sort functionality
+    const sortSelect = document.querySelector('select');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('sort', this.value);
+            window.location.href = currentUrl.toString();
+        });
+    }
+    
+    // Add animation to service cards
+    const serviceCards = document.querySelectorAll('.service-card');
+    serviceCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('animate-fade-in');
+    });
+});
+</script>
+{% endblock %}
