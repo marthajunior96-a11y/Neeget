@@ -1,27 +1,28 @@
-{% extends "base.html" %}
-{% block title %}Booking Management{% endblock %}
-{% block content %}
-<div class="container mt-4">
-    <h1>Booking Management</h1>
-    <form method="GET" class="mb-3">
-        <div class="row">
-            <div class="col-md-4">
-                <select name="status" class="form-control">
-                    <option value="">All Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="accepted">Accepted</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <input type="text" name="search" class="form-control" placeholder="Booking ID">
-            </div>
-            <div class="col-md-4">
-                <button type="submit" class="btn btn-primary">Filter</button>
-            </div>
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 class="admin-page-title"><i class="fas fa-calendar"></i> Booking Management</h1>
+
+<div class="filter-card">
+    <form method="GET" class="row">
+        <div class="col-md-4">
+            <select name="status" class="form-control">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="accepted">Accepted</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <input type="text" name="search" class="form-control" placeholder="Booking ID...">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-admin-primary w-100"><i class="fas fa-filter"></i> Filter</button>
         </div>
     </form>
+</div>
+
+<div class="admin-table">
     <table class="table">
         <thead>
             <tr><th>ID</th><th>Service</th><th>User</th><th>Provider</th><th>Date</th><th>Status</th><th>Actions</th></tr>
@@ -34,14 +35,16 @@
                 <td>{{ booking.user_name }}</td>
                 <td>{{ booking.provider_name }}</td>
                 <td>{{ booking.booking_date[:10] if booking.booking_date else 'N/A' }}</td>
-                <td><span class="badge badge-info">{{ booking.booking_status }}</span></td>
+                <td><span class="badge badge-admin-info">{{ booking.booking_status }}</span></td>
                 <td>
                     {% if booking.booking_status not in ['completed', 'cancelled'] %}
                         <form method="POST" action="{{ url_for('admin.complete_booking', booking_id=booking.id) }}" style="display:inline;">
-                            <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
                         </form>
                         <form method="POST" action="{{ url_for('admin.cancel_booking', booking_id=booking.id) }}" style="display:inline;">
-                            <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-sm btn-admin-danger"><i class="fas fa-times"></i></button>
                         </form>
                     {% endif %}
                 </td>

@@ -1,158 +1,162 @@
-{% extends "base.html" %}
+{% extends "admin/base_admin.html" %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block admin_content %}
+<h1 class="admin-page-title"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
 
-{% block content %}
-<div class="container mt-4">
-    <h1>Admin Dashboard</h1>
-    
-    <!-- Key Metrics Cards -->
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h3>{{ metrics.total_users + metrics.total_providers }}</h3>
-                    <p>Total Users</p>
-                    <small>{{ metrics.total_users }} users | {{ metrics.total_providers }} providers</small>
-                </div>
+<!-- Key Metrics Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="admin-stats-card">
+            <div class="admin-stats-icon" style="background: var(--primary-gradient);">
+                <i class="fas fa-users"></i>
             </div>
+            <h3>{{ metrics.total_users + metrics.total_providers }}</h3>
+            <p class="text-muted mb-0">Total Users</p>
+            <small class="text-muted">{{ metrics.total_users }} users | {{ metrics.total_providers }} providers</small>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h3>{{ metrics.total_bookings }}</h3>
-                    <p>Total Bookings</p>
-                    <small>{{ metrics.completed_bookings }} completed</small>
-                </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="admin-stats-card">
+            <div class="admin-stats-icon" style="background: var(--success-gradient);">
+                <i class="fas fa-calendar-check"></i>
             </div>
+            <h3>{{ metrics.total_bookings }}</h3>
+            <p class="text-muted mb-0">Total Bookings</p>
+            <small class="text-muted">{{ metrics.completed_bookings }} completed</small>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h3>${{ metrics.total_revenue }}</h3>
-                    <p>Total Revenue</p>
-                    <small>${{ metrics.platform_fees }} in fees</small>
-                </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="admin-stats-card">
+            <div class="admin-stats-icon" style="background: var(--accent-gradient);">
+                <i class="fas fa-dollar-sign"></i>
             </div>
+            <h3>${{ metrics.total_revenue }}</h3>
+            <p class="text-muted mb-0">Total Revenue</p>
+            <small class="text-muted">${{ metrics.platform_fees }} in fees</small>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <h3>{{ metrics.open_tickets }}</h3>
-                    <p>Open Tickets</p>
-                    <small>Support requests</small>
-                </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="admin-stats-card">
+            <div class="admin-stats-icon" style="background: var(--warning-gradient);">
+                <i class="fas fa-life-ring"></i>
+            </div>
+            <h3>{{ metrics.open_tickets }}</h3>
+            <p class="text-muted mb-0">Open Tickets</p>
+            <small class="text-muted">Support requests</small>
+        </div>
+    </div>
+</div>
+
+<!-- Status Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="admin-card text-center">
+            <h5 class="text-gradient">{{ metrics.pending_services }}</h5>
+            <p class="mb-2">Pending Services</p>
+            <a href="{{ url_for('admin.manage_services', status='pending_approval') }}" class="btn btn-sm btn-admin-primary">Review</a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="admin-card text-center">
+            <h5 class="text-gradient">{{ metrics.flagged_accounts }}</h5>
+            <p class="mb-2">Flagged Accounts</p>
+            <a href="{{ url_for('admin.fraud_monitoring') }}" class="btn btn-sm btn-admin-danger">Investigate</a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="admin-card text-center">
+            <h5 class="text-gradient">{{ metrics.pending_bookings }}</h5>
+            <p class="mb-2">Pending Bookings</p>
+            <a href="{{ url_for('admin.manage_bookings', status='pending') }}" class="btn btn-sm btn-info">View</a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="admin-card text-center">
+            <h5 class="text-gradient">{{ metrics.verified_users }}/{{ metrics.total_users }}</h5>
+            <p class="mb-2">Verified Users</p>
+            <a href="{{ url_for('admin.manage_users', verified='no') }}" class="btn btn-sm btn-secondary">Review</a>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="admin-card mb-4">
+    <h5 class="mb-3"><i class="fas fa-bolt"></i> Quick Actions</h5>
+    <div class="row">
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin.manage_users') }}" class="btn btn-admin-primary w-100"><i class="fas fa-users"></i> Manage Users</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin.manage_services') }}" class="btn btn-success w-100"><i class="fas fa-cogs"></i> Manage Services</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin.manage_categories') }}" class="btn btn-info w-100"><i class="fas fa-th-large"></i> Categories</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin.manage_bookings') }}" class="btn btn-warning w-100"><i class="fas fa-calendar"></i> Bookings</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin.manage_reviews') }}" class="btn btn-secondary w-100"><i class="fas fa-star"></i> Reviews</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin.settings') }}" class="btn btn-dark w-100"><i class="fas fa-cog"></i> Settings</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin.analytics') }}" class="btn btn-admin-primary w-100"><i class="fas fa-chart-line"></i> Analytics</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a href="{{ url_for('admin.fraud_monitoring') }}" class="btn btn-admin-danger w-100"><i class="fas fa-shield-alt"></i> Fraud Detection</a>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="admin-card">
+            <h5 class="mb-3"><i class="fas fa-user-plus"></i> Recent Users</h5>
+            <div class="admin-table">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in metrics.recent_users %}
+                        <tr>
+                            <td>{{ user.name }}</td>
+                            <td><span class="badge badge-admin-info">{{ user.role }}</span></td>
+                            <td>{{ user.created_at[:10] if user.created_at else 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    
-    <!-- Status Cards -->
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5>{{ metrics.pending_services }}</h5>
-                    <p>Pending Services</p>
-                    <a href="{{ url_for('admin.manage_services', status='pending_approval') }}" class="btn btn-sm btn-outline-primary">Review</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5>{{ metrics.flagged_accounts }}</h5>
-                    <p>Flagged Accounts</p>
-                    <a href="{{ url_for('admin.fraud_monitoring') }}" class="btn btn-sm btn-outline-danger">Investigate</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5>{{ metrics.pending_bookings }}</h5>
-                    <p>Pending Bookings</p>
-                    <a href="{{ url_for('admin.manage_bookings', status='pending') }}" class="btn btn-sm btn-outline-info">View</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5>{{ metrics.verified_users }}/{{ metrics.total_users }}</h5>
-                    <p>Verified Users</p>
-                    <a href="{{ url_for('admin.manage_users', verified='no') }}" class="btn btn-sm btn-outline-secondary">Review</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Quick Links -->
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header"><h5>Quick Actions</h5></div>
-                <div class="card-body">
-                    <a href="{{ url_for('admin.manage_users') }}" class="btn btn-primary mr-2">Manage Users</a>
-                    <a href="{{ url_for('admin.manage_services') }}" class="btn btn-success mr-2">Manage Services</a>
-                    <a href="{{ url_for('admin.manage_categories') }}" class="btn btn-info mr-2">Manage Categories</a>
-                    <a href="{{ url_for('admin.manage_bookings') }}" class="btn btn-warning mr-2">Manage Bookings</a>
-                    <a href="{{ url_for('admin.manage_reviews') }}" class="btn btn-secondary mr-2">Manage Reviews</a>
-                    <a href="{{ url_for('admin.settings') }}" class="btn btn-dark mr-2">Platform Settings</a>
-                    <a href="{{ url_for('admin.analytics') }}" class="btn btn-primary mr-2">Analytics</a>
-                    <a href="{{ url_for('admin.fraud_monitoring') }}" class="btn btn-danger mr-2">Fraud Monitoring</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Recent Activity -->
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h5>Recent Users</h5></div>
-                <div class="card-body">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Role</th>
-                                <th>Joined</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for user in metrics.recent_users %}
-                            <tr>
-                                <td>{{ user.name }}</td>
-                                <td>{{ user.role }}</td>
-                                <td>{{ user.created_at[:10] if user.created_at else 'N/A' }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h5>Service Popularity</h5></div>
-                <div class="card-body">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Category</th>
-                                <th>Bookings</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for category, count in metrics.service_popularity.items() %}
-                            <tr>
-                                <td>{{ category }}</td>
-                                <td>{{ count }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+    <div class="col-md-6">
+        <div class="admin-card">
+            <h5 class="mb-3"><i class="fas fa-chart-pie"></i> Service Popularity</h5>
+            <div class="admin-table">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Bookings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category, count in metrics.service_popularity.items() %}
+                        <tr>
+                            <td>{{ category }}</td>
+                            <td><span class="badge badge-admin-success">{{ count }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

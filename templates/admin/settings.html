@@ -1,9 +1,9 @@
-{% extends "base.html" %}
-{% block title %}Platform Settings{% endblock %}
-{% block content %}
-<div class="container mt-4">
-    <h1>Platform Settings</h1>
-    <table class="table mt-4">
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 class="admin-page-title"><i class="fas fa-cog"></i> Platform Settings</h1>
+
+<div class="admin-table">
+    <table class="table">
         <thead>
             <tr><th>Setting</th><th>Value</th><th>Description</th><th>Actions</th></tr>
         </thead>
@@ -11,9 +11,11 @@
             {% for setting in settings %}
             <tr>
                 <td><strong>{{ setting.setting_key }}</strong></td>
-                <td>{{ setting.setting_value }}</td>
+                <td><span class="badge badge-admin-info">{{ setting.setting_value }}</span></td>
                 <td>{{ setting.description }}</td>
-                <td><a href="{{ url_for('admin.edit_setting', setting_id=setting.id) }}" class="btn btn-sm btn-primary">Edit</a></td>
+                <td>
+                    <a href="{{ url_for('admin.edit_setting', setting_id=setting.id) }}" class="btn btn-sm btn-admin-primary"><i class="fas fa-edit"></i> Edit</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

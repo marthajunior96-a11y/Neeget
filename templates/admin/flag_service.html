@@ -1,16 +1,18 @@
-{% extends "base.html" %}
-{% block title %}Flag Service{% endblock %}
-{% block content %}
-<div class="container mt-4">
-    <h1>Flag Service: {{ service.service_name }}</h1>
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 class="admin-page-title"><i class="fas fa-flag"></i> Flag Service</h1>
+
+<div class="admin-card">
+    <h5>{{ service.service_name }}</h5>
+    <p class="text-muted">{{ service.description[:200] }}...</p>
     <form method="POST">
         {{ form.hidden_tag() }}
         <div class="form-group">
-            <label>Reason for Flagging</label>
+            <label>{{ form.reason.label }}</label>
             {{ form.reason(class="form-control", rows=5) }}
         </div>
-        <button type="submit" class="btn btn-danger">Flag Service</button>
-        <a href="{{ url_for('admin.manage_services') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-admin-danger"><i class="fas fa-flag"></i> Flag Service</button>
+        <a href="{{ url_for('admin.manage_services') }}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
     </form>
 </div>
 {% endblock %}

@@ -1,37 +1,45 @@
-{% extends "base.html" %}
-{% block title %}User Management{% endblock %}
-{% block content %}
-<div class="container mt-4">
-    <h1>User Management</h1>
-    <form method="GET" class="mb-3">
-        <div class="row">
-            <div class="col-md-3">
-                <select name="role" class="form-control">
-                    <option value="">All Roles</option>
-                    <option value="user">User</option>
-                    <option value="service_provider">Provider</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <select name="status" class="form-control">
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="suspended">Suspended</option>
-                    <option value="banned">Banned</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <input type="text" name="search" class="form-control" placeholder="Search...">
-            </div>
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary">Filter</button>
-            </div>
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 class="admin-page-title"><i class="fas fa-users"></i> User Management</h1>
+
+<div class="filter-card">
+    <form method="GET" class="row">
+        <div class="col-md-3">
+            <select name="role" class="form-control">
+                <option value="">All Roles</option>
+                <option value="user" {{ 'selected' if request.args.get('role') == 'user' else '' }}>User</option>
+                <option value="service_provider" {{ 'selected' if request.args.get('role') == 'service_provider' else '' }}>Provider</option>
+                <option value="admin" {{ 'selected' if request.args.get('role') == 'admin' else '' }}>Admin</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-control">
+                <option value="">All Status</option>
+                <option value="active" {{ 'selected' if request.args.get('status') == 'active' else '' }}>Active</option>
+                <option value="suspended" {{ 'selected' if request.args.get('suspended') == 'suspended' else '' }}>Suspended</option>
+                <option value="banned" {{ 'selected' if request.args.get('banned') == 'banned' else '' }}>Banned</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Search by name, email, ID..." value="{{ request.args.get('search', '') }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-admin-primary w-100"><i class="fas fa-filter"></i> Filter</button>
         </div>
     </form>
+</div>
+
+<div class="admin-table">
     <table class="table">
         <thead>
-            <tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody>
             {% for user in users %}
@@ -39,22 +47,32 @@
                 <td>{{ user.id }}</td>
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>
-                <td>{{ user.role }}</td>
+                <td><span class="badge badge-admin-info">{{ user.role }}</span></td>
                 <td>
-                    <span class="badge badge-{{ 'success' if user.status == 'active' else 'danger' }}">{{ user.status }}</span>
-                    {% if user.is_flagged %}<span class="badge badge-warning">Flagged</span>{% endif %}
+                    {% if user.status == 'active' %}
+                        <span class="badge badge-admin-success">{{ user.status }}</span>
+                    {% elif user.status == 'suspended' %}
+                        <span class="badge badge-admin-warning">{{ user.status }}</span>
+                    {% else %}
+                        <span class="badge badge-admin-danger">{{ user.status }}</span>
+                    {% endif %}
+                    {% if user.get('is_flagged') %}<span class="badge badge-admin-warning ml-1">Flagged</span>{% endif %}
                 </td>
                 <td>
-                    <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-info">View</a>
-                    {% if user.status == 'active' and user.role != 'admin' %}
-                        <form method="POST" action="{{ url_for('admin.suspend_user', user_id=user.id) }}" style="display:inline;">
-                            <button type="submit" class="btn btn-sm btn-warning">Suspend</button>
-                        </form>
-                    {% endif %}
-                    {% if user.status != 'banned' and user.role != 'admin' %}
-                        <form method="POST" action="{{ url_for('admin.ban_user', user_id=user.id) }}" style="display:inline;">
-                            <button type="submit" class="btn btn-sm btn-danger">Ban</button>
-                        </form>
+                    <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-admin-primary"><i class="fas fa-eye"></i></a>
+                    <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+                    {% if user.role != 'admin' %}
+                        {% if user.status == 'active' %}
+                            <form method="POST" action="{{ url_for('admin.suspend_user', user_id=user.id) }}" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Suspend this user?')"><i class="fas fa-ban"></i></button>
+                            </form>
+                        {% elif user.status == 'suspended' %}
+                            <form method="POST" action="{{ url_for('admin.activate_user', user_id=user.id) }}" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
+                            </form>
+                        {% endif %}
                     {% endif %}
                 </td>
             </tr>

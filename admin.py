@@ -242,6 +242,88 @@ def user_detail(user_id):
     return render_template('admin/user_detail.html', user=user, bookings=bookings, 
                           reviews=reviews, services=services, earnings=round(earnings, 2))
 
+@bp.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_user(user_id):
+    """Edit user details"""
+    from forms import AdminUserEditForm
+    db = get_db()
+    user = db.get_by_id('Users', user_id)
+    
+    if not user:
+        flash('User not found.', 'error')
+        return redirect(url_for('admin.manage_users'))
+    
+    form = AdminUserEditForm()
+    
+    if form.validate_on_submit():
+        try:
+            update_data = {
+                'name': form.name.data,
+                'email': form.email.data,
+                'contact_number': form.contact_number.data,
+                'nid_number': form.nid_number.data,
+                'role': form.role.data,
+                'status': form.status.data,
+                'email_verified': form.email_verified.data,
+                'nid_verified': form.nid_verified.data
+            }
+            db.update('Users', user_id, update_data)
+            log_admin_activity(g.user['id'], 'user_edit', 'user', user_id, 
+                             {'user_name': user['name'], 'changes': update_data})
+            flash(f'User {form.name.data} has been updated successfully.', 'success')
+            return redirect(url_for('admin.user_detail', user_id=user_id))
+        except Exception as e:
+            flash(f'Error updating user: {str(e)}', 'error')
+    
+    # Pre-populate form
+    if request.method == 'GET':
+        form.name.data = user.get('name')
+        form.email.data = user.get('email')
+        form.contact_number.data = user.get('contact_number')
+        form.nid_number.data = user.get('nid_number')
+        form.role.data = user.get('role')
+        form.status.data = user.get('status', 'active')
+        form.email_verified.data = user.get('email_verified', False)
+        form.nid_verified.data = user.get('nid_verified', False)
+    
+    return render_template('admin/edit_user.html', form=form, user=user)
+
+@bp.route('/users/<int:user_id>/reset-password', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def reset_user_password(user_id):
+    """Reset user password"""
+    from forms import AdminPasswordResetForm
+    import bcrypt
+    
+    db = get_db()
+    user = db.get_by_id('Users', user_id)
+    
+    if not user:
+        flash('User not found.', 'error')
+        return redirect(url_for('admin.manage_users'))
+    
+    form = AdminPasswordResetForm()
+    
+    if form.validate_on_submit():
+        if form.new_password.data != form.confirm_password.data:
+            flash('Passwords do not match.', 'error')
+        else:
+            try:
+                hashed_password = bcrypt.hashpw(form.new_password.data.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                db.update('Users', user_id, {'password_hash': hashed_password})
+                log_admin_activity(g.user['id'], 'user_password_reset', 'user', user_id, 
+                                 {'user_name': user['name']})
+                flash(f'Password for {user["name"]} has been reset successfully.', 'success')
+                return redirect(url_for('admin.user_detail', user_id=user_id))
+            except Exception as e:
+                flash(f'Error resetting password: {str(e)}', 'error')
+    
+    return render_template('admin/reset_password.html', form=form, user=user)
+
+
 @bp.route('/users/<int:user_id>/suspend', methods=['POST'])
 @login_required
 @admin_required

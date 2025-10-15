@@ -97,3 +97,17 @@ class AdminNoteForm(FlaskForm):
 
 class ReviewModerationForm(FlaskForm):
     admin_response = TextAreaField('Admin Response', validators=[Optional()])
+
+class AdminUserEditForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=255)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=255)])
+    contact_number = StringField('Contact Number', validators=[Optional(), Length(max=20)])
+    nid_number = StringField('NID Number', validators=[Optional(), Length(max=50)])
+    role = SelectField('Role', choices=[('user', 'User'), ('service_provider', 'Service Provider'), ('admin', 'Admin')], validators=[DataRequired()])
+    status = SelectField('Status', choices=[('active', 'Active'), ('suspended', 'Suspended'), ('banned', 'Banned')], validators=[DataRequired()])
+    email_verified = BooleanField('Email Verified')
+    nid_verified = BooleanField('NID Verified')
+
+class AdminPasswordResetForm(FlaskForm):
+    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=6, max=255)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), Length(min=6, max=255)])

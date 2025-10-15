@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    /* Admin-specific styles matching the creative design */
+    .admin-container {
+        min-height: calc(100vh - 200px);
+        padding: 2rem 0;
+    }
+    
+    .admin-header {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: var(--radius-xl);
+    }
+    
+    .admin-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-lg);
+        margin-bottom: 1.5rem;
+        transition: var(--transition-normal);
+    }
+    
+    .admin-card:hover {
+        box-shadow: var(--shadow-xl);
+        transform: translateY(-2px);
+    }
+    
+    .admin-stats-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        text-align: center;
+        height: 100%;
+        transition: var(--transition-normal);
+    }
+    
+    .admin-stats-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-3px);
+    }
+    
+    .admin-stats-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .admin-table {
+        background: white;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .admin-table table {
+        margin-bottom: 0;
+    }
+    
+    .admin-table thead {
+        background: var(--primary-gradient);
+        color: white;
+    }
+    
+    .admin-table thead th {
+        border: none;
+        font-weight: 600;
+        padding: 1rem;
+    }
+    
+    .admin-table tbody tr {
+        transition: var(--transition-fast);
+    }
+    
+    .admin-table tbody tr:hover {
+        background: var(--light-bg);
+    }
+    
+    .admin-sidebar {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        position: sticky;
+        top: 100px;
+    }
+    
+    .admin-sidebar-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        border-radius: var(--radius-md);
+        transition: var(--transition-fast);
+        margin-bottom: 0.5rem;
+    }
+    
+    .admin-sidebar-item:hover {
+        background: var(--light-bg);
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+    
+    .admin-sidebar-item.active {
+        background: var(--primary-gradient);
+        color: white;
+    }
+    
+    .admin-sidebar-item i {
+        margin-right: 0.75rem;
+        width: 20px;
+    }
+    
+    .btn-admin-primary {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        transition: var(--transition-fast);
+    }
+    
+    .btn-admin-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+    }
+    
+    .btn-admin-danger {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        border: none;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        transition: var(--transition-fast);
+    }
+    
+    .btn-admin-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+    }
+    
+    .badge-admin-success {
+        background: var(--success-gradient);
+        color: white;
+        padding: 0.35rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-weight: 500;
+    }
+    
+    .badge-admin-warning {
+        background: var(--warning-gradient);
+        color: white;
+        padding: 0.35rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-weight: 500;
+    }
+    
+    .badge-admin-danger {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        color: white;
+        padding: 0.35rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-weight: 500;
+    }
+    
+    .badge-admin-info {
+        background: var(--accent-gradient);
+        color: white;
+        padding: 0.35rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-weight: 500;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .admin-page-title {
+        font-family: var(--font-display);
+        font-weight: 700;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+    }
+    
+    .filter-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 col-md-3 d-none d-md-block">
+                <div class="admin-sidebar">
+                    <h6 class="text-muted text-uppercase mb-3" style="font-size: 0.75rem;">Admin Panel</h6>
+                    <a href="{{ url_for('admin.dashboard') }}" class="admin-sidebar-item {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('admin.manage_users') }}" class="admin-sidebar-item {% if 'users' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-users"></i> Users
+                    </a>
+                    <a href="{{ url_for('admin.manage_services') }}" class="admin-sidebar-item {% if 'services' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-cogs"></i> Services
+                    </a>
+                    <a href="{{ url_for('admin.manage_categories') }}" class="admin-sidebar-item {% if 'categories' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-th-large"></i> Categories
+                    </a>
+                    <a href="{{ url_for('admin.manage_bookings') }}" class="admin-sidebar-item {% if 'bookings' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-calendar"></i> Bookings
+                    </a>
+                    <a href="{{ url_for('admin.manage_reviews') }}" class="admin-sidebar-item {% if 'reviews' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-star"></i> Reviews
+                    </a>
+                    <a href="{{ url_for('admin.fraud_monitoring') }}" class="admin-sidebar-item {% if 'fraud' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-shield-alt"></i> Fraud Detection
+                    </a>
+                    <a href="{{ url_for('admin.analytics') }}" class="admin-sidebar-item {% if 'analytics' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-chart-line"></i> Analytics
+                    </a>
+                    <a href="{{ url_for('admin.settings') }}" class="admin-sidebar-item {% if 'settings' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                    <a href="{{ url_for('admin.support_tickets') }}" class="admin-sidebar-item {% if 'support' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-life-ring"></i> Support
+                    </a>
+                    <a href="{{ url_for('admin.activity_log') }}" class="admin-sidebar-item {% if 'activity' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-history"></i> Activity Log
+                    </a>
+                    <hr class="my-3">
+                    <a href="{{ url_for('index') }}" class="admin-sidebar-item">
+                        <i class="fas fa-home"></i> Back to Site
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-10 col-md-9">
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                {% block admin_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

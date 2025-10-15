@@ -1,9 +1,12 @@
-{% extends "base.html" %}
-{% block title %}Category Management{% endblock %}
-{% block content %}
-<div class="container mt-4">
-    <h1>Category Management</h1>
-    <a href="{{ url_for('admin.add_category') }}" class="btn btn-success mb-3">Add Category</a>
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 class="admin-page-title"><i class="fas fa-th-large"></i> Category Management</h1>
+
+<div class="mb-3">
+    <a href="{{ url_for('admin.add_category') }}" class="btn btn-admin-primary"><i class="fas fa-plus"></i> Add Category</a>
+</div>
+
+<div class="admin-table">
     <table class="table">
         <thead>
             <tr><th>ID</th><th>Name</th><th>Services</th><th>Order</th><th>Status</th><th>Actions</th></tr>
@@ -13,14 +16,15 @@
             <tr>
                 <td>{{ category.id }}</td>
                 <td>{{ category.category_name }}</td>
-                <td>{{ category.service_count }}</td>
+                <td><span class="badge badge-admin-info">{{ category.service_count }}</span></td>
                 <td>{{ category.display_order }}</td>
-                <td><span class="badge badge-{{ 'success' if category.is_active else 'secondary' }}">{{ 'Active' if category.is_active else 'Inactive' }}</span></td>
+                <td>{% if category.is_active %}<span class="badge badge-admin-success">Active</span>{% else %}<span class="badge badge-admin-danger">Inactive</span>{% endif %}</td>
                 <td>
-                    <a href="{{ url_for('admin.edit_category', category_id=category.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{{ url_for('admin.edit_category', category_id=category.id) }}" class="btn btn-sm btn-admin-primary"><i class="fas fa-edit"></i></a>
                     {% if category.service_count == 0 %}
                         <form method="POST" action="{{ url_for('admin.delete_category', category_id=category.id) }}" style="display:inline;">
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this category?')">Delete</button>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-sm btn-admin-danger" onclick="return confirm('Delete this category?')"><i class="fas fa-trash"></i></button>
                         </form>
                     {% endif %}
                 </td>

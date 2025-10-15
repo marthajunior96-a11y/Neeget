@@ -1,0 +1,74 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 class="admin-page-title"><i class="fas fa-user-edit"></i> Edit User</h1>
+
+<div class="admin-card">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>{{ form.name.label }}</label>
+                    {{ form.name(class="form-control") }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>{{ form.email.label }}</label>
+                    {{ form.email(class="form-control") }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>{{ form.contact_number.label }}</label>
+                    {{ form.contact_number(class="form-control") }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>{{ form.nid_number.label }}</label>
+                    {{ form.nid_number(class="form-control") }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>{{ form.role.label }}</label>
+                    {{ form.role(class="form-control") }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>{{ form.status.label }}</label>
+                    {{ form.status(class="form-control") }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-check mt-4">
+                    {{ form.email_verified(class="form-check-input") }}
+                    <label class="form-check-label">{{ form.email_verified.label }}</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-check mt-4">
+                    {{ form.nid_verified(class="form-check-input") }}
+                    <label class="form-check-label">{{ form.nid_verified.label }}</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <button type="submit" class="btn btn-admin-primary"><i class="fas fa-save"></i> Save Changes</button>
+            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

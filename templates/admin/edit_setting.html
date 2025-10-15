@@ -1,16 +1,17 @@
-{% extends "base.html" %}
-{% block title %}Edit Setting{% endblock %}
-{% block content %}
-<div class="container mt-4">
-    <h1>Edit {{ setting.setting_key }}</h1>
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 class="admin-page-title"><i class="fas fa-edit"></i> Edit Setting: {{ setting.setting_key }}</h1>
+
+<div class="admin-card">
+    <p class="text-muted">{{ setting.description }}</p>
     <form method="POST">
         {{ form.hidden_tag() }}
         <div class="form-group">
-            <label>{{ setting.description }}</label>
+            <label>{{ form.setting_value.label }}</label>
             {{ form.setting_value(class="form-control") }}
         </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a href="{{ url_for('admin.settings') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-admin-primary"><i class="fas fa-save"></i> Save</button>
+        <a href="{{ url_for('admin.settings') }}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
     </form>
 </div>
 {% endblock %}
