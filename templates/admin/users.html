@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Admin - Neeget</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-handshake"></i> Neeget
+            </a>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                    <i class="fas fa-user"></i> {{ g.user.name }} | Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-users"></i> User Management</h4>
+                        <div class="float-right">
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline-primary {% if not request.args.get('role') %}active{% endif %}">
+                                    All Users
+                                </a>
+                                <a href="{{ url_for('admin.manage_users', role='user') }}" class="btn btn-outline-primary {% if request.args.get('role') == 'user' %}active{% endif %}">
+                                    Customers
+                                </a>
+                                <a href="{{ url_for('admin.manage_users', role='service_provider') }}" class="btn btn-outline-primary {% if request.args.get('role') == 'service_provider' %}active{% endif %}">
+                                    Providers
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert">
+                                            <span>&times;</span>
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Verified</th>
+                                        <th>Contact</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                        {% if user.role != 'admin' %}
+                                            <tr>
+                                                <td>{{ user.id }}</td>
+                                                <td>{{ user.name }}</td>
+                                                <td>{{ user.email }}</td>
+                                                <td>
+                                                    <span class="badge badge-{% if user.role == 'service_provider' %}info{% else %}secondary{% endif %}">
+                                                        {{ user.role.replace('_', ' ').title() }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-{% if user.get('status', 'active') == 'active' %}success{% elif user.get('status') == 'suspended' %}warning{% else %}danger{% endif %}">
+                                                        {{ user.get('status', 'active').title() }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {% if user.get('email_verified', False) %}
+                                                        <i class="fas fa-check-circle text-success" title="Email Verified"></i>
+                                                    {% else %}
+                                                        <i class="fas fa-times-circle text-danger" title="Email Not Verified"></i>
+                                                    {% endif %}
+                                                    {% if user.get('nid_verified', False) %}
+                                                        <i class="fas fa-id-card text-success" title="NID Verified"></i>
+                                                    {% else %}
+                                                        <i class="fas fa-id-card text-danger" title="NID Not Verified"></i>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ user.contact_number }}</td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm" role="group">
+                                                        {% if user.get('status', 'active') == 'active' %}
+                                                            <form method="POST" action="{{ url_for('admin.suspend_user', user_id=user.id) }}" class="d-inline">
+                                                                <button type="submit" class="btn btn-warning btn-sm" 
+                                                                        onclick="return confirm('Suspend this user?')"
+                                                                        title="Suspend User">
+                                                                    <i class="fas fa-pause"></i>
+                                                                </button>
+                                                            </form>
+                                                            <form method="POST" action="{{ url_for('admin.ban_user', user_id=user.id) }}" class="d-inline">
+                                                                <button type="submit" class="btn btn-danger btn-sm" 
+                                                                        onclick="return confirm('Ban this user permanently?')"
+                                                                        title="Ban User">
+                                                                    <i class="fas fa-ban"></i>
+                                                                </button>
+                                                            </form>
+                                                        {% else %}
+                                                            <form method="POST" action="{{ url_for('admin.activate_user', user_id=user.id) }}" class="d-inline">
+                                                                <button type="submit" class="btn btn-success btn-sm" 
+                                                                        onclick="return confirm('Activate this user?')"
+                                                                        title="Activate User">
+                                                                    <i class="fas fa-play"></i>
+                                                                </button>
+                                                            </form>
+                                                        {% endif %}
+                                                        
+                                                        {% if not user.get('email_verified', False) or not user.get('nid_verified', False) %}
+                                                            <form method="POST" action="{{ url_for('admin.verify_user', user_id=user.id) }}" class="d-inline">
+                                                                <button type="submit" class="btn btn-info btn-sm" 
+                                                                        onclick="return confirm('Verify this user?')"
+                                                                        title="Verify User">
+                                                                    <i class="fas fa-check"></i>
+                                                                </button>
+                                                            </form>
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% if not users %}
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-users fa-3x mb-3"></i>
+                                <p>No users found.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Statistics -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Users</h5>
+                        <h2 class="text-primary">{{ users|selectattr('role', 'equalto', 'user')|list|length }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Service Providers</h5>
+                        <h2 class="text-info">{{ users|selectattr('role', 'equalto', 'service_provider')|list|length }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Verified Users</h5>
+                        <h2 class="text-success">{{ users|selectattr('email_verified', 'equalto', true)|list|length }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Users</h5>
+                        <h2 class="text-warning">{{ users|rejectattr('status', 'defined')|list|length + users|selectattr('status', 'equalto', 'active')|list|length }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

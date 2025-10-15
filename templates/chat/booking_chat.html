@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - {{ service.service_name if service else 'Booking' }} | Neeget</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Mobile-specific animations and styles */
+        @media (max-width: 767px) {
+            .slide-in {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .slide-in.active {
+                transform: translateX(0);
+            }
+            .fade-in {
+                opacity: 0;
+                animation: fadeIn 0.3s ease-in forwards;
+            }
+            @keyframes fadeIn {
+                to { opacity: 1; }
+            }
+            .drawer-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                display: none;
+            }
+            .drawer-overlay.active {
+                display: block;
+            }
+            #chatMessages {
+                scroll-behavior: smooth;
+            }
+            .chat-container {
+                border-radius: 1rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Mobile App Bar (visible on mobile only) -->
+    <div class="md:hidden fixed top-0 left-0 right-0 h-14 bg-gradient-to-r from-blue-600 to-blue-700 text-white flex items-center justify-between px-4 z-50 shadow-lg">
+ 
+        <div class="text-lg font-semibold truncate">
+            Chat with {{ other_user.name if other_user else 'Unknown User' }}
+        </div>
+        <button class="text-white text-2xl" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+    </div>
+
+
+    <!-- Navigation (desktop only) -->
+    <nav class="hidden md:block navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-handshake"></i> Neeget
+            </a>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link" href="{{ url_for('bookings.detail', booking_id=booking.id) }}">
+                    <i class="fas fa-arrow-left"></i> Back to Booking
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-16 md:mt-4 mb-16 md:mb-0">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Chat Container -->
+                <div class="flex flex-col h-[calc(100vh-128px)] md:h-[70vh] bg-white rounded-lg overflow-hidden shadow-lg md:shadow-lg chat-container">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 flex justify-between items-center">
+                        <div>
+                            <h5 class="text-lg font-medium mb-0">
+                                <i class="fas fa-comments mr-2"></i> 
+                                Chat with {{ other_user.name if other_user else 'Unknown User' }}
+                                <span class="w-2 h-2 bg-green-500 rounded-full inline-block ml-2"></span>
+                            </h5>
+                            <small class="text-xs opacity-80">
+                                Service: {{ service.service_name if service else 'Unknown Service' }} 
+                                | Booking #{{ booking.id }}
+                            </small>
+                        </div>
+                        <div>
+                            <span class="badge badge-light text-blue-600">{{ booking.booking_status.title() }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Messages -->
+                    <div class="flex-1 overflow-y-auto p-4 bg-gray-50" id="chatMessages">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="flex mb-4 animate-fade-in-up {% if message.is_own %}justify-end{% else %}justify-start{% endif %}" data-message-id="{{ message.id }}">
+                                    <div class="max-w-[70%] p-3 rounded-2xl shadow {% if message.is_own %}bg-green-100 text-black rounded-br-none{% else %}bg-white text-gray-800 rounded-bl-none{% endif %}">
+                                        {% if not message.is_own %}
+                                            <div class="text-xs font-semibold text-gray-600 mb-1">
+                                                {{ message.sender_name }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="text-sm">
+                                            {% if message.get('is_deleted') %}
+                                                <em class="text-gray-500">{{ message.message_content }}</em>
+                                            {% else %}
+                                                {{ message.message_content }}
+                                            {% endif %}
+                                        </div>
+                                        <span class="text-xs text-gray-500 mt-1 block text-right" data-timestamp="{{ message.sent_at }}">
+                                            {{ message.sent_at if message.sent_at else 'Just now' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center text-gray-500 py-8">
+                                <i class="fas fa-comments text-5xl mb-4"></i>
+                                <p class="text-sm">No messages yet. Start the conversation!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Typing Indicator -->
+                    <div class="hidden italic text-gray-500 p-2 text-sm" id="typingIndicator">
+                        {{ other_user.name if other_user else 'User' }} is typing...
+                    </div>
+                    
+                    <!-- Chat Input -->
+                    <div class="p-3 bg-white border-t border-gray-200">
+                        <form id="messageForm" class="flex">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                            <input type="text" 
+                                   class="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-blue-500" 
+                                   id="messageInput" 
+                                   name="message_content" 
+                                   placeholder="Type your message..." 
+                                   autocomplete="off"
+                                   maxlength="1000"
+                                   required>
+                            <button type="submit" class="ml-2 bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center" id="sendButton">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                        <small class="text-xs text-gray-500 mt-1 block">
+                            <i class="fas fa-info-circle mr-1"></i> 
+                            Press Enter to send, Shift+Enter for new line
+                        </small>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions (desktop only) -->
+                <div class="hidden md:block bg-white rounded-lg mt-4 p-4 shadow">
+                    <h6 class="text-sm font-medium mb-2"><i class="fas fa-bolt mr-1"></i> Quick Actions</h6>
+                    <div class="flex space-x-2">
+                        <button class="btn btn-outline-primary btn-sm quick-message flex items-center" 
+                                data-message="Hello! I have a question about the service.">
+                            <i class="fas fa-question-circle mr-1"></i> Ask Question
+                        </button>
+                        <button class="btn btn-outline-success btn-sm quick-message flex items-center" 
+                                data-message="Thank you for your service!">
+                            <i class="fas fa-thumbs-up mr-1"></i> Say Thanks
+                        </button>
+                        <button class="btn btn-outline-info btn-sm quick-message flex items-center" 
+                                data-message="When can we schedule this service?">
+                            <i class="fas fa-calendar mr-1"></i> Schedule
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>   
+    <script>
+        $(document).ready(function() {
+            const chatMessages = $('#chatMessages');
+            const messageForm = $('#messageForm');
+            const messageInput = $('#messageInput');
+            const sendButton = $('#sendButton');
+            const typingIndicator = $('#typingIndicator');
+            const bookingId = {{ booking.id }};
+            const csrfToken = $("input[name='csrf_token']").val();
+            const navDrawer = $('#navDrawer');
+            const drawerOverlay = $('#drawerOverlay');
+            const drawerToggle = $('#drawerToggle');
+            
+            let typingTimer;
+            let isTyping = false;
+            
+            // Auto-scroll to bottom
+            function scrollToBottom() {
+                chatMessages.scrollTop(chatMessages[0].scrollHeight);
+            }
+            
+            // Initial scroll to bottom
+            scrollToBottom();
+            
+            // Drawer toggle
+            drawerToggle.on('click', function() {
+                navDrawer.toggleClass('active');
+                drawerOverlay.toggleClass('active');
+            });
+            
+            // Close drawer on overlay click
+            drawerOverlay.on('click', function() {
+                navDrawer.removeClass('active');
+                drawerOverlay.removeClass('active');
+            });
+            
+            // Gesture support for drawer
+            let touchStartX = 0;
+            $(document).on('touchstart', function(e) {
+                touchStartX = e.originalEvent.touches[0].clientX;
+            });
+            $(document).on('touchmove', function(e) {
+                const touchX = e.originalEvent.touches[0].clientX;
+                if (touchX - touchStartX > 50 && touchX < 100) {
+                    navDrawer.addClass('active');
+                    drawerOverlay.addClass('active');
+                }
+            });
+            
+            // Send message
+            messageForm.on('submit', function(e) {
+                e.preventDefault();
+                
+                const messageContent = messageInput.val().trim();
+                if (!messageContent) return;
+                
+                // Disable send button
+                sendButton.prop('disabled', true);
+                sendButton.html('<i class="fas fa-spinner fa-spin"></i>');
+                
+                $.ajax({
+                    url: '{{ url_for("chat.send_message", booking_id=booking.id) }}',
+                    method: 'POST',
+                    data: {
+                        booking_id: bookingId,
+                        message_content: messageContent,
+                        csrf_token: csrfToken
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Add message to chat
+                            const message = response.message;
+                            const messageHtml = `
+                                <div class="flex mb-4 animate-fade-in-up justify-end" data-message-id="${message.id}">
+                                    <div class="max-w-[70%] p-3 rounded-2xl shadow bg-green-100 text-black rounded-br-none">
+                                        <div class="text-sm">${message.message_content}</div>
+                                        <span class="text-xs text-gray-500 mt-1 block text-right">
+                                            ${moment(message.sent_at).format("MMM DD, HH:mm")}
+                                        </span>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            chatMessages.append(messageHtml);
+                            messageInput.val('');
+                            scrollToBottom();
+                        } else {
+                            alert('Error sending message: ' + response.error);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Error sending message: ' + xhr.responseJSON?.error || 'Please try again.');
+                    },
+                    complete: function() {
+                        // Re-enable send button
+                        sendButton.prop('disabled', false);
+                        sendButton.html('<i class="fas fa-paper-plane"></i>');
+                    }
+                });
+            });
+            
+            // Handle Enter key
+            messageInput.on('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    messageForm.submit();
+                }
+            });
+            
+            // Typing indicator
+            messageInput.on('input', function() {
+                if (!isTyping) {
+                    isTyping = true;
+                    $.ajax({
+                        url: '{{ url_for("chat.typing_indicator", booking_id=booking.id) }}',
+                        method: 'POST',
+                        data: { is_typing: true, csrf_token: csrfToken },
+                    });
+                }
+                
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(function() {
+                    isTyping = false;
+                    $.ajax({
+                        url: "{{ url_for('chat.typing_indicator', booking_id=booking.id) }}",
+                        method: "POST",
+                        data: { is_typing: false, csrf_token: csrfToken },
+                    });
+                }, 1000);
+            });
+            
+            // Quick messages
+            $('.quick-message').on('click', function() {
+                const message = $(this).data('message');
+                messageInput.val(message);
+                messageInput.focus();
+            });
+            
+            // Delete message
+            $(document).on('click', '.delete-message', function() {
+                const messageId = $(this).data('message-id');
+                const messageElement = $(this).closest('.message');
+                
+                if (confirm('Are you sure you want to delete this message?')) {
+                    $.ajax({
+                        url: '{{ url_for("chat.delete_message", message_id=0) }}'.replace('0', messageId),
+                        method: 'POST',
+                        data: { csrf_token: csrfToken },
+                        success: function(response) {
+                            if (response.success) {
+                                messageElement.find('.message-text').html('<em class="text-muted">[Message deleted]</em>');
+                                messageElement.find('.delete-message').remove();
+                            } else {
+                                alert('Error deleting message: ' + response.error);
+                            }
+                        },
+                        error: function() {
+                            alert('Error deleting message. Please try again.');
+                        }
+                    });
+                }
+            });
+            
+            // Auto-refresh messages every 5 seconds
+            setInterval(function() {
+                $.ajax({
+                    url: '{{ url_for("chat.get_messages", booking_id=booking.id) }}',
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            const currentMessageCount = $('.message').length;
+                            const newMessageCount = response.messages.length;
+                            
+                            if (newMessageCount > currentMessageCount) {
+                                location.reload();
+                            }
+                        }
+                    }
+                });
+            }, 5000);
+            
+            // Mark messages as read when page loads
+            $.ajax({
+                url: "{{ url_for('chat.mark_read', booking_id=booking.id) }}",
+                method: "POST",
+                data: { booking_id: bookingId, csrf_token: csrfToken },
+            });
+            
+            // Focus on input
+            messageInput.focus();
+        });
+    </script>
+</body>
+</html>

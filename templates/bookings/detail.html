@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Details{% endblock %}
+
+{% block mobile_title %}Booking #{{ booking.id }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>×</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>
+                        <i class="fas fa-calendar-check"></i> 
+                        Booking #{{ booking.id }}
+                        <span class="badge badge-{% if booking.booking_status == 'completed' %}success{% elif booking.booking_status == 'accepted' %}info{% elif booking.booking_status == 'pending' %}warning{% elif booking.booking_status == 'rejected' %}danger{% elif booking.booking_status == 'cancelled' %}secondary{% endif %} ml-2">
+                            {{ booking.booking_status.title() }}
+                        </span>
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-cogs"></i> Service Details</h5>
+                            <p><strong>Service:</strong> {{ booking.service.service_name if booking.service else 'N/A' }}</p>
+                            <p><strong>Description:</strong> {{ booking.service.description if booking.service else 'N/A' }}</p>
+                            <p><strong>Price:</strong>   ৳ {{ "%.2f"|format(booking.service.price) if booking.service else 'N/A' }}</p>
+                            <p><strong>Location:</strong> {{ booking.service.location if booking.service else 'N/A' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-info-circle"></i> Booking Information</h5>
+                            <p><strong>Booking Date:</strong> {{ booking.booking_date[:10] if booking.booking_date else 'N/A' }}</p>
+                            <p><strong>Service Date:</strong> {{ booking.service_date[:10] if booking.service_date else 'N/A' }}</p>
+                            <p><strong>Status:</strong> 
+                                <span class="status-{{ booking.booking_status }}">{{ booking.booking_status.title() }}</span>
+                            </p>
+                            {% if g.user.role == 'user' and booking.otp_code and booking.booking_status == 'accepted' %}
+                                <p><strong>OTP Code:</strong> <code>{{ booking.otp_code }}</code></p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-user"></i> Customer</h5>
+                            <p><strong>Name:</strong> {{ booking.user.name if booking.user else 'N/A' }}</p>
+                            <p><strong>Email:</strong> {{ booking.user.email if booking.user else 'N/A' }}</p>
+                            <p><strong>Contact:</strong> {{ booking.user.contact_number if booking.user else 'N/A' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-user-tie"></i> Service Provider</h5>
+                            <p><strong>Name:</strong> {{ booking.provider.name if booking.provider else 'N/A' }}</p>
+                            <p><strong>Email:</strong> {{ booking.provider.email if booking.provider else 'N/A' }}</p>
+                            <p><strong>Contact:</strong> {{ booking.provider.contact_number if booking.provider else 'N/A' }}</p>
+                        </div>
+                    </div>
+
+                    {% if booking.payment %}
+                        <hr>
+                        <h5><i class="fas fa-credit-card"></i> Payment Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Payment Method:</strong> {{ booking.payment.payment_method.title() if booking.payment.payment_method else 'N/A' }}</p>
+                                <p><strong>Service Amount:</strong>   ৳ {{ "%.2f"|format(booking.payment.payment_amount) if booking.payment.payment_amount else 'N/A' }}</p>
+                                <p><strong>Platform Fee:</strong>   ৳ {{ "%.2f"|format(booking.payment.platform_fee) if booking.payment.platform_fee else 'N/A' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Total Amount:</strong>   ৳ {{ "%.2f"|format(booking.payment.total_amount) if booking.payment.total_amount else 'N/A' }}</p>
+                                <p><strong>Payment Status:</strong> 
+                                    <span class="badge badge-{% if booking.payment.payment_status == 'completed' %}success{% else %}warning{% endif %}">
+                                        {{ booking.payment.payment_status.title() if booking.payment.payment_status else 'N/A' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5><i class="fas fa-tools"></i> Actions</h5>
+                    
+                    {% if g.user.role == 'service_provider' %}
+                        {% if booking.booking_status == 'pending' %}
+                            <form method="POST" action="{{ url_for('bookings.accept_booking', booking_id=booking.id) }}" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-check"></i> Accept Booking
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('bookings.reject_booking', booking_id=booking.id) }}" class="d-inline ml-2">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this booking?')">
+                                    <i class="fas fa-times"></i> Reject Booking
+                                </button>
+                            </form>
+                        {% elif booking.booking_status == 'accepted' %}
+                            <form method="POST" action="{{ url_for('bookings.complete_booking', booking_id=booking.id) }}" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <div class="form-group">
+                                    <label for="otp_code">Enter OTP to Complete:</label>
+                                    <input type="text" name="otp_code" id="otp_code" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary" onclick="return confirm('Mark this booking as completed?')">
+                                    <i class="fas fa-check-circle"></i> Mark as Completed
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% elif g.user.role == 'user' %}
+                        {% if booking.booking_status == 'pending' %}
+                            <form method="POST" action="{{ url_for('bookings.cancel_booking', booking_id=booking.id) }}" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                    <i class="fas fa-ban"></i> Cancel Booking
+                                </button>
+                            </form>
+                        {% elif booking.booking_status == 'completed' %}
+                            <a href="{{ url_for('bookings.review_booking', booking_id=booking.id) }}" class="btn btn-info">
+                                <i class="fas fa-star"></i> Leave Review
+                            </a>
+                        {% endif %}
+                    {% endif %}
+
+                    <a href="{{ url_for('chat.booking_chat', booking_id=booking.id) }}" class="btn btn-secondary ml-2">
+                        <i class="fas fa-comments"></i> Chat
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Quick Chat -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-comments"></i> Quick Chat</h5>
+                </div>
+                <div class="card-body">
+                    {% if booking.messages and booking.messages|length > 0 %}
+                        <div class="chat-messages" style="max-height: 200px; overflow-y: auto;">
+                            {% for message in booking.messages[-3:] %}
+                                <div class="chat-message {% if message.sender_id == g.user.id %}own{% else %}other{% endif %}">
+                                    <small><strong>{{ message.sender_name if message.sender_name else 'Unknown' }}:</strong></small><br>
+                                    {{ message.message_content if message.message_content else '[No content]' }}
+                                    <br><small class="text-muted">{{ message.sent_at[:16] if message.sent_at else 'N/A' }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No messages yet.</p>
+                    {% endif %}
+                    <a href="{{ url_for('chat.booking_chat', booking_id=booking.id) }}" class="btn btn-primary btn-sm btn-block mt-2">
+                        <i class="fas fa-comment"></i> Open Chat
+                    </a>
+                </div>
+            </div>
+
+            <!-- Booking Timeline -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5><i class="fas fa-history"></i> Booking Timeline</h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item {% if booking.booking_status in ['pending', 'accepted', 'completed', 'rejected', 'cancelled'] %}completed{% endif %}">
+                            <i class="fas fa-plus-circle text-primary"></i>
+                            <span>Booking Created</span>
+                        </div>
+                        {% if booking.booking_status in ['accepted', 'completed', 'rejected', 'cancelled'] %}
+                            <div class="timeline-item {% if booking.booking_status in ['accepted', 'completed'] %}completed{% elif booking.booking_status == 'rejected' %}rejected{% elif booking.booking_status == 'cancelled' %}cancelled{% endif %}">
+                                <i class="fas fa-{% if booking.booking_status == 'rejected' %}times-circle text-danger{% elif booking.booking_status == 'cancelled' %}ban text-secondary{% else %}check-circle text-info{% endif %}"></i>
+                                <span>{{ booking.booking_status.title() }}</span>
+                            </div>
+                        {% endif %}
+                        {% if booking.booking_status == 'completed' %}
+                            <div class="timeline-item completed">
+                                <i class="fas fa-check-double text-success"></i>
+                                <span>Completed</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Section -->
+            {% if review %}
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5><i class="fas fa-star"></i> Review</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            {% for i in range(1, 6) %}
+                                <i class="fas fa-star {% if i <= review.rating %}text-warning{% else %}text-muted{% endif %} mr-1"></i>
+                            {% endfor %}
+                            <span class="ml-2">{{ review.rating }} / 5</span>
+                        </div>
+                        <p>{{ review.comment }}</p>
+                        <small class="text-muted">Reviewed on {{ review.created_at[:10] }}</small>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

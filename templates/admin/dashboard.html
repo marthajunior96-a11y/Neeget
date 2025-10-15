@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Neeget</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-handshake"></i> Neeget - Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.manage_users') }}">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.support_tickets') }}">Support</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.analytics') }}">Analytics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.fraud_monitoring') }}">Fraud Monitor</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                            <i class="fas fa-user"></i> {{ g.user.name }} | Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+        
+        <!-- Metrics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ metrics.total_users }}</h4>
+                                <p class="mb-0">Total Users</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ metrics.total_providers }}</h4>
+                                <p class="mb-0">Service Providers</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-user-tie fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ metrics.total_bookings }}</h4>
+                                <p class="mb-0">Total Bookings</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-calendar-alt fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>  ৳ {{ "%.2f"|format(metrics.total_revenue) }}</h4>
+                                <p class="mb-0">Total Revenue</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-dollar-sign fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Service Popularity -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-bar"></i> Service Popularity</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if metrics.service_popularity %}
+                            {% for category, count in metrics.service_popularity.items() %}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>{{ category }}</span>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress mr-2" style="width: 100px; height: 20px;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 style="width: {{ (count / (metrics.service_popularity.values() | list | max if metrics.service_popularity.values() | list | max > 0 else 1)) * 100 }}%">
+                                            </div>
+                                        </div>
+                                        <span class="badge badge-primary">{{ count }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No booking data available yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-clock"></i> Recent Bookings</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if metrics.recent_bookings %}
+                            {% for booking in metrics.recent_bookings[:5] %}
+                                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                    <div>
+                                        <small class="text-muted">Booking #{{ booking.id }}</small>
+                                        <br>
+                                        <span class="badge badge-{% if booking.booking_status == 'pending' %}warning{% elif booking.booking_status == 'completed' %}success{% else %}info{% endif %}">
+                                            {{ booking.booking_status.title() }}
+                                        </span>
+                                    </div>
+                                    <small class="text-muted">{{ booking.booking_date[:10] if booking.booking_date else 'Unknown' }}</small>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No recent bookings.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <!-- Recent Users -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-user-plus"></i> Recent Users</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if metrics.recent_users %}
+                            {% for user in metrics.recent_users[:5] %}
+                                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                    <div>
+                                        <strong>{{ user.name }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ user.email }}</small>
+                                        <span class="badge badge-{% if user.role == 'user' %}primary{% elif user.role == 'service_provider' %}success{% else %}danger{% endif %}">
+                                            {{ user.role.replace('_', ' ').title() }}
+                                        </span>
+                                    </div>
+                                    <small class="text-muted">{{ user.created_at[:10] if user.created_at else 'Unknown' }}</small>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No recent users.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Tickets -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-life-ring"></i> Support Tickets</h5>
+                        <span class="badge badge-danger">{{ metrics.open_tickets }} Open</span>
+                    </div>
+                    <div class="card-body">
+                        {% if metrics.open_tickets > 0 %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                You have {{ metrics.open_tickets }} open support ticket{{ 's' if metrics.open_tickets != 1 else '' }} that need attention.
+                            </div>
+                            <a href="{{ url_for('admin.support_tickets') }}" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> View All Tickets
+                            </a>
+                        {% else %}
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i>
+                                All support tickets are resolved!
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline-primary btn-block">
+                                    <i class="fas fa-users"></i> Manage Users
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{{ url_for('services.add_category') }}" class="btn btn-outline-success btn-block">
+                                    <i class="fas fa-plus"></i> Add Category
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{{ url_for('admin.analytics') }}" class="btn btn-outline-info btn-block">
+                                    <i class="fas fa-chart-line"></i> View Analytics
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{{ url_for('admin.fraud_monitoring') }}" class="btn btn-outline-warning btn-block">
+                                    <i class="fas fa-shield-alt"></i> Fraud Monitor
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Review - Neeget</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-handshake"></i> Neeget
+            </a>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link" href="{{ url_for('bookings.detail', booking_id=booking.id) }}">
+                    <i class="fas fa-arrow-left"></i> Back to Booking
+                </a>
+                <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                    <i class="fas fa-user"></i> {{ g.user.name }} | Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-star"></i> Leave a Review</h4>
+                    </div>
+                    <div class="card-body">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert">
+                                            <span>×</span>
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                        <!-- Service and Provider Info -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5>{{ service.service_name }}</h5>
+                                <p class="text-muted">{{ service.description }}</p>
+                                <p><strong>Provider:</strong> {{ provider.name }}</p>
+                                <p><strong>Service Date:</strong> {{ booking.service_date[:10] if booking.service_date else 'N/A' }}</p>
+                            </div>
+                        </div>
+
+                        <form method="POST">
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="form-group">
+                                {{ form.rating.label(class="form-label") }}
+                                <div class="rating-input">
+                                    <div class="star-rating">
+                                        {% for i in range(5, 0, -1) %}
+                                            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" {% if form.rating.data == i %}checked{% endif %}>
+                                            <label for="star{{ i }}" class="star">
+                                                <i class="fas fa-star"></i>
+                                            </label>
+                                        {% endfor %}
+                                    </div>
+                                    <small id="rating-display" class="text-muted ml-2"></small>
+                                </div>
+                                {% if form.rating.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.rating.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.comment.label(class="form-label") }}
+                                {{ form.comment(class="form-control", rows="4", placeholder="Share your experience with this service...") }}
+                                {% if form.comment.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.comment.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane"></i> Submit Review
+                                </button>
+                                <a href="{{ url_for('bookings.detail', booking_id=booking.id) }}" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+
+        .star-rating label {
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: block;
+            color: #ddd;
+            font-size: 24px;
+            transition: color 0.2s;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateRatingDisplay(); // Initial call if pre-selected
+        });
+
+        const ratingInputs = document.querySelectorAll('.star-rating input');
+        ratingInputs.forEach(input => {
+            input.addEventListener('change', updateRatingDisplay);
+        });
+
+        function updateRatingDisplay() {
+            const selected = document.querySelector('.star-rating input:checked');
+            const value = selected ? parseInt(selected.value) : 0;
+            document.getElementById('rating-display').textContent = `Selected: ${value} star${value > 1 ? 's' : ''}`;
+            const labels = Array.from(document.querySelectorAll('.star-rating label')).reverse(); // Reverse to match visual order for coloring
+            labels.forEach((label, index) => {
+                label.style.color = (index < value) ? '#ffc107' : '#ddd';
+            });
+        }
+
+        const labels = document.querySelectorAll('.star-rating label');
+        labels.forEach(label => {
+            label.addEventListener('mouseover', function() {
+                const hoverValue = parseInt(document.querySelector(`input[id="${this.getAttribute('for')}"]`).value);
+                const labels = Array.from(document.querySelectorAll('.star-rating label')).reverse();
+                labels.forEach((l, index) => {
+                    l.style.color = (index < hoverValue) ? '#ffc107' : '#ddd';
+                });
+            });
+            label.addEventListener('mouseout', updateRatingDisplay);
+        });
+    </script>
+</body>
+</html>

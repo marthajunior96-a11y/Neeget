@@ -1,0 +1,185 @@
+{# In templates/bookings/list.html #}
+
+{% extends "base.html" %}
+
+{% block title %}My Bookings - Neeget{% endblock %}
+
+{% block mobile_title %}
+    {% if g.user.role == 'service_provider' %}Booking Requests{% else %}My Bookings{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="py-4" style="background: var(--primary-gradient); padding-top: 100px;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="text-white font-weight-bold mb-1">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    {% if g.user.role == 'service_provider' %}Booking Requests{% else %}My Bookings{% endif %}
+                </h1>
+                <p class="text-white-50 mb-2">
+                    {% if g.user.role == 'service_provider' %}
+                        Manage your incoming booking requests
+                    {% else %}
+                        View and manage your booked services
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-lg-4 mt-3 mt-lg-0 text-lg-right">
+                <a href="{{ url_for('services.browse') }}" class="btn btn-light btn-lg px-4">
+                    <i class="fas fa-plus mr-2"></i>Book New Service
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>×</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if bookings %}
+        <div class="row">
+            {% for booking in bookings %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="creative-card booking-item animate-fade-in">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="booking-icon mr-3" style="width: 50px; height: 50px; background: var(--{{ 'success' if booking.booking_status == 'completed' else 'warning' if booking.booking_status == 'pending' else 'info' if booking.booking_status == 'accepted' else 'danger' if booking.booking_status == 'rejected' else 'secondary' }}-gradient); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                                    <i class="fas fa-{{ 'check' if booking.booking_status == 'completed' else 'clock' if booking.booking_status == 'pending' else 'check-circle' if booking.booking_status == 'accepted' else 'times-circle' if booking.booking_status == 'rejected' else 'ban' }}"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">{{ booking.service.service_name if booking.service else 'Unknown Service' }}</h6>
+                                    <span class="badge badge-{{ 'success' if booking.booking_status == 'completed' else 'warning' if booking.booking_status == 'pending' else 'info' if booking.booking_status == 'accepted' else 'danger' if booking.booking_status == 'rejected' else 'secondary' }}">
+                                        {{ booking.booking_status.title() }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            {% if g.user.role == 'service_provider' %}
+                                <p><strong>Customer:</strong> {{ booking.user.name if booking.user else 'Unknown' }}</p>
+                                <p><strong>Contact:</strong> {{ booking.user.contact_number if booking.user else 'N/A' }}</p>
+                            {% else %}
+                                <p><strong>Provider:</strong> {{ booking.provider.name if booking.provider else 'Unknown' }}</p>
+                                <p><strong>Contact:</strong> {{ booking.provider.contact_number if booking.provider else 'N/A' }}</p>
+                            {% endif %}
+                            <p><strong>Service Date:</strong> {{ booking.service_date[:16].replace('T', ' ') if booking.service_date else 'Not set' }}</p>
+                            <p><strong>Booking Date:</strong> {{ booking.booking_date[:10] if booking.booking_date else 'Unknown' }}</p>
+                            {% if booking.service %}
+                                <p><strong>Price:</strong>   ৳ {{ "%.2f"|format(booking.service.price) }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer p-0 pt-3">
+                            <div class="btn-group btn-group-sm w-100" role="group">
+                                <a href="{{ url_for('bookings.detail', booking_id=booking.id) }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state text-center py-5">
+            <div class="empty-icon mb-3" style="font-size: 4rem; color: var(--text-light);">
+                <i class="fas fa-calendar-times"></i>
+            </div>
+            <h5 class="text-muted mb-3">No bookings found</h5>
+            {% if g.user.role == 'service_provider' %}
+                <p class="text-muted mb-4">You haven't received any booking requests yet.</p>
+                <a href="{{ url_for('services.manage') }}" class="btn btn-creative-primary">
+                    <i class="fas fa-plus mr-2"></i>Add Your Services
+                </a>
+            {% else %}
+                <p class="text-muted mb-4">You haven't made any bookings yet.</p>
+                <a href="{{ url_for('services.browse') }}" class="btn btn-creative-primary">
+                    <i class="fas fa-search mr-2"></i>Browse Services
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .booking-item {
+        padding: 1.5rem;
+        background: var(--bg-light);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        transition: var(--transition-fast);
+    }
+    
+    .booking-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .card-body p {
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-footer {
+        border-top: none;
+        background: transparent;
+    }
+    
+    .btn-group .btn {
+        transition: var(--transition-fast);
+    }
+    
+    .btn-group .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-in forwards;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+        .booking-item .d-flex {
+            flex-direction: column;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn-group .btn {
+            margin: 0.25rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const bookingCards = document.querySelectorAll('.booking-item');
+    bookingCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('animate-fade-in');
+    });
+});
+</script>
+{% endblock %}

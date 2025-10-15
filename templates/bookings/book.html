@@ -1,0 +1,635 @@
+{% extends "base.html" %}
+
+{% block title %}Book {{ service.service_name }} - Neeget{% endblock %}
+
+{% block mobile_title %}Book Service{% endblock %}
+
+{% block content %}
+<!-- Booking Hero Section -->
+<section class="py-4" style="background: var(--secondary-gradient); padding-top: 100px;">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('index') }}" class="text-white-50">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('services.browse') }}" class="text-white-50">Services</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('services.detail', service_id=service.id) }}" class="text-white-50">{{ service.service_name }}</a>
+                </li>
+                <li class="breadcrumb-item active text-white">Book Service</li>
+            </ol>
+        </nav>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center">
+                    <div class="creative-card-icon mr-3" style="width: 60px; height: 60px; font-size: 1.5rem; background: rgba(255,255,255,0.2);">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-weight-bold mb-1">Book Your Service</h1>
+                        <p class="text-white-50 mb-0">Schedule {{ service.service_name }} with {{ service.provider_name }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-3 mt-lg-0 text-lg-right">
+                <div class="booking-progress">
+                    <div class="d-flex align-items-center justify-content-lg-end">
+                        <div class="progress-step active">
+                            <div class="step-number">1</div>
+                            <small class="text-white">Details</small>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step">
+                            <div class="step-number">2</div>
+                            <small class="text-white-50">Payment</small>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step">
+                            <div class="step-number">3</div>
+                            <small class="text-white-50">Confirm</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Booking Form -->
+        <div class="col-lg-8 mb-4">
+            <div class="creative-card">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h3 class="creative-card-title mb-0">Booking Details</h3>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} mr-2"></i>
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>×</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" class="creative-form">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Date and Time Selection -->
+                    <div class="form-section mb-4">
+                        <h5 class="section-title mb-3">
+                            <i class="fas fa-calendar-alt text-primary mr-2"></i>
+                            When do you need this service?
+                        </h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="creative-form-group">
+                                    <label class="creative-form-label">Booking Date & Time</label>
+                                    <div class="position-relative">
+                                        <i class="fas fa-calendar position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                        <input type="text" class="creative-form-control" style="padding-left: 45px;" value="{{ booking.booking_date[:16].replace('T', ' ') if booking.booking_date else 'N/A' }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="creative-form-group">
+                                    {{ form.service_date.label(class="creative-form-label") }}
+                                    <div class="position-relative">
+                                        <i class="fas fa-clock position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                        {{ form.service_date(class="creative-form-control", type="datetime-local", style="padding-left: 45px;") }}
+                                    </div>
+                                    {% if form.service_date.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.service_date.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Time Selection -->
+                        <div class="quick-time-selection mt-3">
+                            <label class="creative-form-label">Popular Times</label>
+                            <div class="time-slots">
+                                <button type="button" class="btn btn-outline-primary btn-sm time-slot" data-time="09:00">9:00 AM</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm time-slot" data-time="10:00">10:00 AM</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm time-slot" data-time="14:00">2:00 PM</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm time-slot" data-time="16:00">4:00 PM</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Details -->
+                    <div class="form-section mb-4">
+                        <h5 class="section-title mb-3">
+                            <i class="fas fa-info-circle text-primary mr-2"></i>
+                            Service Details
+                        </h5>
+                        
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Description</label>
+                            <div class="position-relative">
+                                <i class="fas fa-comment position-absolute" style="left: 15px; top: 20px; color: var(--text-light); z-index: 2;"></i>
+                                <textarea class="creative-form-control" style="padding-left: 45px; min-height: 120px;" readonly>{{ service.description if service.description else 'No description available' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Details -->
+                    <div class="form-section mb-4">
+                        <h5 class="section-title mb-3">
+                            <i class="fas fa-map-marker-alt text-primary mr-2"></i>
+                            Service Location
+                        </h5>
+                        
+                        <div class="creative-form-group">
+                            {{ form.location.label(class="creative-form-label") }}
+                            <div class="position-relative">
+                                <i class="fas fa-home position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                {{ form.location(class="creative-form-control", style="padding-left: 45px;", placeholder="Enter the full address where the service will be performed") }}
+                            </div>
+                            {% if form.location.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.location.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="location-options mt-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="useCurrentLocation()">
+                                <i class="fas fa-crosshairs mr-1"></i>Use Current Location
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm ml-2" onclick="selectFromMap()">
+                                <i class="fas fa-map mr-1"></i>Select from Map
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="form-section mb-4">
+                        <h5 class="section-title mb-3">
+                            <i class="fas fa-phone text-primary mr-2"></i>
+                            Contact Information
+                        </h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="creative-form-group">
+                                    {{ form.contact_number.label(class="creative-form-label") }}
+                                    <div class="position-relative">
+                                        <i class="fas fa-phone position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                        {{ form.contact_number(class="creative-form-control", style="padding-left: 45px;") }}
+                                    </div>
+                                    {% if form.contact_number.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.contact_number.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="creative-form-group">
+                                    <label class="creative-form-label">Alternative Contact</label>
+                                    <div class="position-relative">
+                                        <i class="fas fa-envelope position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                        <input type="email" class="creative-form-control" style="padding-left: 45px;" placeholder="Alternative email (optional)" value="{{ g.user.email }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="form-section mb-4">
+                        <h5 class="section-title mb-3">
+                            <i class="fas fa-credit-card text-primary mr-2"></i>
+                            Payment Method
+                        </h5>
+                        
+                        <div class="creative-form-group">
+                            {{ form.payment_method.label(class="creative-form-label") }}
+                            {{ form.payment_method(class="creative-form-control") }}
+                            {% if form.payment_method.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.payment_method.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ url_for('services.detail', service_id=service.id) }}" class="btn btn-creative-secondary">
+                                <i class="fas fa-arrow-left mr-2"></i>Back to Service
+                            </a>
+                            <button type="submit" class="btn btn-creative-primary btn-lg">
+                                <i class="fas fa-calendar-check mr-2"></i>Continue to Payment
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Booking Summary -->
+        <div class="col-lg-4">
+            <div class="creative-card mb-4 sticky-top" style="top: 100px;">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <h5 class="creative-card-title mb-0">Booking Summary</h5>
+                </div>
+                
+                <!-- Service Info -->
+                <div class="service-summary mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="service-icon mr-3" style="width: 50px; height: 50px; background: var(--primary-gradient); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                            <i class="fas fa-{{ 'home' if service.category_name == 'Home Services' else 'laptop-code' if service.category_name == 'Tech Services' else 'palette' if service.category_name == 'Creative Services' else 'graduation-cap' }}"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">{{ service.service_name }}</h6>
+                            <small class="text-muted">by {{ service.provider_name }}</small>
+                        </div>
+                    </div>
+                    
+                    <div class="service-details">
+                        <div class="detail-item mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Base Price:</span>
+                                <span class="font-weight-bold">  ৳ {{ "%.2f"|format(service.price) }}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Service Fee:</span>
+                                <span>  ৳ {{ "%.2f"|format(service.price * 0.1) }}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Tax:</span>
+                                <span>  ৳ {{ "%.2f"|format(service.price * 0.08) }}</span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="detail-item">
+                            <div class="d-flex justify-content-between">
+                                <span class="font-weight-bold">Total:</span>
+                                <span class="font-weight-bold text-primary">  ৳ {{ "%.2f"|format(service.price * 1.18) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Provider Info -->
+                <div class="provider-summary mb-4">
+                    <h6 class="font-weight-bold mb-3">Provider Information</h6>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-star text-warning mr-2"></i>
+                        <span>{{ "%.1f"|format(avg_rating) }} rating ({{ review_count }} reviews)</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-shield-alt text-success mr-2"></i>
+                        <span>Verified & Insured</span>
+                    </div>
+                 
+                </div>
+
+                <!-- Booking Policies -->
+                <div class="booking-policies">
+                    <h6 class="font-weight-bold mb-3">Booking Policies</h6>
+                    <div class="policy-item mb-2">
+                        <i class="fas fa-check-circle text-success mr-2"></i>
+                        <small>Free cancellation up to 24 hours before service</small>
+                    </div>
+                    <div class="policy-item mb-2">
+                        <i class="fas fa-check-circle text-success mr-2"></i>
+                        <small>100% satisfaction guarantee</small>
+                    </div>
+                    <div class="policy-item">
+                        <i class="fas fa-check-circle text-success mr-2"></i>
+                        <small>Secure payment processing</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help & Support -->
+            <div class="creative-card">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h5 class="creative-card-title mb-0">Need Help?</h5>
+                </div>
+                
+                <p class="text-muted mb-3">Have questions about booking this service?</p>
+                
+                <div class="help-actions">
+                    <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="openChat()">
+                        <i class="fas fa-comments mr-2"></i>Chat with Support
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm w-100" onclick="callSupport()">
+                        <i class="fas fa-phone mr-2"></i>Call Support
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    .booking-progress {
+        display: flex;
+        align-items: center;
+    }
+    
+    .progress-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        transition: var(--transition-fast);
+    }
+    
+    .progress-step.active .step-number {
+        background: white;
+        color: var(--primary-color);
+    }
+    
+    .progress-line {
+        width: 40px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.3);
+        margin: 0 10px;
+    }
+    
+    .form-section {
+        padding: 1.5rem;
+        background: var(--bg-light);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-title {
+        color: var(--text-primary);
+        font-weight: 600;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 0.5rem;
+        display: inline-block;
+    }
+    
+    .time-slots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .time-slot {
+        transition: var(--transition-fast);
+    }
+    
+    .time-slot:hover,
+    .time-slot.active {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .location-options .btn {
+        transition: var(--transition-fast);
+    }
+    
+    .location-options .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .creative-form-control {
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 0.75rem;
+        font-size: 1rem;
+        width: 100%;
+        transition: border-color 0.3s ease;
+    }
+    
+    .creative-form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .special-requirements .custom-control-label {
+        font-weight: 500;
+        cursor: pointer;
+    }
+    
+    .custom-control-input:checked ~ .custom-control-label::before {
+        background: var(--primary-gradient);
+        border-color: var(--primary-color);
+    }
+    
+    .service-summary {
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1rem;
+    }
+    
+    .detail-item {
+        padding: 0.25rem 0;
+    }
+    
+    .provider-summary,
+    .booking-policies {
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1rem;
+    }
+    
+    .policy-item {
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .help-actions .btn {
+        transition: var(--transition-fast);
+    }
+    
+    .help-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .sticky-top {
+        position: sticky !important;
+    }
+    
+    @media (max-width: 768px) {
+        .booking-progress {
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .progress-line {
+            width: 20px;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .sticky-top {
+            position: relative !important;
+        }
+        
+        .form-actions .d-flex {
+            flex-direction: column;
+        }
+        
+        .form-actions .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Time slot selection
+    const timeSlots = document.querySelectorAll('.time-slot');
+    const dateTimeInput = document.getElementById('service_date');
+    
+    timeSlots.forEach(btn => {
+        btn.addEventListener('click', function() {
+            timeSlots.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            if (dateTimeInput.value) {
+                const [date] = dateTimeInput.value.split('T');
+                dateTimeInput.value = `${date}T${this.dataset.time}:00`;
+            } else {
+                const today = new Date().toISOString().split('T')[0];
+                dateTimeInput.value = `${today}T${this.dataset.time}:00`;
+            }
+        });
+    });
+    
+    // Date picker minimum date (today) and time handling
+    if (dateTimeInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateTimeInput.min = today;
+        dateTimeInput.addEventListener('change', function() {
+            timeSlots.forEach(slot => slot.classList.remove('active'));
+            if (this.value) {
+                const [date, time] = this.value.split('T');
+                timeSlots.forEach(slot => {
+                    if (slot.dataset.time === time.split(':')[0] + ':00') {
+                        slot.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
+    
+    // Form validation
+    const form = document.querySelector('.creative-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            const requiredFields = ['service_date', 'location', 'contact_number', 'payment_method'];
+            
+            requiredFields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (field && !field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                } else if (field) {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+    }
+});
+
+function useCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            document.getElementById('location').value = `Current Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+        }, function(error) {
+            alert('Unable to get your location. Please enter manually.');
+        });
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+}
+
+function selectFromMap() {
+    alert('Map selection feature will be available soon!');
+}
+
+function openChat() {
+    if (window.creativeNeeget) {
+        window.creativeNeeget.openSupportChat();
+    } else {
+        alert('Chat support will be available soon!');
+    }
+}
+
+function callSupport() {
+    window.location.href = 'tel:+1-800-NEEGET1';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Neeget{% endblock %}
+
+{% block mobile_title %}Login{% endblock %}
+
+{% block content %}
+<div class="min-vh-100 d-flex align-items-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);   padding-top: 80px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7 col-sm-9">
+                <div class="creative-card glass-effect" style="backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.95);">
+                    <div class="text-center mb-4">
+                        <div class="creative-category-icon mx-auto mb-3" style="background: var(--primary-gradient);">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <h2 class="text-gradient font-weight-bold">Welcome Back</h2>
+                        <p class="text-muted">Sign in to your Neeget account</p>
+                    </div>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert" style="border-radius: var(--radius-lg);">
+                                    <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} mr-2"></i>
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="post" class="creative-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="creative-form-group">
+                            {{ form.email.label(class="creative-form-label") }}
+                            <div class="position-relative">
+                                <i class="fas fa-envelope position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                {{ form.email(class="creative-form-control", style="padding-left: 45px;", placeholder="Enter your email address") }}
+                            </div>
+                            {% if form.email.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.email.errors %}
+                                        <small><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="creative-form-group">
+                            {{ form.password.label(class="creative-form-label") }}
+                            <div class="position-relative">
+                                <i class="fas fa-lock position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                {{ form.password(class="creative-form-control", style="padding-left: 45px; padding-right: 45px;", placeholder="Enter your password") }}
+                                <button type="button" class="btn position-absolute" id="togglePassword" style="right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-light); z-index: 2;">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.password.errors %}
+                                        <small><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="rememberMe">
+                                <label class="custom-control-label" for="rememberMe">Remember me</label>
+                            </div>
+                            <a href="#" class="text-primary text-decoration-none">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-creative-primary w-100 mb-3">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                        </button>
+                    </form>
+
+                    <div class="text-center">
+                        <div class="d-flex align-items-center mb-3">
+                            <hr class="flex-grow-1">
+                            <span class="px-3 text-muted">or</span>
+                            <hr class="flex-grow-1">
+                        </div>
+                        
+                        <button class="btn btn-outline-dark w-100 mb-3" style="border-radius: var(--radius-lg);">
+                            <i class="fab fa-google mr-2"></i>Continue with Google
+                        </button>
+                        
+                        <p class="text-muted mb-0">
+                            Don't have an account? 
+                            <a href="{{ url_for('auth.register') }}" class="text-primary font-weight-bold text-decoration-none">
+                                Create one here
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password toggle functionality
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.querySelector('input[name="password"]');
+    
+    if (togglePassword && passwordField) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    }
+    
+    // Form validation enhancement
+    const form = document.querySelector('.creative-form');
+    const inputs = form.querySelectorAll('.creative-form-control');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.style.borderColor = 'var(--error-color)';
+            } else {
+                this.style.borderColor = 'var(--success-color)';
+            }
+        });
+        
+        input.addEventListener('focus', function() {
+            this.style.borderColor = 'var(--primary-color)';
+        });
+    });
+    
+    // Add loading state to submit button
+    form.addEventListener('submit', function() {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing In...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .custom-control-input:checked ~ .custom-control-label::before {
+        background: var(--primary-gradient);
+        border-color: var(--primary-color);
+    }
+    
+    .custom-control-label {
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    
+    .btn-outline-dark {
+        border: 2px solid var(--border-color);
+        color: var(--text-primary);
+        transition: var(--transition-normal);
+    }
+    
+    .btn-outline-dark:hover {
+        background: var(--text-primary);
+        border-color: var(--text-primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+        .creative-card {
+            margin: var(--space-md);
+            padding: var(--space-xl);
+        }
+        
+        .min-vh-100 {
+            min-height: calc(100vh - 60px) !important;
+        }
+    }
+</style>
+{% endblock %}
+

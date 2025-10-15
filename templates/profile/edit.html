@@ -1,0 +1,579 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - Neeget{% endblock %}
+
+{% block mobile_title %}Edit Profile{% endblock %}
+
+{% block content %}
+<!-- Edit Profile Hero Section -->
+<section class="py-4" style="background: var(--primary-gradient); padding-top: 100px;">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('index') }}" class="text-white-50">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('profile.view') }}" class="text-white-50">Profile</a>
+                </li>
+                <li class="breadcrumb-item active text-white">Edit Profile</li>
+            </ol>
+        </nav>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center">
+                    <div class="creative-card-icon mr-3" style="width: 60px; height: 60px; font-size: 1.5rem; background: rgba(255,255,255,0.2);">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-weight-bold mb-1">Edit Your Profile</h1>
+                        <p class="text-white-50 mb-0">Update your personal and professional information</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-3 mt-lg-0 text-lg-right">
+                <a href="{{ url_for('profile.view') }}" class="btn btn-light btn-lg px-4">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                            <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} mr-2"></i>
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>×</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" id="profileEditForm" class="creative-form">
+                {{ form.hidden_tag() }}
+                
+                <!-- Personal Information Section -->
+                <div class="creative-card mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="creative-card-title mb-0">Personal Information</h3>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.name.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-user position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.name(class="creative-form-control", style="padding-left: 45px;", value=form.name.data or user.get("name", "")) }}
+                                </div>
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.email.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-envelope position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.email(class="creative-form-control", style="padding-left: 45px;", value=form.email.data or user.get("email", "")) }}
+                                </div>
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.email.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.contact_number.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-phone position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.contact_number(class="creative-form-control", style="padding-left: 45px;", value=form.contact_number.data or user.get("contact_number", "")) }}
+                                </div>
+                                {% if form.contact_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.contact_number.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                <label class="creative-form-label">Account Type</label>
+                                <div class="position-relative">
+                                    <i class="fas fa-user-tag position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    <input type="text" class="creative-form-control" style="padding-left: 45px;" value="{{ g.user.role.replace('_', ' ').title() }}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="creative-form-group">
+                                {{ form.address.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-map-marker-alt position-absolute" style="left: 15px; top: 20px; color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.address(class="creative-form-control", style="padding-left: 45px; min-height: 80px;", value=form.address.data or user.get("address", "")) }}
+                                </div>
+                                {% if form.address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.address.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Information Section (for providers) -->
+                {% if g.user.get("role") == "service_provider" %}
+                <div class="creative-card mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3 class="creative-card-title mb-0">Professional Information</h3>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.profession.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-briefcase position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.profession(class="creative-form-control", style="padding-left: 45px;", value=form.profession.data or user.get("profession", "")) }}
+                                </div>
+                                {% if form.profession.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.profession.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.experience.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-clock position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.experience(class="creative-form-control", style="padding-left: 45px;", value=form.experience.data or user.get("experience", "")) }}
+                                </div>
+                                {% if form.experience.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.experience.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="creative-form-group">
+                                {{ form.expertise.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-star position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.expertise(class="creative-form-control", style="padding-left: 45px;", value=form.expertise.data or user.get("expertise", ""), placeholder="e.g., Web Development, Mobile Apps, UI/UX Design (comma separated)") }}
+                                </div>
+                                {% if form.expertise.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.expertise.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="creative-form-group">
+                                {{ form.professional_description.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-comment position-absolute" style="left: 15px; top: 20px; color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.professional_description(class="creative-form-control", style="padding-left: 45px; min-height: 120px;", value=form.professional_description.data or user.get("professional_description", ""), placeholder="Describe your professional background, experience, and what makes you unique...") }}
+                                </div>
+                                {% if form.professional_description.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.professional_description.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.preferred_locations.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-map position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.preferred_locations(class="creative-form-control", style="padding-left: 45px;", value=form.preferred_locations.data or user.get("preferred_locations", ""), placeholder="e.g., New York, Brooklyn, Manhattan") }}
+                                </div>
+                                {% if form.preferred_locations.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.preferred_locations.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                {{ form.portfolio_url.label(class="form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-link position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.portfolio_url(class="creative-form-control", style="padding-left: 45px;", value=form.portfolio_url.data or user.get("portfolio_url", ""), placeholder="https://your-portfolio.com") }}
+                                </div>
+                                {% if form.portfolio_url.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.portfolio_url.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Account Preferences Section -->
+                <div class="creative-card mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <h3 class="creative-card-title mb-0">Account Preferences</h3>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                <label class="creative-form-label">Email Notifications</label>
+                                <div class="custom-control custom-switch">
+                                    {{ form.email_notifications(class="custom-control-input", id="emailNotifications", checked="checked" if form.email_notifications.data else "") }}
+                                    <label class="custom-control-label" for="emailNotifications">
+                                        Receive email notifications for bookings and updates
+                                    </label>
+                                </div>
+                                {% if form.email_notifications.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.email_notifications.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                <label class="creative-form-label">SMS Notifications</label>
+                                <div class="custom-control custom-switch">
+                                    {{ form.sms_notifications(class="custom-control-input", id="smsNotifications", checked="checked" if form.sms_notifications.data else "") }}
+                                    <label class="custom-control-label" for="smsNotifications">
+                                        Receive SMS notifications for urgent updates
+                                    </label>
+                                </div>
+                                {% if form.sms_notifications.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.sms_notifications.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                <label class="creative-form-label">Marketing Emails</label>
+                                <div class="custom-control custom-switch">
+                                    {{ form.marketing_emails(class="custom-control-input", id="marketingEmails", checked="checked" if form.marketing_emails.data else "") }}
+                                    <label class="custom-control-label" for="marketingEmails">
+                                        Receive promotional emails and newsletters
+                                    </label>
+                                </div>
+                                {% if form.marketing_emails.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.marketing_emails.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="creative-form-group">
+                                <label class="creative-form-label">Profile Visibility</label>
+                                <div class="custom-control custom-switch">
+                                    {{ form.profile_visibility(class="custom-control-input", id="profileVisibility", checked="checked" if form.profile_visibility.data else "") }}
+                                    <label class="custom-control-label" for="profileVisibility">
+                                        Make my profile visible to other users
+                                    </label>
+                                </div>
+                                {% if form.profile_visibility.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.profile_visibility.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Change Section -->
+                <div class="creative-card mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3 class="creative-card-title mb-0">Change Password</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="creative-form-group">
+                                {{ form.current_password.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-lock position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.current_password(class="creative-form-control", style="padding-left: 45px;", placeholder="Current password") }}
+                                </div>
+                                {% if form.current_password.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.current_password.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="creative-form-group">
+                                {{ form.new_password.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-key position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.new_password(class="creative-form-control", style="padding-left: 45px;", placeholder="New password") }}
+                                </div>
+                                {% if form.new_password.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.new_password.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="creative-form-group">
+                                {{ form.confirm_password.label(class="creative-form-label") }}
+                                <div class="position-relative">
+                                    <i class="fas fa-key position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                    {{ form.confirm_password(class="creative-form-control", style="padding-left: 45px;", placeholder="Confirm new password") }}
+                                </div>
+                                {% if form.confirm_password.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.confirm_password.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('profile.view') }}" class="btn btn-creative-secondary">
+                            <i class="fas fa-times mr-2"></i>Cancel
+                        </a>
+                        <div>
+                            <button type="button" class="btn btn-outline-primary mr-2" onclick="previewChanges()">
+                                <i class="fas fa-eye mr-2"></i>Preview Changes
+                            </button>
+                            <button type="submit" id="saveChangesBtn" class="btn btn-creative-primary btn-lg">
+                                <i class="fas fa-save mr-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .breadcrumb-item a {
+        text-decoration: none;
+        transition: var(--transition-fast);
+    }
+    
+    .breadcrumb-item a:hover {
+        color: white !important;
+    }
+    
+    .custom-control-label {
+        font-weight: 500;
+        cursor: pointer;
+        padding-left: 0.5rem;
+    }
+    
+    .custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+        background: var(--primary-gradient);
+        border-color: var(--primary-color);
+    }
+    
+    .form-actions {
+        padding: 2rem;
+        background: var(--bg-light);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        margin-top: 2rem;
+    }
+    
+    .form-actions .btn {
+        transition: var(--transition-fast);
+    }
+    
+    .form-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+        .form-actions .d-flex {
+            flex-direction: column;
+        }
+        
+        .form-actions .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-actions .btn:last-child {
+            margin-bottom: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewChanges() {
+    alert('Preview functionality will be available soon!');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-resize textareas
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+        
+        // Initial resize
+        textarea.style.height = textarea.scrollHeight + 'px';
+    });
+
+    // Form submission with loading state
+    const form = document.getElementById('profileEditForm');
+    const saveButton = document.getElementById('saveChangesBtn');
+    if (form && saveButton) {
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            const requiredFields = ['name', 'email'];
+
+            requiredFields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (field && !field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                } else if (field) {
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            // Email validation
+            const emailField = document.getElementById('email');
+            if (emailField && emailField.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailField.value)) {
+                    isValid = false;
+                    emailField.classList.add('is-invalid');
+                }
+            }
+
+            // Password validation if changing
+            const newPassword = document.getElementById('new_password');
+            const confirmPassword = document.getElementById('confirm_password');
+            if (newPassword.value || confirmPassword.value) {
+                if (newPassword.value !== confirmPassword.value) {
+                    isValid = false;
+                    confirmPassword.classList.add('is-invalid');
+                } else {
+                    confirmPassword.classList.remove('is-invalid');
+                }
+                if (newPassword.value.length < 6) {
+                    isValid = false;
+                    newPassword.classList.add('is-invalid');
+                } else {
+                    newPassword.classList.remove('is-invalid');
+                }
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields correctly.');
+                return;
+            }
+
+            // Handle loading state
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+
+            console.log('Form submitted:', new FormData(form)); // Debug log
+        });
+
+        // Reset button state on page load or error
+        window.addEventListener('load', function() {
+            saveButton.disabled = false;
+            saveButton.innerHTML = '<i class="fas fa-save mr-2"></i>Save Changes';
+        });
+    }
+});
+</script>
+{% endblock %}

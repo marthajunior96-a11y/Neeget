@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm {{ service.service_name }} - Neeget{% endblock %}
+
+{% block mobile_title %}Confirm Booking{% endblock %}
+
+{% block content %}
+<!-- Confirmation Hero Section -->
+<section class="py-4" style="background: var(--success-gradient); padding-top: 100px;">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('index') }}" class="text-white-50">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('services.browse') }}" class="text-white-50">Services</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('services.detail', service_id=service.id) }}" class="text-white-50">{{ service.service_name }}</a>
+                </li>
+                <li class="breadcrumb-item active text-white">Confirm</li>
+            </ol>
+        </nav>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center">
+                    <div class="creative-card-icon mr-3" style="width: 60px; height: 60px; font-size: 1.5rem; background: rgba(255,255,255,0.2);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-weight-bold mb-1">Booking Confirmed</h1>
+                        <p class="text-white-50 mb-0">Your payment and booking for {{ service.service_name }} are complete</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-3 mt-lg-0 text-lg-right">
+                <div class="booking-progress">
+                    <div class="d-flex align-items-center justify-content-lg-end">
+                        <div class="progress-step">
+                            <div class="step-number">1</div>
+                            <small class="text-white-50">Details</small>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step">
+                            <div class="step-number">2</div>
+                            <small class="text-white-50">Payment</small>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step active">
+                            <div class="step-number">3</div>
+                            <small class="text-white">Confirm</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Confirmation Details -->
+        <div class="col-lg-8 mb-4">
+            <div class="creative-card">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3 class="creative-card-title mb-0">Confirmation Details</h3>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} mr-2"></i>
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>×</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                    <div class="form-section mb-4">
+                        <h5 class="section-title mb-3">
+                            <i class="fas fa-info-circle text-success mr-2"></i>
+                            Booking Summary
+                        </h5>
+                        
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Service</label>
+                            <input type="text" class="creative-form-control" value="{{ service.service_name if service else 'Unknown Service' }}" readonly>
+                        </div>
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Provider</label>
+                            <input type="text" class="creative-form-control" value="{{ provider.name if provider else 'Unknown Provider' }}" readonly>
+                        </div>
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Service Date & Time</label>
+                            <input type="text" class="creative-form-control" value="{{ booking.service_date[:16].replace('T', ' ') if booking.service_date else 'Not set' }}" readonly>
+                        </div>
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Location</label>
+                            <input type="text" class="creative-form-control" value="{{ booking.location if booking.location else 'Not specified' }}" readonly>
+                        </div>
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Contact Number</label>
+                            <input type="text" class="creative-form-control" value="{{ booking.contact_number if booking.contact_number else 'Not specified' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-section mb-4">
+                        <h5 class="section-title mb-3">
+                            <i class="fas fa-money-bill-wave text-success mr-2"></i>
+                            Payment Summary
+                        </h5>
+                        
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Base Price</label>
+                            <input type="text" class="creative-form-control" value="${{ '%.2f'|format(service.price if service and service.get('price') else 0) }}" readonly>
+                        </div>
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Service Fee (10%)</label>
+                            <input type="text" class="creative-form-control" value="${{ '%.2f'|format(payment.platform_fee if payment and payment.get('platform_fee') else 0) }}" readonly>
+                        </div>
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Tax (8%)</label>
+                            <input type="text" class="creative-form-control" value="${{ '%.2f'|format(service.price * 0.08 if service and service.get('price') else 0) }}" readonly>
+                        </div>
+                        <hr>
+                        <div class="creative-form-group">
+                            <label class="creative-form-label">Total Amount</label>
+                            <input type="text" class="creative-form-control" value="${{ '%.2f'|format(payment.total_amount if payment and payment.get('total_amount') else 0) }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <div class="d-flex justify-content-end">
+                            <a href="{{ url_for('bookings.detail', booking_id=booking.id) }}" class="btn btn-creative-primary btn-lg">
+                                <i class="fas fa-eye mr-2"></i>View Booking Details
+                            </a>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+        <!-- Confirmation Sidebar -->
+        <div class="col-lg-4">
+            <div class="creative-card mb-4 sticky-top" style="top: 100px;">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="creative-card-icon mr-3" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <h5 class="creative-card-title mb-0">Confirmation Overview</h5>
+                </div>
+                
+                <div class="service-summary mb-4">
+                    <div class="detail-item mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Status:</span>
+                            <span class="font-weight-bold text-success">Confirmed</span>
+                        </div>
+                    </div>
+                    <div class="detail-item mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Payment Method:</span>
+                            <span>{{ payment.payment_method if payment and payment.get('payment_method') else 'Not specified' }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="d-flex justify-content-between">
+                            <span class="font-weight-bold">Total Paid:</span>
+                            <span class="font-weight-bold text-success">${{ '%.2f'|format(payment.total_amount if payment and payment.get('total_amount') else 0) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-policies">
+                    <h6 class="font-weight-bold mb-3">Next Steps</h6>
+                    <div class="policy-item mb-2">
+                        <i class="fas fa-clock text-info mr-2"></i>
+                        <small>Provider will contact you soon</small>
+                    </div>
+                    <div class="policy-item">
+                        <i class="fas fa-star text-warning mr-2"></i>
+                        <small>Leave a review after service completion</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    .booking-progress {
+        display: flex;
+        align-items: center;
+    }
+    
+    .progress-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        transition: var(--transition-fast);
+    }
+    
+    .progress-step.active .step-number {
+        background: white;
+        color: var(--primary-color);
+    }
+    
+    .progress-line {
+        width: 40px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.3);
+        margin: 0 10px;
+    }
+    
+    .form-section {
+        padding: 1.5rem;
+        background: var(--bg-light);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-title {
+        color: var(--text-primary);
+        font-weight: 600;
+        border-bottom: 2px solid var(--success-color);
+        padding-bottom: 0.5rem;
+        display: inline-block;
+    }
+    
+    .creative-form-control {
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 0.75rem;
+        font-size: 1rem;
+        width: 100%;
+        transition: border-color 0.3s ease;
+    }
+    
+    .creative-form-control:focus {
+        border-color: var(--success-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+    }
+    
+    .service-summary {
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1rem;
+    }
+    
+    .detail-item {
+        padding: 0.25rem 0;
+    }
+    
+    .sticky-top {
+        position: sticky !important;
+    }
+    
+    @media (max-width: 768px) {
+        .booking-progress {
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .progress-line {
+            width: 20px;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .sticky-top {
+            position: relative !important;
+        }
+        
+        .form-actions .d-flex {
+            flex-direction: column;
+        }
+        
+        .form-actions .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}

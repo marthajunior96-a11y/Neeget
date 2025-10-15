@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Neeget{% endblock %}
+
+{% block mobile_title %}Register{% endblock %}
+
+{% block content %}
+<div class="min-vh-100 d-flex align-items-center" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);   padding-top: 80px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <div class="creative-card glass-effect" style="backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.95);">
+                    <div class="text-center mb-4">
+                        <div class="creative-category-icon mx-auto mb-3" style="background: var(--secondary-gradient);">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h2 class="text-gradient font-weight-bold">Join Neeget</h2>
+                        <p class="text-muted">Create your account and start connecting</p>
+                    </div>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert" style="border-radius: var(--radius-lg);">
+                                    <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} mr-2"></i>
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="post" class="creative-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="creative-form-group">
+                                    {{ form.name.label(class="creative-form-label") }}
+                                    <div class="position-relative">
+                                        <i class="fas fa-user position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                        {{ form.name(class="creative-form-control", style="padding-left: 45px;", placeholder="Enter your full name") }}
+                                    </div>
+                                    {% if form.name.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.name.errors %}
+                                                <small><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="creative-form-group">
+                                    {{ form.email.label(class="creative-form-label") }}
+                                    <div class="position-relative">
+                                        <i class="fas fa-envelope position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                        {{ form.email(class="creative-form-control", style="padding-left: 45px;", placeholder="Enter your email address") }}
+                                    </div>
+                                    {% if form.email.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.email.errors %}
+                                                <small><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="creative-form-group">
+                                    {{ form.contact_number.label(class="creative-form-label") }}
+                                    <div class="position-relative">
+                                        <i class="fas fa-phone position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                        {{ form.contact_number(class="creative-form-control", style="padding-left: 45px;", placeholder="Enter your phone number") }}
+                                    </div>
+                                    {% if form.contact_number.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.contact_number.errors %}
+                                                <small><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="creative-form-group">
+                                    {{ form.nid_number.label(class="creative-form-label") }}
+                                    <div class="position-relative">
+                                        <i class="fas fa-id-card position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                        {{ form.nid_number(class="creative-form-control", style="padding-left: 45px;", placeholder="Enter your NID number") }}
+                                    </div>
+                                    {% if form.nid_number.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.nid_number.errors %}
+                                                <small><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="creative-form-group">
+                            {{ form.password.label(class="creative-form-label") }}
+                            <div class="position-relative">
+                                <i class="fas fa-lock position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                {{ form.password(class="creative-form-control", style="padding-left: 45px; padding-right: 45px;", placeholder="Create a strong password") }}
+                                <button type="button" class="btn position-absolute" id="togglePassword" style="right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-light); z-index: 2;">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength mt-2">
+                                <div class="progress" style="height: 4px; border-radius: 2px;">
+                                    <div class="progress-bar" id="passwordStrength" role="progressbar" style="width: 0%; border-radius: 2px;"></div>
+                                </div>
+                                <small class="text-muted" id="passwordStrengthText">Password strength</small>
+                            </div>
+                            {% if form.password.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.password.errors %}
+                                        <small><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="creative-form-group">
+                            {{ form.role.label(class="creative-form-label") }}
+                            <div class="position-relative">
+                                <i class="fas fa-user-tag position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-light); z-index: 2;"></i>
+                                {{ form.role(class="creative-form-control", style="padding-left: 45px;") }}
+                            </div>
+                            {% if form.role.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.role.errors %}
+                                        <small><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="custom-control custom-checkbox mb-4">
+                            <input type="checkbox" class="custom-control-input" id="agreeTerms" required>
+                            <label class="custom-control-label" for="agreeTerms">
+                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-creative-primary w-100 mb-3">
+                            <i class="fas fa-user-plus mr-2"></i>Create Account
+                        </button>
+                    </form>
+
+                    <div class="text-center">
+                        <div class="d-flex align-items-center mb-3">
+                            <hr class="flex-grow-1">
+                            <span class="px-3 text-muted">or</span>
+                            <hr class="flex-grow-1">
+                        </div>
+                        
+                        <button class="btn btn-outline-dark w-100 mb-3" style="border-radius: var(--radius-lg);">
+                            <i class="fab fa-google mr-2"></i>Continue with Google
+                        </button>
+                        
+                        <p class="text-muted mb-0">
+                            Already have an account? 
+                            <a href="{{ url_for('auth.login') }}" class="text-primary font-weight-bold text-decoration-none">
+                                Sign in here
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password toggle functionality
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.querySelector('input[name="password"]');
+    
+    if (togglePassword && passwordField) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    }
+    
+    // Password strength checker
+    const passwordStrengthBar = document.getElementById('passwordStrength');
+    const passwordStrengthText = document.getElementById('passwordStrengthText');
+    
+    if (passwordField && passwordStrengthBar) {
+        passwordField.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            let strengthText = 'Weak';
+            let strengthColor = '#ff6b6b';
+            
+            // Check password criteria
+            if (password.length >= 8) strength += 25;
+            if (/[a-z]/.test(password)) strength += 25;
+            if (/[A-Z]/.test(password)) strength += 25;
+            if (/[0-9]/.test(password)) strength += 25;
+            
+            if (strength >= 75) {
+                strengthText = 'Strong';
+                strengthColor = '#43e97b';
+            } else if (strength >= 50) {
+                strengthText = 'Medium';
+                strengthColor = '#fa709a';
+            } else if (strength >= 25) {
+                strengthText = 'Fair';
+                strengthColor = '#fee140';
+            }
+            
+            passwordStrengthBar.style.width = strength + '%';
+            passwordStrengthBar.style.backgroundColor = strengthColor;
+            passwordStrengthText.textContent = strengthText;
+            passwordStrengthText.style.color = strengthColor;
+        });
+    }
+    
+    // Form validation enhancement
+    const form = document.querySelector('.creative-form');
+    const inputs = form.querySelectorAll('.creative-form-control');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.style.borderColor = 'var(--error-color)';
+            } else {
+                this.style.borderColor = 'var(--success-color)';
+            }
+        });
+        
+        input.addEventListener('focus', function() {
+            this.style.borderColor = 'var(--primary-color)';
+        });
+    });
+    
+    // Add loading state to submit button
+    form.addEventListener('submit', function(e) {
+        const agreeTerms = document.getElementById('agreeTerms');
+        if (!agreeTerms.checked) {
+            e.preventDefault();
+            alert('Please agree to the Terms of Service and Privacy Policy');
+            return;
+        }
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
+        submitBtn.disabled = true;
+    });
+    
+    // Role selection enhancement
+    const roleSelect = document.querySelector('select[name="role"]');
+    if (roleSelect) {
+        roleSelect.addEventListener('change', function() {
+            const roleInfo = document.createElement('div');
+            roleInfo.className = 'role-info mt-2 p-3';
+            roleInfo.style.cssText = 'background: rgba(102, 126, 234, 0.1); border-radius: var(--radius-md); font-size: 0.9rem;';
+            
+            // Remove existing role info
+            const existingInfo = this.parentElement.querySelector('.role-info');
+            if (existingInfo) existingInfo.remove();
+            
+            if (this.value === 'service_provider') {
+                roleInfo.innerHTML = '<i class="fas fa-info-circle text-primary mr-2"></i>As a service provider, you can offer your services and manage bookings.';
+            } else if (this.value === 'customer') {
+                roleInfo.innerHTML = '<i class="fas fa-info-circle text-primary mr-2"></i>As a customer, you can browse and book services from verified providers.';
+            }
+            
+            if (this.value !== '') {
+                this.parentElement.appendChild(roleInfo);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .custom-control-input:checked ~ .custom-control-label::before {
+        background: var(--primary-gradient);
+        border-color: var(--primary-color);
+    }
+    
+    .custom-control-label {
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    
+    .btn-outline-dark {
+        border: 2px solid var(--border-color);
+        color: var(--text-primary);
+        transition: var(--transition-normal);
+    }
+    
+    .btn-outline-dark:hover {
+        background: var(--text-primary);
+        border-color: var(--text-primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .progress {
+        background-color: var(--border-color);
+    }
+    
+    @media (max-width: 768px) {
+        .creative-card {
+            margin: var(--space-md);
+            padding: var(--space-xl);
+        }
+        
+        .min-vh-100 {
+            min-height: calc(100vh - 60px) !important;
+        }
+        
+        .row .col-md-6 {
+            margin-bottom: var(--space-md);
+        }
+    }
+</style>
+{% endblock %}
+
