@@ -88,7 +88,7 @@
                 <div>
                     <h3 style="font-size: 2rem; font-weight: 700; color: var(--primary); margin: 0;">{{ metrics.pending_services }}</h3>
                     <p style="color: var(--gray-700); margin: 0.5rem 0 1rem 0; font-size: 0.875rem;">Pending Services</p>
-                    <a href="{{ url_for('admin.services', status='pending_approval') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ url_for('admin.manage_services', status='pending_approval') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-eye"></i> Review
                     </a>
                 </div>
@@ -105,7 +105,7 @@
                 <div>
                     <h3 style="font-size: 2rem; font-weight: 700; color: var(--danger); margin: 0;">{{ metrics.flagged_accounts }}</h3>
                     <p style="color: var(--gray-700); margin: 0.5rem 0 1rem 0; font-size: 0.875rem;">Flagged Accounts</p>
-                    <a href="{{ url_for('admin.fraud_detection') }}" class="btn btn-danger btn-sm">
+                    <a href="{{ url_for('admin.fraud_monitoring') }}" class="btn btn-danger btn-sm">
                         <i class="fas fa-search"></i> Investigate
                     </a>
                 </div>
@@ -122,7 +122,7 @@
                 <div>
                     <h3 style="font-size: 2rem; font-weight: 700; color: var(--warning); margin: 0;">{{ metrics.pending_bookings }}</h3>
                     <p style="color: var(--gray-700); margin: 0.5rem 0 1rem 0; font-size: 0.875rem;">Pending Bookings</p>
-                    <a href="{{ url_for('admin.bookings', status='pending') }}" class="btn btn-warning btn-sm">
+                    <a href="{{ url_for('admin.manage_bookings', status='pending') }}" class="btn btn-warning btn-sm">
                         <i class="fas fa-calendar-alt"></i> View
                     </a>
                 </div>
@@ -139,7 +139,7 @@
                 <div>
                     <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--success); margin: 0;">{{ metrics.verified_users }}/{{ metrics.total_users }}</h3>
                     <p style="color: var(--gray-700); margin: 0.5rem 0 1rem 0; font-size: 0.875rem;">Verified Users</p>
-                    <a href="{{ url_for('admin.users', verified='no') }}" class="btn btn-success btn-sm">
+                    <a href="{{ url_for('admin.manage_users', verified='no') }}" class="btn btn-success btn-sm">
                         <i class="fas fa-user-check"></i> Review
                     </a>
                 </div>
@@ -162,25 +162,25 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-3">
-                <a href="{{ url_for('admin.users') }}" class="btn btn-primary w-100">
+                <a href="{{ url_for('admin.manage_users') }}" class="btn btn-primary w-100">
                     <i class="fas fa-users"></i>
                     Manage Users
                 </a>
             </div>
             <div class="col-md-3">
-                <a href="{{ url_for('admin.services') }}" class="btn btn-success w-100">
+                <a href="{{ url_for('admin.manage_services') }}" class="btn btn-success w-100">
                     <i class="fas fa-concierge-bell"></i>
                     Manage Services
                 </a>
             </div>
             <div class="col-md-3">
-                <a href="{{ url_for('admin.categories') }}" class="btn btn-info w-100">
+                <a href="{{ url_for('admin.manage_categories') }}" class="btn btn-info w-100">
                     <i class="fas fa-layer-group"></i>
                     Categories
                 </a>
             </div>
             <div class="col-md-3">
-                <a href="{{ url_for('admin.bookings') }}" class="btn btn-warning w-100">
+                <a href="{{ url_for('admin.manage_bookings') }}" class="btn btn-warning w-100">
                     <i class="fas fa-calendar-check"></i>
                     Bookings
                 </a>
@@ -188,7 +188,7 @@
         </div>
         <div class="row mt-2">
             <div class="col-md-3">
-                <a href="{{ url_for('admin.reviews') }}" class="btn btn-outline w-100">
+                <a href="{{ url_for('admin.manage_reviews') }}" class="btn btn-outline w-100">
                     <i class="fas fa-star"></i>
                     Reviews
                 </a>
@@ -206,7 +206,7 @@
                 </a>
             </div>
             <div class="col-md-3">
-                <a href="{{ url_for('admin.fraud_detection') }}" class="btn btn-danger w-100">
+                <a href="{{ url_for('admin.fraud_monitoring') }}" class="btn btn-danger w-100">
                     <i class="fas fa-shield-alt"></i>
                     Fraud Detection
                 </a>

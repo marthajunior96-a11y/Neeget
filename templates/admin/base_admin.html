@@ -38,27 +38,27 @@
             <div class="nav-section">
                 <div class="nav-section-title">Management</div>
                 
-                <a href="{{ url_for('admin.users') }}" class="nav-item {% if 'users' in request.endpoint %}active{% endif %}">
+                <a href="{{ url_for('admin.manage_users') }}" class="nav-item {% if 'users' in request.endpoint %}active{% endif %}">
                     <i class="fas fa-users"></i>
                     <span>Users</span>
                 </a>
                 
-                <a href="{{ url_for('admin.services') }}" class="nav-item {% if 'services' in request.endpoint %}active{% endif %}">
+                <a href="{{ url_for('admin.manage_services') }}" class="nav-item {% if 'services' in request.endpoint %}active{% endif %}">
                     <i class="fas fa-concierge-bell"></i>
                     <span>Services</span>
                 </a>
                 
-                <a href="{{ url_for('admin.categories') }}" class="nav-item {% if 'categories' in request.endpoint %}active{% endif %}">
+                <a href="{{ url_for('admin.manage_categories') }}" class="nav-item {% if 'categories' in request.endpoint %}active{% endif %}">
                     <i class="fas fa-layer-group"></i>
                     <span>Categories</span>
                 </a>
                 
-                <a href="{{ url_for('admin.bookings') }}" class="nav-item {% if 'bookings' in request.endpoint %}active{% endif %}">
+                <a href="{{ url_for('admin.manage_bookings') }}" class="nav-item {% if 'bookings' in request.endpoint %}active{% endif %}">
                     <i class="fas fa-calendar-check"></i>
                     <span>Bookings</span>
                 </a>
                 
-                <a href="{{ url_for('admin.reviews') }}" class="nav-item {% if 'reviews' in request.endpoint %}active{% endif %}">
+                <a href="{{ url_for('admin.manage_reviews') }}" class="nav-item {% if 'reviews' in request.endpoint %}active{% endif %}">
                     <i class="fas fa-star"></i>
                     <span>Reviews</span>
                 </a>
@@ -67,7 +67,7 @@
             <div class="nav-section">
                 <div class="nav-section-title">System</div>
                 
-                <a href="{{ url_for('admin.fraud_detection') }}" class="nav-item {% if 'fraud' in request.endpoint %}active{% endif %}">
+                <a href="{{ url_for('admin.fraud_monitoring') }}" class="nav-item {% if 'fraud' in request.endpoint %}active{% endif %}">
                     <i class="fas fa-shield-alt"></i>
                     <span>Fraud Detection</span>
                 </a>
