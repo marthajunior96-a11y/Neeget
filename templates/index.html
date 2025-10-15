@@ -7,8 +7,14 @@
 {% block content %}
 <!-- Hero Section -->
 <section class="creative-hero">
+    <div class="hero-background-overlay"></div>
     <div class="container">
         <div class="creative-hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-star"></i>
+                <span>Trusted by 10,000+ Users</span>
+            </div>
+            
             <h1 class="creative-hero-title">
                 Find Amazing Services,
                 <span class="text-gradient">Instantly</span>
@@ -19,7 +25,7 @@
             
             <!-- Search Bar -->
             <div class="creative-search">
-                <i class="fas fa-search" style="color: var(--text-light); margin-left: 10px;"></i>
+                <i class="fas fa-search search-icon"></i>
                 <input type="text" class="creative-search-input" placeholder="What service are you looking for?">
                 <button class="creative-search-btn">
                     <i class="fas fa-arrow-right"></i>
@@ -27,182 +33,297 @@
             </div>
             
             <!-- Hero Actions -->
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <div class="hero-actions">
                 {% if not g.user %}
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-creative-primary">
-                        <i class="fas fa-rocket"></i> Get Started
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-creative-primary btn-hero">
+                        <i class="fas fa-rocket"></i>
+                        <span>Get Started</span>
                     </a>
-                    <a href="{{ url_for('services.browse') }}" class="btn btn-creative-secondary">
-                        <i class="fas fa-search"></i> Browse Services
+                    <a href="{{ url_for('services.browse') }}" class="btn btn-creative-secondary btn-hero">
+                        <i class="fas fa-search"></i>
+                        <span>Browse Services</span>
                     </a>
                 {% else %}
-                    <a href="{{ url_for('services.browse') }}" class="btn btn-creative-primary">
-                        <i class="fas fa-search"></i> Find Services
+                    <a href="{{ url_for('services.browse') }}" class="btn btn-creative-primary btn-hero">
+                        <i class="fas fa-search"></i>
+                        <span>Find Services</span>
                     </a>
                     {% if g.user.role == 'service_provider' %}
-                        <a href="{{ url_for('services.add') }}" class="btn btn-creative-secondary">
-                            <i class="fas fa-plus"></i> Add Service
+                        <a href="{{ url_for('services.add') }}" class="btn btn-creative-secondary btn-hero">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Service</span>
                         </a>
                     {% endif %}
                 {% endif %}
             </div>
         </div>
     </div>
+    
+    <!-- Floating Elements -->
+    <div class="hero-floating-elements">
+        <div class="floating-element floating-1">
+            <i class="fas fa-home"></i>
+        </div>
+        <div class="floating-element floating-2">
+            <i class="fas fa-laptop-code"></i>
+        </div>
+        <div class="floating-element floating-3">
+            <i class="fas fa-palette"></i>
+        </div>
+    </div>
 </section>
 
 <!-- Service Categories -->
-<section class="py-5">
+<section class="section-padding">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-4 font-weight-bold text-gradient mb-3">Popular Categories</h2>
-            <p class="lead text-muted">Discover the most requested services on our platform</p>
+        <div class="section-header">
+            <span class="section-subtitle">Explore Services</span>
+            <h2 class="section-title">Popular Categories</h2>
+            <p class="section-description">Discover the most requested services on our platform</p>
         </div>
         
         <div class="creative-categories">
-            <a href="{{ url_for('services.browse', category='home') }}" class="creative-category-card text-decoration-none">
-                <div class="creative-category-icon">
-                    <i class="fas fa-home"></i>
-                </div>
-                <h4 class="creative-card-title">Home Services</h4>
-                <p class="creative-card-text">Cleaning, repairs, maintenance, and home improvement services</p>
-                <div class="mt-3">
-                    <span class="badge badge-light">500+ Services</span>
-                </div>
-            </a>
-            
-            <a href="{{ url_for('services.browse', category='tech') }}" class="creative-category-card text-decoration-none">
-                <div class="creative-category-icon" style="background: var(--accent-gradient);">
-                    <i class="fas fa-laptop-code"></i>
-                </div>
-                <h4 class="creative-card-title">Tech Services</h4>
-                <p class="creative-card-text">Web development, IT support, software solutions, and digital services</p>
-                <div class="mt-3">
-                    <span class="badge badge-light">300+ Services</span>
+            <a href="{{ url_for('services.browse', category='home') }}" class="creative-category-card">
+                <div class="category-card-inner">
+                    <div class="creative-category-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h4 class="creative-card-title">Home Services</h4>
+                    <p class="creative-card-text">Cleaning, repairs, maintenance, and home improvement services</p>
+                    <div class="category-badge">
+                        <span class="badge badge-primary">500+ Services</span>
+                    </div>
+                    <div class="category-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
             </a>
             
-            <a href="{{ url_for('services.browse', category='creative') }}" class="creative-category-card text-decoration-none">
-                <div class="creative-category-icon" style="background: var(--secondary-gradient);">
-                    <i class="fas fa-palette"></i>
-                </div>
-                <h4 class="creative-card-title">Creative Services</h4>
-                <p class="creative-card-text">Design, photography, writing, marketing, and creative solutions</p>
-                <div class="mt-3">
-                    <span class="badge badge-light">250+ Services</span>
+            <a href="{{ url_for('services.browse', category='tech') }}" class="creative-category-card">
+                <div class="category-card-inner">
+                    <div class="creative-category-icon category-accent">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h4 class="creative-card-title">Tech Services</h4>
+                    <p class="creative-card-text">Web development, IT support, software solutions, and digital services</p>
+                    <div class="category-badge">
+                        <span class="badge badge-accent">300+ Services</span>
+                    </div>
+                    <div class="category-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
             </a>
             
-            <a href="{{ url_for('services.browse', category='education') }}" class="creative-category-card text-decoration-none">
-                <div class="creative-category-icon" style="background: var(--success-gradient);">
-                    <i class="fas fa-graduation-cap"></i>
+            <a href="{{ url_for('services.browse', category='creative') }}" class="creative-category-card">
+                <div class="category-card-inner">
+                    <div class="creative-category-icon category-secondary">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h4 class="creative-card-title">Creative Services</h4>
+                    <p class="creative-card-text">Design, photography, writing, marketing, and creative solutions</p>
+                    <div class="category-badge">
+                        <span class="badge badge-secondary">250+ Services</span>
+                    </div>
+                    <div class="category-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
-                <h4 class="creative-card-title">Education</h4>
-                <p class="creative-card-text">Tutoring, training, consulting, and educational services</p>
-                <div class="mt-3">
-                    <span class="badge badge-light">200+ Services</span>
+            </a>
+            
+            <a href="{{ url_for('services.browse', category='education') }}" class="creative-category-card">
+                <div class="category-card-inner">
+                    <div class="creative-category-icon category-success">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h4 class="creative-card-title">Education</h4>
+                    <p class="creative-card-text">Tutoring, training, consulting, and educational services</p>
+                    <div class="category-badge">
+                        <span class="badge badge-success">200+ Services</span>
+                    </div>
+                    <div class="category-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
             </a>
         </div>
     </div>
 </section>
 
-<!-- Featured Services -->
-<section class="py-5" style="background: var(--light-bg);">
+<!-- How It Works -->
+<section class="section-padding section-gray">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-4 font-weight-bold text-gradient mb-3">Featured Services</h2>
-            <p class="lead text-muted">Top-rated services from our verified providers</p>
+        <div class="section-header">
+            <span class="section-subtitle">Simple Process</span>
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-description">Get started in just a few simple steps</p>
         </div>
         
         <div class="row">
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="creative-card service-card">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="creative-card-icon mr-3" style="width: 50px; height: 50px; font-size: 1.2rem;">
-                            <i class="fas fa-broom"></i>
+                <div class="steps-card">
+                    <div class="step-number">01</div>
+                    <div class="creative-category-icon step-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h4 class="creative-card-title">Search & Browse</h4>
+                    <p class="creative-card-text">Find the perfect service provider by browsing categories or searching for specific services in your area.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="steps-card">
+                    <div class="step-number">02</div>
+                    <div class="creative-category-icon step-icon category-accent">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h4 class="creative-card-title">Book & Schedule</h4>
+                    <p class="creative-card-text">Choose your preferred time and date, provide service details, and book instantly with our secure booking system.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="steps-card">
+                    <div class="step-number">03</div>
+                    <div class="creative-category-icon step-icon category-success">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4 class="creative-card-title">Get Service Done</h4>
+                    <p class="creative-card-text">Meet with your service provider, get the job done professionally, and leave a review to help others.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Services -->
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-subtitle">Top Rated</span>
+            <h2 class="section-title">Featured Services</h2>
+            <p class="section-description">Top-rated services from our verified providers</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <div class="service-provider">
+                            <div class="provider-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="provider-info">
+                                <h5 class="provider-name">John Doe</h5>
+                                <span class="provider-badge">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <h5 class="creative-card-title mb-1">House Cleaning</h5>
-                            <small class="text-muted">by John Doe</small>
+                        <div class="service-price">৳50<span>/hr</span></div>
+                    </div>
+                    
+                    <div class="service-icon-box">
+                        <i class="fas fa-broom"></i>
+                    </div>
+                    
+                    <h5 class="service-title">House Cleaning</h5>
+                    <p class="service-description">Professional house cleaning service with eco-friendly products. Reliable and thorough cleaning for your home.</p>
+                    
+                    <div class="service-rating">
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span class="rating-text">4.9 (127)</span>
                         </div>
                     </div>
-                    <p class="creative-card-text">Professional house cleaning service with eco-friendly products. Reliable and thorough cleaning for your home.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="text-warning">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </span>
-                            <small class="text-muted ml-1">4.9 (127)</small>
-                        </div>
-                        <div class="font-weight-bold text-primary">৳50/hr</div>
-                    </div>
-                    <a href="{{ url_for('services.detail', service_id=1) }}" class="btn btn-creative-primary btn-sm mt-3 w-100">
+                    
+                    <a href="{{ url_for('services.detail', service_id=1) }}" class="btn btn-creative-primary btn-block">
                         View Details
                     </a>
                 </div>
             </div>
             
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="creative-card service-card">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="creative-card-icon mr-3" style="width: 50px; height: 50px; font-size: 1.2rem; background: var(--accent-gradient);">
-                            <i class="fas fa-code"></i>
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <div class="service-provider">
+                            <div class="provider-avatar provider-avatar-accent">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="provider-info">
+                                <h5 class="provider-name">TechPro Solutions</h5>
+                                <span class="provider-badge">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <h5 class="creative-card-title mb-1">Web Development</h5>
-                            <small class="text-muted">by TechPro Solutions</small>
+                        <div class="service-price">৳75<span>/hr</span></div>
+                    </div>
+                    
+                    <div class="service-icon-box service-icon-accent">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    
+                    <h5 class="service-title">Web Development</h5>
+                    <p class="service-description">Custom website development with modern technologies. Responsive design and SEO optimization included.</p>
+                    
+                    <div class="service-rating">
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span class="rating-text">4.8 (89)</span>
                         </div>
                     </div>
-                    <p class="creative-card-text">Custom website development with modern technologies. Responsive design and SEO optimization included.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="text-warning">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </span>
-                            <small class="text-muted ml-1">4.8 (89)</small>
-                        </div>
-                        <div class="font-weight-bold text-primary">৳75/hr</div>
-                    </div>
-                    <a href="{{ url_for('services.detail', service_id=2) }}" class="btn btn-creative-primary btn-sm mt-3 w-100">
+                    
+                    <a href="{{ url_for('services.detail', service_id=2) }}" class="btn btn-creative-primary btn-block">
                         View Details
                     </a>
                 </div>
             </div>
             
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="creative-card service-card">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="creative-card-icon mr-3" style="width: 50px; height: 50px; font-size: 1.2rem; background: var(--secondary-gradient);">
-                            <i class="fas fa-paint-brush"></i>
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <div class="service-provider">
+                            <div class="provider-avatar provider-avatar-secondary">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="provider-info">
+                                <h5 class="provider-name">Creative Studio</h5>
+                                <span class="provider-badge">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <h5 class="creative-card-title mb-1">Graphic Design</h5>
-                            <small class="text-muted">by Creative Studio</small>
+                        <div class="service-price">৳60<span>/hr</span></div>
+                    </div>
+                    
+                    <div class="service-icon-box service-icon-secondary">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    
+                    <h5 class="service-title">Graphic Design</h5>
+                    <p class="service-description">Professional graphic design services for logos, branding, and marketing materials. Creative solutions for your business.</p>
+                    
+                    <div class="service-rating">
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span class="rating-text">4.7 (156)</span>
                         </div>
                     </div>
-                    <p class="creative-card-text">Professional graphic design services for logos, branding, and marketing materials. Creative solutions for your business.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="text-warning">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </span>
-                            <small class="text-muted ml-1">4.7 (156)</small>
-                        </div>
-                        <div class="font-weight-bold text-primary">৳60/hr</div>
-                    </div>
-                    <a href="{{ url_for('services.detail', service_id=3) }}" class="btn btn-creative-primary btn-sm mt-3 w-100">
+                    
+                    <a href="{{ url_for('services.detail', service_id=3) }}" class="btn btn-creative-primary btn-block">
                         View Details
                     </a>
                 </div>
@@ -217,42 +338,47 @@
     </div>
 </section>
 
-<!-- How It Works -->
-<section class="py-5">
+<!-- Stats Section -->
+<section class="section-padding stats-section">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-4 font-weight-bold text-gradient mb-3">How It Works</h2>
-            <p class="lead text-muted">Get started in just a few simple steps</p>
-        </div>
-        
         <div class="row">
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="creative-card text-center">
-                    <div class="creative-category-icon mx-auto" style="background: var(--primary-gradient);">
-                        <i class="fas fa-search"></i>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
                     </div>
-                    <h4 class="creative-card-title">1. Search & Browse</h4>
-                    <p class="creative-card-text">Find the perfect service provider by browsing categories or searching for specific services in your area.</p>
+                    <h3 class="stat-number" data-count="10000">0</h3>
+                    <p class="stat-label">Active Users</p>
                 </div>
             </div>
             
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="creative-card text-center">
-                    <div class="creative-category-icon mx-auto" style="background: var(--accent-gradient);">
-                        <i class="fas fa-calendar-check"></i>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-accent">
+                        <i class="fas fa-cogs"></i>
                     </div>
-                    <h4 class="creative-card-title">2. Book & Schedule</h4>
-                    <p class="creative-card-text">Choose your preferred time and date, provide service details, and book instantly with our secure booking system.</p>
+                    <h3 class="stat-number" data-count="1250">0</h3>
+                    <p class="stat-label">Services Available</p>
                 </div>
             </div>
             
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="creative-card text-center">
-                    <div class="creative-category-icon mx-auto" style="background: var(--success-gradient);">
-                        <i class="fas fa-handshake"></i>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-success">
+                        <i class="fas fa-check-circle"></i>
                     </div>
-                    <h4 class="creative-card-title">3. Get Service Done</h4>
-                    <p class="creative-card-text">Meet with your service provider, get the job done professionally, and leave a review to help others.</p>
+                    <h3 class="stat-number" data-count="25000">0</h3>
+                    <p class="stat-label">Completed Bookings</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-warning">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="stat-number" data-count="4.9">0</h3>
+                    <p class="stat-label">Average Rating</p>
                 </div>
             </div>
         </div>
@@ -260,72 +386,28 @@
 </section>
 
 <!-- Call to Action -->
-<section class="py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<section class="cta-section">
+    <div class="cta-background"></div>
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h2 class="text-white font-weight-bold mb-3">Ready to Get Started?</h2>
-                <p class="text-white-50 mb-0 lead">Join thousands of satisfied customers and service providers on Neeget today.</p>
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <h2 class="cta-title">Ready to Get Started?</h2>
+                <p class="cta-subtitle">Join thousands of satisfied customers and service providers on Neeget today.</p>
             </div>
-            <div class="col-lg-4 text-lg-right mt-3 mt-lg-0">
-                {% if not g.user %}
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg mr-3">
-                        <i class="fas fa-user-plus"></i> Sign Up Free
-                    </a>
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </a>
-                {% else %}
-                    <a href="{{ url_for('services.browse') }}" class="btn btn-light btn-lg">
-                        <i class="fas fa-search"></i> Find Services
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Stats Section -->
-<section class="py-5" style="background: var(--light-bg);">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="creative-card">
-                    <div class="creative-category-icon mx-auto animate-pulse" style="background: var(--primary-gradient);">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="font-weight-bold text-gradient">10,000+</h3>
-                    <p class="text-muted mb-0">Active Users</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="creative-card">
-                    <div class="creative-category-icon mx-auto animate-pulse" style="background: var(--accent-gradient);">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <h3 class="font-weight-bold text-gradient">1,250+</h3>
-                    <p class="text-muted mb-0">Services Available</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="creative-card">
-                    <div class="creative-category-icon mx-auto animate-pulse" style="background: var(--success-gradient);">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h3 class="font-weight-bold text-gradient">25,000+</h3>
-                    <p class="text-muted mb-0">Completed Bookings</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="creative-card">
-                    <div class="creative-category-icon mx-auto animate-pulse" style="background: var(--secondary-gradient);">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <h3 class="font-weight-bold text-gradient">4.9/5</h3>
-                    <p class="text-muted mb-0">Average Rating</p>
+            <div class="col-lg-5 text-lg-right">
+                <div class="cta-buttons">
+                    {% if not g.user %}
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-cta-primary">
+                            <i class="fas fa-user-plus"></i> Sign Up Free
+                        </a>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-cta-secondary">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('services.browse') }}" class="btn btn-cta-primary">
+                            <i class="fas fa-search"></i> Find Services
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -335,48 +417,823 @@
 
 {% block extra_css %}
 <style>
-    .gap-3 {
-        gap: 1rem !important;
+/* Home Page Enhancements - Dynamic & Readable Design */
+
+/* Hero Section Improvements */
+.creative-hero {
+    position: relative;
+    padding: 120px 0 100px;
+    overflow: hidden;
+}
+
+.hero-background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: -1;
+}
+
+.hero-background-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+}
+
+.creative-hero-content {
+    position: relative;
+    z-index: 10;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 8px 20px;
+    border-radius: 50px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    animation: slideDown 0.6s ease-out;
+}
+
+.hero-badge i {
+    color: #ffd700;
+}
+
+.creative-hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: white;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin-bottom: 24px;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.creative-hero-title .text-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+.creative-hero-subtitle {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    margin: 0 auto 40px;
+    font-weight: 500;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+/* Search Bar Enhancement */
+.creative-search {
+    max-width: 600px;
+    margin: 0 auto 32px;
+    position: relative;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.search-icon {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 18px;
+    z-index: 10;
+}
+
+.creative-search-input {
+    width: 100%;
+    padding: 18px 60px 18px 56px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.creative-search-input:focus {
+    outline: none;
+    border-color: white;
+    background: white;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.creative-search-input::placeholder {
+    color: #9ca3af;
+}
+
+.creative-search-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary-gradient);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.creative-search-btn:hover {
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Hero Actions */
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.btn-hero {
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.btn-hero:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* Floating Elements */
+.hero-floating-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.floating-element {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+.floating-1 {
+    top: 10%;
+    left: 10%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-2 {
+    top: 60%;
+    right: 10%;
+    animation: float 8s ease-in-out infinite 1s;
+}
+
+.floating-3 {
+    bottom: 10%;
+    left: 15%;
+    animation: float 7s ease-in-out infinite 2s;
+}
+
+/* Section Enhancements */
+.section-padding {
+    padding: 80px 0;
+}
+
+.section-gray {
+    background: #f8fafc;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-subtitle {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--primary-color);
+    background: rgba(102, 126, 234, 0.1);
+    padding: 6px 20px;
+    border-radius: 50px;
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #1f2937;
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+
+.section-description {
+    font-size: 1.125rem;
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+/* Category Cards Enhancement */
+.creative-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.creative-category-card {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    border: 2px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.creative-category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    transition: all 0.4s ease;
+    z-index: 0;
+}
+
+.creative-category-card:hover::before {
+    left: 0;
+}
+
+.creative-category-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-color);
+}
+
+.category-card-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.creative-category-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 28px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.category-accent { background: var(--accent-gradient); }
+.category-secondary { background: var(--secondary-gradient); }
+.category-success { background: var(--success-gradient); }
+
+.creative-category-card:hover .creative-category-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.creative-card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.creative-card-text {
+    font-size: 0.95rem;
+    color: #6b7280;
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+
+.category-badge {
+    margin-top: 16px;
+}
+
+.badge {
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.badge-primary { background: rgba(102, 126, 234, 0.1); color: var(--primary-color); }
+.badge-accent { background: rgba(79, 172, 254, 0.1); color: var(--accent-color); }
+.badge-secondary { background: rgba(240, 147, 251, 0.1); color: var(--secondary-color); }
+.badge-success { background: rgba(67, 233, 123, 0.1); color: var(--success-color); }
+
+.category-arrow {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-gradient);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+
+.creative-category-card:hover .category-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Steps Cards */
+.steps-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 32px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 2px solid #e5e7eb;
+    height: 100%;
+}
+
+.steps-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+.step-number {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 3rem;
+    font-weight: 900;
+    color: rgba(102, 126, 234, 0.1);
+}
+
+.step-icon {
+    margin: 0 auto 24px;
+}
+
+/* Service Cards Enhancement */
+.service-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    border: 2px solid #e5e7eb;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-color);
+}
+
+.service-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.service-provider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.provider-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+}
+
+.provider-avatar-accent { background: var(--accent-gradient); }
+.provider-avatar-secondary { background: var(--secondary-gradient); }
+
+.provider-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.provider-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+
+.provider-badge {
+    font-size: 12px;
+    color: #10b981;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.service-price {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.service-price span {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.service-icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    background: rgba(102, 126, 234, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+.service-icon-accent {
+    background: rgba(79, 172, 254, 0.1);
+    color: var(--accent-color);
+}
+
+.service-icon-secondary {
+    background: rgba(240, 147, 251, 0.1);
+    color: var(--secondary-color);
+}
+
+.service-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.service-description {
+    font-size: 0.95rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex-grow: 1;
+}
+
+.service-rating {
+    margin-bottom: 16px;
+}
+
+.rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #fbbf24;
+}
+
+.rating-text {
+    margin-left: 8px;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.btn-block {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Stats Section */
+.stats-section {
+    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+}
+
+.stat-card {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid #e5e7eb;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 28px;
+    margin: 0 auto 20px;
+}
+
+.stat-icon-accent { background: var(--accent-gradient); }
+.stat-icon-success { background: var(--success-gradient); }
+.stat-icon-warning { background: var(--warning-gradient); }
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 900;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: #6b7280;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: -1;
+}
+
+.cta-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+}
+
+.cta-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 16px;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cta-subtitle {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.7;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.btn-cta-primary {
+    background: white;
+    color: var(--primary-color);
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.btn-cta-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    color: var(--primary-color);
+}
+
+.btn-cta-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-cta-secondary:hover {
+    background: white;
+    color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    33% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+    66% {
+        transform: translateY(10px) rotate(-5deg);
+    }
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .creative-hero-title {
+        font-size: 2.5rem;
     }
     
-    .text-white-50 {
-        color: rgba(255, 255, 255, 0.7) !important;
+    .creative-hero-subtitle {
+        font-size: 1rem;
     }
     
-    .service-card {
-        transition: all 0.3s ease;
-        cursor: pointer;
+    .section-title {
+        font-size: 2rem;
     }
     
-    .service-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-2xl);
+    .section-description {
+        font-size: 1rem;
     }
     
-    .badge-light {
-        background: rgba(102, 126, 234, 0.1) !important;
-        color: var(--primary-color) !important;
-        font-weight: 500;
+    .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
     }
     
-    @media (max-width: 768px) {
-        .creative-hero-title {
-            font-size: 2rem;
-        }
-        
-        .creative-hero-subtitle {
-            font-size: 1rem;
-        }
-        
-        .gap-3 {
-            gap: 0.5rem !important;
-        }
-        
-        .btn-lg {
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-        }
+    .btn-hero {
+        width: 100%;
+        justify-content: center;
     }
+    
+    .cta-buttons {
+        justify-content: center;
+    }
+    
+    .cta-title {
+        font-size: 2rem;
+    }
+    
+    .floating-element {
+        display: none;
+    }
+}
 </style>
 {% endblock %}
 
+{% block extra_js %}
+<script>
+// Animated Number Counter
+function animateNumbers() {
+    const stats = document.querySelectorAll('.stat-number');
+    
+    stats.forEach(stat => {
+        const target = parseFloat(stat.getAttribute('data-count'));
+        const isDecimal = target % 1 !== 0;
+        const duration = 2000;
+        const increment = target / (duration / 16);
+        let current = 0;
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        stat.textContent = isDecimal ? current.toFixed(1) : Math.floor(current).toLocaleString();
+                        if (!isDecimal) {
+                            stat.textContent = Math.floor(current).toLocaleString() + '+';
+                        }
+                    }, 16);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        observer.observe(stat);
+    });
+}
+
+// Initialize animations
+document.addEventListener('DOMContentLoaded', () => {
+    animateNumbers();
+});
+</script>
+{% endblock %}
