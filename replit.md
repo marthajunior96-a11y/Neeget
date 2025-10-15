@@ -85,6 +85,35 @@ Uses a custom JSON-based data management system with the following tables:
 - **Regular User**: john@example.com / password
 
 ## Recent Changes
+- October 15, 2025: **Admin Controls Integration with Platform Flows** - Complete Dynamic System
+  - **Authentication Security**: 
+    - Login now blocks suspended/banned users with clear error messages
+    - Session middleware automatically clears sessions for suspended/banned users
+    - Admin users automatically redirected to admin dashboard after login
+  - **Service Filtering & Management**:
+    - Browse page filters to show only active services from active providers
+    - Service forms show only active categories dynamically
+    - Service detail pages hide flagged reviews from public view
+    - Provider status checks throughout service management
+  - **Booking Pipeline Security**:
+    - Dynamic platform fee calculation from Platform_Settings.platform_fee_percentage
+    - Dynamic payment methods loaded from Platform_Settings.payment_methods
+    - User status check before allowing bookings (blocked if suspended/banned)
+    - Provider status check when booking services (blocked if inactive)
+    - Service status check (only active services can be booked)
+  - **Admin Notification System**:
+    - All admin actions create in-app notifications for affected users/providers
+    - Notifications created for: suspend, ban, activate, verify, flag user operations
+    - Service approval/rejection notifications sent to providers
+    - Complete notification integration with Notifications table
+  - **Currency Localization**:
+    - Changed all currency displays from $ to ৳ (BDT Taka) across 21 template files
+    - Consistent currency formatting throughout platform
+  - **System-Wide Enforcement**:
+    - Inactive categories filtered from all forms and listings
+    - Complete status validation throughout booking pipeline
+    - All changes passed architect review with no security issues
+
 - October 15, 2025: Admin Panel UI/UX Enhancement & User Management Upgrades
   - **Fixed Critical CSRF Bugs**: Resolved 400 errors on user suspend/verify/ban operations by adding proper CSRF tokens to all admin forms
   - **User Edit Functionality**: Created AdminUserEditForm and edit_user route allowing admins to modify all user details (name, email, contact, NID, role, status, verification flags)
