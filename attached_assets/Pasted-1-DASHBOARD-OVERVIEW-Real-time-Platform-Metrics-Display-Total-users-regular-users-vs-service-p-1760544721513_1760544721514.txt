@@ -1,0 +1,148 @@
+1. DASHBOARD & OVERVIEW
+Real-time Platform Metrics Display
+Total users (regular users vs service providers)
+Total active services
+Total bookings (pending, accepted, completed, cancelled, rejected)
+Total revenue (completed payments)
+Platform fees collected
+Pending payments
+Activity Feed
+Recent user registrations (last 10-20)
+Recent service additions
+Recent bookings
+Recent payments
+Quick Stats Cards
+Open support tickets count
+Flagged/suspicious accounts
+Unverified users/providers needing review
+Service categories performance
+2. USER MANAGEMENT
+View All Users (with filtering)
+Filter by role (user, service_provider, admin)
+Filter by status (active, suspended, banned)
+Filter by verification status (verified/unverified)
+Search by name, email, or ID
+User Actions
+View detailed user profile
+Suspend user account (temporarily disable)
+Ban user account (permanently block)
+Activate/reactivate suspended users
+Manually verify email and NID
+Delete user account (with confirmation)
+View user's booking history
+View user's review history
+Service Provider Specific
+View provider's listed services
+View provider's earnings
+View provider's ratings and reviews
+View provider's completion rate
+Approve/reject provider applications (if verification required)
+3. SERVICE MANAGEMENT
+View All Services
+List all services with details
+Filter by category
+Filter by status (active, inactive, flagged)
+Filter by provider
+Search by service name
+Service Actions
+Approve/reject new services (quality control)
+Flag inappropriate services
+Remove/delete services
+Edit service details (price, description)
+View service booking history
+View service reviews and ratings
+4. CATEGORY MANAGEMENT
+Service Category CRUD
+Create new service categories
+Edit existing categories
+Delete categories (with dependency check)
+View all categories with service count
+Reorder category display priority
+5. BOOKING MANAGEMENT
+View All Bookings
+Filter by status (pending, accepted, completed, cancelled, rejected)
+Filter by date range
+Filter by user or provider
+Search by booking ID
+Booking Actions
+View booking details (full transaction info)
+Cancel bookings (with refund handling)
+Resolve disputed bookings
+Mark bookings as completed manually
+View associated chat messages
+View payment information
+6. PAYMENT & FINANCIAL MANAGEMENT
+Payment Overview
+Total revenue generated
+Platform fees collected
+Pending payments
+Failed/refunded payments
+Payment Actions
+View all payment transactions
+Filter by payment method (bKash, Nagad, Card)
+Filter by payment status
+Process refunds
+View payment history by user/provider
+Generate financial reports
+Revenue Analytics
+Daily/weekly/monthly revenue charts
+Revenue by category
+Revenue by payment method
+Platform fee breakdown
+7. REVIEW & RATING MANAGEMENT
+Review Oversight
+View all reviews across platform
+Filter by rating (1-5 stars)
+Flag inappropriate reviews
+Delete fake/abusive reviews
+View reviews by provider
+View reviews by user
+Respond to reviews on behalf of admin
+8. SUPPORT TICKET MANAGEMENT
+Ticket Dashboard
+View all support tickets
+Filter by status (open, in progress, resolved, closed)
+Sort by priority/urgency
+Filter by issue type
+Ticket Actions
+Update ticket status
+Assign tickets to admin staff (if multiple admins)
+Add internal notes
+Respond to user inquiries
+Close/resolve tickets
+View ticket history and communication thread
+9. ANALYTICS & REPORTING
+User Analytics
+Total registered users
+Active vs inactive users
+User growth over time (daily/weekly/monthly)
+User retention rate
+Verified vs unverified users
+User demographics (age, profession, location)
+Provider Analytics
+Total service providers
+Active providers
+Average provider rating
+Top-rated providers
+Provider earnings distribution
+Provider response rate
+Provider completion rate
+Booking Analytics
+Total bookings over time
+Booking status breakdown
+Average booking value
+Peak booking times/days
+Booking cancellation rate
+Booking acceptance rate
+Service Analytics
+Most popular services
+Most booked categories
+Service pricing trends
+Service availability by location
+Average service ratings
+Financial Analytics
+Revenue trends (time-series charts)
+Payment method distribution
+Platform fee collection
+Refund rate
+Payment success rate
