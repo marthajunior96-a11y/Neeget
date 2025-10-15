@@ -1,83 +1,156 @@
 {% extends "admin/base_admin.html" %}
-{% block admin_content %}
-<h1 class="admin-page-title"><i class="fas fa-users"></i> User Management</h1>
 
-<div class="filter-card">
-    <form method="GET" class="row">
-        <div class="col-md-3">
-            <select name="role" class="form-control">
-                <option value="">All Roles</option>
-                <option value="user" {{ 'selected' if request.args.get('role') == 'user' else '' }}>User</option>
-                <option value="service_provider" {{ 'selected' if request.args.get('role') == 'service_provider' else '' }}>Provider</option>
-                <option value="admin" {{ 'selected' if request.args.get('role') == 'admin' else '' }}>Admin</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <select name="status" class="form-control">
-                <option value="">All Status</option>
-                <option value="active" {{ 'selected' if request.args.get('status') == 'active' else '' }}>Active</option>
-                <option value="suspended" {{ 'selected' if request.args.get('suspended') == 'suspended' else '' }}>Suspended</option>
-                <option value="banned" {{ 'selected' if request.args.get('banned') == 'banned' else '' }}>Banned</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <input type="text" name="search" class="form-control" placeholder="Search by name, email, ID..." value="{{ request.args.get('search', '') }}">
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-admin-primary w-100"><i class="fas fa-filter"></i> Filter</button>
-        </div>
-    </form>
+{% block title %}User Management{% endblock %}
+
+{% block breadcrumb %}
+<i class="fas fa-users"></i>
+<span>User Management</span>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 style="font-size: 2rem; font-weight: 700; color: var(--gray-900); margin: 0;">User Management</h1>
+        <p style="color: var(--gray-600); margin: 0.5rem 0 0 0;">Manage and monitor all platform users and providers.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Filter Card -->
+<div class="card">
+    <div class="card-body">
+        <form method="GET" class="row align-items-center">
+            <div class="col-md-3">
+                <div class="form-group mb-0">
+                    <label class="form-label">Role</label>
+                    <select name="role" class="form-select">
+                        <option value="">All Roles</option>
+                        <option value="user" {{ 'selected' if request.args.get('role') == 'user' else '' }}>User</option>
+                        <option value="service_provider" {{ 'selected' if request.args.get('role') == 'service_provider' else '' }}>Provider</option>
+                        <option value="admin" {{ 'selected' if request.args.get('role') == 'admin' else '' }}>Admin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group mb-0">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="active" {{ 'selected' if request.args.get('status') == 'active' else '' }}>Active</option>
+                        <option value="suspended" {{ 'selected' if request.args.get('status') == 'suspended' else '' }}>Suspended</option>
+                        <option value="banned" {{ 'selected' if request.args.get('status') == 'banned' else '' }}>Banned</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mb-0">
+                    <label class="form-label">Search</label>
+                    <input type="text" name="search" class="form-control" placeholder="Search by name, email, ID..." value="{{ request.args.get('search', '') }}">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group mb-0">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
-<div class="admin-table">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
-                <td><span class="badge badge-admin-info">{{ user.role }}</span></td>
-                <td>
-                    {% if user.status == 'active' %}
-                        <span class="badge badge-admin-success">{{ user.status }}</span>
-                    {% elif user.status == 'suspended' %}
-                        <span class="badge badge-admin-warning">{{ user.status }}</span>
-                    {% else %}
-                        <span class="badge badge-admin-danger">{{ user.status }}</span>
-                    {% endif %}
-                    {% if user.get('is_flagged') %}<span class="badge badge-admin-warning ml-1">Flagged</span>{% endif %}
-                </td>
-                <td>
-                    <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-admin-primary"><i class="fas fa-eye"></i></a>
-                    <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-                    {% if user.role != 'admin' %}
-                        {% if user.status == 'active' %}
-                            <form method="POST" action="{{ url_for('admin.suspend_user', user_id=user.id) }}" style="display:inline;">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Suspend this user?')"><i class="fas fa-ban"></i></button>
-                            </form>
-                        {% elif user.status == 'suspended' %}
-                            <form method="POST" action="{{ url_for('admin.activate_user', user_id=user.id) }}" style="display:inline;">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
-                            </form>
-                        {% endif %}
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<!-- Users Table -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-users"></i>
+            All Users
+        </h2>
+        <span class="badge badge-info">{{ users|length }} users found</span>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td style="font-weight: 600; color: var(--gray-500);">#{{ user.id }}</td>
+                        <td>
+                            <div style="font-weight: 600; color: var(--gray-800);">{{ user.name }}</div>
+                            {% if user.get('email_verified') %}
+                            <span style="font-size: 0.7rem; color: var(--success);">
+                                <i class="fas fa-check-circle"></i> Verified
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td style="color: var(--gray-600);">{{ user.email }}</td>
+                        <td>
+                            {% if user.role == 'admin' %}
+                                <span class="badge badge-danger">{{ user.role }}</span>
+                            {% elif user.role == 'service_provider' %}
+                                <span class="badge badge-info">Provider</span>
+                            {% else %}
+                                <span class="badge badge-secondary">{{ user.role }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.status == 'active' %}
+                                <span class="badge badge-success">Active</span>
+                            {% elif user.status == 'suspended' %}
+                                <span class="badge badge-warning">Suspended</span>
+                            {% else %}
+                                <span class="badge badge-danger">Banned</span>
+                            {% endif %}
+                            {% if user.get('is_flagged') %}
+                                <span class="badge badge-warning" style="margin-left: 0.25rem;">
+                                    <i class="fas fa-flag"></i> Flagged
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: right;">
+                            <div class="d-flex gap-1" style="justify-content: flex-end;">
+                                <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-info btn-sm" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-primary btn-sm" title="Edit User">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% if user.role != 'admin' %}
+                                    {% if user.status == 'active' %}
+                                        <form method="POST" action="{{ url_for('admin.suspend_user', user_id=user.id) }}" style="display:inline;">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                            <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Suspend this user?')" title="Suspend User">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        </form>
+                                    {% elif user.status == 'suspended' %}
+                                        <form method="POST" action="{{ url_for('admin.activate_user', user_id=user.id) }}" style="display:inline;">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                            <button type="submit" class="btn btn-success btn-sm" title="Activate User">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
