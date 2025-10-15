@@ -2,4 +2,27 @@ Project URL: https://daacd371-673b-4a12-851e-5098311e5184-00-hnrs2vw05axl.riker.
 
 This is the replit.dev URL where you can access your service booking platform (Neeget).
 
-The application is currently running on port 5000 and is accessible through the above URL.
+===========================================
+TEST USER ACCOUNTS (Login Credentials)
+===========================================
+
+1. ADMIN USER (Full platform access)
+   Email: admin@test.com
+   Password: password123
+   
+2. REGULAR USER (Can browse and book services)
+   Email: john@example.com
+   Password: password
+   
+3. SERVICE PROVIDER (Can offer services and manage bookings)
+   Email: alice@example.com
+   Password: password
+
+-------------------------------------------
+
+You can use any of these accounts to test different features of the platform:
+- Admin dashboard: Platform management, user management, analytics
+- User dashboard: Browse services, make bookings, view booking history
+- Provider dashboard: Create services, manage bookings, view earnings
+
+The application is currently running on port 5000.
