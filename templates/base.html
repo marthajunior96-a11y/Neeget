@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#667eea">
+    
+    <title>{% block title %}Neeget - Creative Service Marketplace{% endblock %}</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="https://unpkg.com/@heroicons/react/24/outline/handshake-svgrepo-com.svg">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Creative Design CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/creative-design.css') }}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Mobile App Bar (visible on mobile only) -->
+    <div class="mobile-app-bar">
+        <button class="mobile-app-bar-action" id="mobileBackBtn" style="visibility: hidden;">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="mobile-app-bar-title" id="mobileTitle">
+            {% block mobile_title %}Neeget{% endblock %}
+        </div>
+        <button class="mobile-app-bar-action" id="mobileMenuBtn">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+
+    <!-- Desktop Navigation (visible on desktop only) -->
+    <nav class="navbar navbar-expand-lg creative-nav shadow-sm">
+        <div class="container">
+            <a class="navbar-brand creative-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-handshake"></i>
+                Neeget
+            </a>
+            
+            <button class="navbar-toggler custom-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    {% if g.user %}
+                        <li class="nav-item">
+                            <a class="nav-link creative-nav-link" href="{{ url_for('services.browse') }}">
+                                <i class="fas fa-search"></i> Browse
+                            </a>
+                        </li>
+                        
+                        {% if g.user.role == 'service_provider' %}
+                            <li class="nav-item">
+                                <a class="nav-link creative-nav-link" href="{{ url_for('services.manage') }}">
+                                    <i class="fas fa-cogs"></i> My Services
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        <li class="nav-item">
+                            <a class="nav-link creative-nav-link" href="{{ url_for('bookings.list_bookings') }}">
+                                <i class="fas fa-calendar"></i> Bookings
+                            </a>
+                        </li>
+                        
+                        {% if g.user.role == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link creative-nav-link" href="{{ url_for('admin.dashboard') }}">
+                                    <i class="fas fa-tachometer-alt"></i> Admin
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle creative-nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ g.user.name }}
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{{ url_for('profile.view', user_id=g.user.id) }}">
+                                    <i class="fas fa-user-circle"></i> Profile
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </div>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link creative-nav-link" href="{{ url_for('auth.login') }}">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link creative-nav-link" href="{{ url_for('auth.register') }}">
+                                <i class="fas fa-user-plus"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Mobile Bottom Navigation (visible on mobile) -->
+    <!-- Mobile Bottom Navigation (visible on mobile) -->
+    <nav class="mobile-bottom-nav">
+        {% if g.user %}
+            {% if g.user["role"] == "admin" %}
+                {% set home_endpoint = 'admin_dashboard' %}
+                {% set home_url = url_for('admin_dashboard') %}
+            {% elif g.user["role"] == "service_provider" %}
+                {% set home_endpoint = 'provider_dashboard' %}
+                {% set home_url = url_for('provider_dashboard') %}
+            {% else %}
+                {% set home_endpoint = 'user_dashboard' %}
+                {% set home_url = url_for('user_dashboard') %}
+            {% endif %}
+            <a href="{{ home_url }}" class="mobile-bottom-nav-item {% if request.endpoint == home_endpoint %}active{% endif %}">
+                <i class="fas fa-home mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Home</span>
+            </a>
+        {% else %}
+            <a href="{{ url_for('index') }}" class="mobile-bottom-nav-item {% if request.endpoint == 'index' %}active{% endif %}">
+                <i class="fas fa-home mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Home</span>
+            </a>
+        {% endif %}
+        <a href="{{ url_for('services.browse') }}" class="mobile-bottom-nav-item {% if request.endpoint == 'services.browse' %}active{% endif %}">
+            <i class="fas fa-search mobile-bottom-nav-icon"></i>
+            <span class="mobile-bottom-nav-label">Browse</span>
+        </a>
+        {% if g.user %}
+            <a href="{{ url_for('bookings.list_bookings') }}" class="mobile-bottom-nav-item {% if request.endpoint == 'bookings.list_bookings' %}active{% endif %}">
+                <i class="fas fa-calendar mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Bookings</span>
+            </a>
+            <a href="{{ url_for('chat.conversations') }}" class="mobile-bottom-nav-item">
+                <i class="fas fa-comments mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Messages</span>
+            </a>
+            <a href="{{ url_for('profile.view') }}" class="mobile-bottom-nav-item {% if request.endpoint == 'profile.view' %}active{% endif %}">
+                <i class="fas fa-user mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Profile</span>
+            </a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}" class="mobile-bottom-nav-item">
+                <i class="fas fa-sign-in-alt mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Login</span>
+            </a>
+            <a href="{{ url_for('auth.register') }}" class="mobile-bottom-nav-item">
+                <i class="fas fa-user-plus mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-label">Register</span>
+            </a>
+        {% endif %}
+    </nav>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5 mt-5 d-none d-md-block" style="background: var(--darker-bg) !important;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-gradient mb-3">
+                        <i class="fas fa-handshake"></i> Neeget
+                    </h5>
+                    <p class="mb-3">Your creative service marketplace connecting talented providers with those who need their services.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-light mr-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light mr-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light mr-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="text-light mb-3">Services</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light-50">Home Services</a></li>
+                        <li><a href="#" class="text-light-50">Tech Services</a></li>
+                        <li><a href="#" class="text-light-50">Creative</a></li>
+                        <li><a href="#" class="text-light-50">Education</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="text-light mb-3">Company</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light-50">About Us</a></li>
+                        <li><a href="#" class="text-light-50">Careers</a></li>
+                        <li><a href="#" class="text-light-50">Press</a></li>
+                        <li><a href="#" class="text-light-50">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="text-light mb-3">Support</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light-50">Help Center</a></li>
+                        <li><a href="#" class="text-light-50">Contact Us</a></li>
+                        <li><a href="#" class="text-light-50">Safety</a></li>
+                        <li><a href="#" class="text-light-50">Terms</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="text-light mb-3">Legal</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light-50">Privacy Policy</a></li>
+                        <li><a href="#" class="text-light-50">Terms of Service</a></li>
+                        <li><a href="#" class="text-light-50">Cookie Policy</a></li>
+                        <li><a href="#" class="text-light-50">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-light-50">&copy; 2024 Neeget. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-right">
+                    <p class="mb-0 text-light-50">Made with <i class="fas fa-heart text-danger"></i> for service providers</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/creative-interactions.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    {{ moment.include_moment() }}
+    
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Mobile optimizations -->
+    <script>
+        // Viewport height fix for mobile
+        function setViewportHeight() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        
+        setViewportHeight();
+        window.addEventListener('resize', setViewportHeight);
+        window.addEventListener('orientationchange', setViewportHeight);
+        
+        // Prevent zoom on input focus for iOS
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            document.addEventListener('touchstart', function() {}, true);
+        }
+        
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+    </script>
+    
+    <style>
+        .text-light-50 {
+            color: rgba(255, 255, 255, 0.7) !important;
+            transition: var(--transition-fast);
+        }
+        
+        .text-light-50:hover {
+            color: rgba(255, 255, 255, 1) !important;
+            text-decoration: none;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: var(--transition-fast);
+        }
+        
+        .social-links a:hover {
+            background: var(--primary-gradient);
+            transform: translateY(-2px);
+        }
+        
+        body {
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+        
+        body.loaded {
+            opacity: 1;
+        }
+    </style>
+</body>
+</html>
+
