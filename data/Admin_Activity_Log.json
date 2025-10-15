@@ -1,1 +1,29 @@
-[]
+[
+    {
+        "admin_id": 9,
+        "action_type": "service_edit",
+        "target_type": "service",
+        "target_id": 5,
+        "details": "{\"service_name\": \"Basic Electrical Repair\"}",
+        "timestamp": "2025-10-15T16:28:21.917215",
+        "id": 1
+    },
+    {
+        "admin_id": 9,
+        "action_type": "service_edit",
+        "target_type": "service",
+        "target_id": 6,
+        "details": "{\"service_name\": \"Basic Electrical Repair\"}",
+        "timestamp": "2025-10-15T16:28:27.671623",
+        "id": 2
+    },
+    {
+        "admin_id": 9,
+        "action_type": "setting_update",
+        "target_type": "platform_setting",
+        "target_id": 1,
+        "details": "{\"setting_key\": \"platform_fee_percentage\", \"old_value\": \"10\", \"new_value\": \"100\"}",
+        "timestamp": "2025-10-15T16:28:47.770842",
+        "id": 3
+    }
+]

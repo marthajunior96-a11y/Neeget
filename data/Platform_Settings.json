@@ -2,11 +2,11 @@
     {
         "id": 1,
         "setting_key": "platform_fee_percentage",
-        "setting_value": "10",
+        "setting_value": "100",
         "setting_type": "number",
         "description": "Platform fee percentage charged on each transaction",
-        "updated_at": "2025-10-15T16:16:17.683844",
-        "updated_by": null
+        "updated_at": "2025-10-15T16:28:47.770367",
+        "updated_by": 9
     },
     {
         "id": 2,
