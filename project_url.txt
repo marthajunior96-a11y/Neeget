@@ -1,0 +1,5 @@
+Project URL: https://workspace.codecompanion.repl.co
+
+This is the URL where you can access your service booking platform (Neeget).
+
+The application is currently running on port 5000 and is accessible through the above URL.
