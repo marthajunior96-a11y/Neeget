@@ -34,10 +34,10 @@
 <div class="admin-card mb-4">
     <h5><i class="fas fa-dollar-sign"></i> Revenue Statistics</h5>
     <div class="row">
-        <div class="col-md-3"><p><strong>Total Revenue:</strong> ${{ analytics.revenue_stats.total_revenue }}</p></div>
-        <div class="col-md-3"><p><strong>Platform Fees:</strong> ${{ analytics.revenue_stats.platform_fees }}</p></div>
-        <div class="col-md-3"><p><strong>Pending:</strong> ${{ analytics.revenue_stats.pending_payments }}</p></div>
-        <div class="col-md-3"><p><strong>Avg Booking:</strong> ${{ analytics.avg_booking_value }}</p></div>
+        <div class="col-md-3"><p><strong>Total Revenue:</strong> ৳{{ analytics.revenue_stats.total_revenue }}</p></div>
+        <div class="col-md-3"><p><strong>Platform Fees:</strong> ৳{{ analytics.revenue_stats.platform_fees }}</p></div>
+        <div class="col-md-3"><p><strong>Pending:</strong> ৳{{ analytics.revenue_stats.pending_payments }}</p></div>
+        <div class="col-md-3"><p><strong>Avg Booking:</strong> ৳{{ analytics.avg_booking_value }}</p></div>
     </div>
 </div>
 
@@ -70,7 +70,7 @@
                         {% for provider in analytics.top_providers %}
                         <tr>
                             <td>{{ provider.name }}</td>
-                            <td>${{ provider.earnings }}</td>
+                            <td>৳{{ provider.earnings }}</td>
                             <td>{{ provider.rating }} ⭐</td>
                         </tr>
                         {% endfor %}

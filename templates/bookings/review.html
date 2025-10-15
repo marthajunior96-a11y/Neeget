@@ -145,7 +145,7 @@
         function updateRatingDisplay() {
             const selected = document.querySelector('.star-rating input:checked');
             const value = selected ? parseInt(selected.value) : 0;
-            document.getElementById('rating-display').textContent = `Selected: ${value} star${value > 1 ? 's' : ''}`;
+            document.getElementById('rating-display').textContent = `Selected: ৳{value} star৳{value > 1 ? 's' : ''}`;
             const labels = Array.from(document.querySelectorAll('.star-rating label')).reverse(); // Reverse to match visual order for coloring
             labels.forEach((label, index) => {
                 label.style.color = (index < value) ? '#ffc107' : '#ddd';
@@ -155,7 +155,7 @@
         const labels = document.querySelectorAll('.star-rating label');
         labels.forEach(label => {
             label.addEventListener('mouseover', function() {
-                const hoverValue = parseInt(document.querySelector(`input[id="${this.getAttribute('for')}"]`).value);
+                const hoverValue = parseInt(document.querySelector(`input[id="৳{this.getAttribute('for')}"]`).value);
                 const labels = Array.from(document.querySelectorAll('.star-rating label')).reverse();
                 labels.forEach((l, index) => {
                     l.style.color = (index < hoverValue) ? '#ffc107' : '#ddd';

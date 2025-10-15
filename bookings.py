@@ -16,7 +16,11 @@ def generate_otp():
 
 def calculate_platform_fee(amount):
     """Calculate platform fee (10% of service price)"""
-    return round(amount * 0.10, 2)
+    db = get_db()
+    settings = db.get_all('Platform_Settings')
+    fee_setting = next((s for s in settings if s['setting_key'] == 'platform_fee_percentage'), None)
+    fee_percentage = float(fee_setting['setting_value']) / 100 if fee_setting else 0.10
+    return round(amount * fee_percentage, 2)
 
 @bp.route("/")
 @login_required
@@ -48,6 +52,10 @@ def book_service(service_id):
         flash("Only users can book services.", "error")
         return redirect(url_for("services.browse"))
     
+    if g.user.get("status") != "active":
+        flash("Your account is not active. Please contact support.", "error")
+        return redirect(url_for("services.browse"))
+    
     db = get_db()
     service = db.get_by_id("Services", service_id)
     
@@ -56,6 +64,17 @@ def book_service(service_id):
         return redirect(url_for("services.browse"))
     
     provider = db.get_by_id("Users", service.get("provider_id"))
+    
+    # Check if provider is active
+    if not provider or provider.get("status") != "active":
+        flash("This service provider is not available at the moment.", "error")
+        return redirect(url_for("services.browse"))
+    
+    # Check if service is active
+    if service.get("status") != "active":
+        flash("This service is not available at the moment.", "error")
+        return redirect(url_for("services.browse"))
+    
     reviews = db.find_by_attribute("Reviews", "provider_id", provider["id"])
     if reviews:
         avg_rating = sum(r["rating"] for r in reviews) / len(reviews)
@@ -64,6 +83,13 @@ def book_service(service_id):
         avg_rating = 0
         review_count = 0
     form = BookingForm()
+    
+    # Populate payment methods dynamically from Platform_Settings
+    settings = db.get_all('Platform_Settings')
+    payment_setting = next((s for s in settings if s['setting_key'] == 'payment_methods'), None)
+    if payment_setting:
+        methods = payment_setting['setting_value'].split(',')
+        form.payment_method.choices = [(m.strip().lower().replace(' ', '_'), m.strip()) for m in methods]
     
     # Create a dummy booking for GET request to avoid undefined error
     booking = {
@@ -339,6 +365,10 @@ def cancel_booking(booking_id):
         flash("Access denied.", "error")
         return redirect(url_for("bookings.list_bookings"))
     
+    if g.user.get("status") != "active":
+        flash("Your account is not active. Please contact support.", "error")
+        return redirect(url_for("services.browse"))
+    
     db = get_db()
     booking = db.get_by_id("Bookings", booking_id)
     
@@ -371,6 +401,10 @@ def review_booking(booking_id):
     if g.user["role"] != "user":
         flash("Only users can leave reviews.", "error")
         return redirect(url_for("bookings.list_bookings"))
+    
+    if g.user.get("status") != "active":
+        flash("Your account is not active. Please contact support.", "error")
+        return redirect(url_for("services.browse"))
     
     db = get_db()
     booking = db.get_by_id("Bookings", booking_id)

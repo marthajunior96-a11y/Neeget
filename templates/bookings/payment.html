@@ -126,20 +126,20 @@
                         
                         <div class="creative-form-group">
                             <label class="creative-form-label">Base Price</label>
-                            <input type="text" class="creative-form-control" value="${{ '%.2f'|format(service.price if service and service.get('price') else 0) }}" readonly>
+                            <input type="text" class="creative-form-control" value="৳{{ '%.2f'|format(service.price if service and service.get('price') else 0) }}" readonly>
                         </div>
                         <div class="creative-form-group">
                             <label class="creative-form-label">Service Fee (10%)</label>
-                            <input type="text" class="creative-form-control" value="${{ '%.2f'|format(payment.platform_fee if payment and payment.get('platform_fee') else 0) }}" readonly>
+                            <input type="text" class="creative-form-control" value="৳{{ '%.2f'|format(payment.platform_fee if payment and payment.get('platform_fee') else 0) }}" readonly>
                         </div>
                         <div class="creative-form-group">
                             <label class="creative-form-label">Tax (8%)</label>
-                            <input type="text" class="creative-form-control" value="${{ '%.2f'|format(service.price * 0.08 if service and service.get('price') else 0) }}" readonly>
+                            <input type="text" class="creative-form-control" value="৳{{ '%.2f'|format(service.price * 0.08 if service and service.get('price') else 0) }}" readonly>
                         </div>
                         <hr>
                         <div class="creative-form-group">
                             <label class="creative-form-label">Total Amount</label>
-                            <input type="text" class="creative-form-control" value="${{ '%.2f'|format(payment.total_amount if payment and payment.get('total_amount') else 0) }}" readonly>
+                            <input type="text" class="creative-form-control" value="৳{{ '%.2f'|format(payment.total_amount if payment and payment.get('total_amount') else 0) }}" readonly>
                         </div>
                     </div>
 
@@ -183,26 +183,26 @@
                     <div class="detail-item mb-2">
                         <div class="d-flex justify-content-between">
                             <span class="text-muted">Base Price:</span>
-                            <span class="font-weight-bold">${{ '%.2f'|format(service.price if service and service.get('price') else 0) }}</span>
+                            <span class="font-weight-bold">৳{{ '%.2f'|format(service.price if service and service.get('price') else 0) }}</span>
                         </div>
                     </div>
                     <div class="detail-item mb-2">
                         <div class="d-flex justify-content-between">
                             <span class="text-muted">Service Fee:</span>
-                            <span>${{ '%.2f'|format(payment.platform_fee if payment and payment.get('platform_fee') else 0) }}</span>
+                            <span>৳{{ '%.2f'|format(payment.platform_fee if payment and payment.get('platform_fee') else 0) }}</span>
                         </div>
                     </div>
                     <div class="detail-item mb-2">
                         <div class="d-flex justify-content-between">
                             <span class="text-muted">Tax:</span>
-                            <span>${{ '%.2f'|format(service.price * 0.08 if service and service.get('price') else 0) }}</span>
+                            <span>৳{{ '%.2f'|format(service.price * 0.08 if service and service.get('price') else 0) }}</span>
                         </div>
                     </div>
                     <hr>
                     <div class="detail-item">
                         <div class="d-flex justify-content-between">
                             <span class="font-weight-bold">Total:</span>
-                            <span class="font-weight-bold text-primary">${{ '%.2f'|format(payment.total_amount if payment and payment.get('total_amount') else 0) }}</span>
+                            <span class="font-weight-bold text-primary">৳{{ '%.2f'|format(payment.total_amount if payment and payment.get('total_amount') else 0) }}</span>
                         </div>
                     </div>
                 </div>

@@ -34,7 +34,7 @@
                 <td>{{ service.service_name }}</td>
                 <td>{{ service.provider_name }}</td>
                 <td>{{ service.category_name }}</td>
-                <td>${{ service.price }}</td>
+                <td>৳{{ service.price }}</td>
                 <td>
                     {% if service.status == 'active' %}<span class="badge badge-admin-success">{{ service.status }}</span>
                     {% elif service.status == 'pending_approval' %}<span class="badge badge-admin-warning">{{ service.status }}</span>

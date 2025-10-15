@@ -465,7 +465,7 @@
 function acceptBooking(bookingId) {
     if (confirm('Are you sure you want to accept this booking?')) {
         // In a real app, make AJAX call to accept booking
-        fetch(`/bookings/accept/${bookingId}`, {
+        fetch(`/bookings/accept/৳{bookingId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -491,7 +491,7 @@ function rejectBooking(bookingId) {
     const reason = prompt('Please provide a reason for rejection (optional):');
     if (reason !== null) {
         // In a real app, make AJAX call to reject booking
-        fetch(`/bookings/reject/${bookingId}`, {
+        fetch(`/bookings/reject/৳{bookingId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -518,7 +518,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add smooth animations for stat cards
     const statCards = document.querySelectorAll('.creative-card');
     statCards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
+        card.style.animationDelay = `৳{index * 0.1}s`;
         card.classList.add('animate-fade-in');
     });
     

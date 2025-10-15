@@ -13,8 +13,17 @@ def get_db():
 def browse():
     """Browse all services with optional filtering"""
     db = get_db()
-    services = db.get_all('Services')
+    all_services = db.get_all('Services')
     categories = db.get_all('Service_Categories')
+    
+    # Filter to show only active services from active providers
+    services = []
+    for service in all_services:
+        if service.get('status') != 'active':
+            continue
+        provider = db.get_by_id('Users', service.get('provider_id'))
+        if provider and provider.get('status') == 'active':
+            services.append(service)
     
     # Get filter parameters
     category_filter = request.args.get('category')
@@ -43,6 +52,9 @@ def browse():
         service['provider_name'] = provider.get('name') if provider else 'Unknown'
         service['provider_email'] = provider.get('email') if provider else 'Unknown'
     
+    # Filter to show only active categories
+    categories = [c for c in categories if c.get('is_active', True)]
+    
     return render_template('services/browse.html', services=services, categories=categories)
 
 @bp.route('/<int:service_id>')
@@ -59,8 +71,9 @@ def detail(service_id):
     category = db.get_by_id('Service_Categories', service.get('category_id'))
     provider = db.get_by_id('Users', service.get('provider_id'))
     
-    # Get reviews for this service
-    reviews = db.find_by_attribute('Reviews', 'provider_id', service.get('provider_id'))
+    # Get reviews for this service (exclude flagged reviews)
+    all_reviews = db.find_by_attribute('Reviews', 'provider_id', service.get('provider_id'))
+    reviews = [r for r in all_reviews if not r.get('is_flagged', False)]
     
     # Enrich reviews with user info
     for review in reviews:
@@ -95,6 +108,10 @@ def manage():
         flash('Access denied. Only service providers can manage services.', 'error')
         return redirect(url_for('index'))
     
+    if g.user.get('status') != 'active':
+        flash('Your account is not active. Please contact support.', 'error')
+        return redirect(url_for('index'))
+    
     db = get_db()
     services = db.find_by_attribute('Services', 'provider_id', g.user['id'])
     categories = db.get_all('Service_Categories')
@@ -114,11 +131,16 @@ def add():
         flash('Access denied. Only service providers can add services.', 'error')
         return redirect(url_for('index'))
     
+    if g.user.get('status') != 'active':
+        flash('Your account is not active. Please contact support.', 'error')
+        return redirect(url_for('index'))
+    
     db = get_db()
     form = ServiceForm()
     
-    # Populate category choices
-    categories = db.get_all('Service_Categories')
+    # Populate category choices (only active categories)
+    all_categories = db.get_all('Service_Categories')
+    categories = [c for c in all_categories if c.get('is_active', True)]
     form.category_id.choices = [(c['id'], c['category_name']) for c in categories]
     
     if form.validate_on_submit():
@@ -146,6 +168,10 @@ def edit(service_id):
         flash('Access denied. Only service providers can edit services.', 'error')
         return redirect(url_for('index'))
     
+    if g.user.get('status') != 'active':
+        flash('Your account is not active. Please contact support.', 'error')
+        return redirect(url_for('index'))
+    
     db = get_db()
     service = db.get_by_id('Services', service_id)
     
@@ -159,8 +185,9 @@ def edit(service_id):
     
     form = ServiceForm(obj=type('obj', (object,), service)())
     
-    # Populate category choices
-    categories = db.get_all('Service_Categories')
+    # Populate category choices (only active categories)
+    all_categories = db.get_all('Service_Categories')
+    categories = [c for c in all_categories if c.get('is_active', True)]
     form.category_id.choices = [(c['id'], c['category_name']) for c in categories]
     
     if form.validate_on_submit():
@@ -185,6 +212,10 @@ def delete(service_id):
     """Delete a service"""
     if g.user['role'] != 'service_provider':
         flash('Access denied. Only service providers can delete services.', 'error')
+        return redirect(url_for('index'))
+    
+    if g.user.get('status') != 'active':
+        flash('Your account is not active. Please contact support.', 'error')
         return redirect(url_for('index'))
     
     db = get_db()

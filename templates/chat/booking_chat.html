@@ -256,11 +256,11 @@
                             // Add message to chat
                             const message = response.message;
                             const messageHtml = `
-                                <div class="flex mb-4 animate-fade-in-up justify-end" data-message-id="${message.id}">
+                                <div class="flex mb-4 animate-fade-in-up justify-end" data-message-id="৳{message.id}">
                                     <div class="max-w-[70%] p-3 rounded-2xl shadow bg-green-100 text-black rounded-br-none">
-                                        <div class="text-sm">${message.message_content}</div>
+                                        <div class="text-sm">৳{message.message_content}</div>
                                         <span class="text-xs text-gray-500 mt-1 block text-right">
-                                            ${moment(message.sent_at).format("MMM DD, HH:mm")}
+                                            ৳{moment(message.sent_at).format("MMM DD, HH:mm")}
                                         </span>
                                     </div>
                                 </div>

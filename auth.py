@@ -53,6 +53,10 @@ def login():
             flash("Incorrect email.", "error")
         elif not bcrypt.checkpw(form.password.data.encode("utf-8"), user["password_hash"].encode("utf-8")):
             flash("Incorrect password.", "error")
+        elif user.get("status") == "suspended":
+            flash("Your account has been suspended. Please contact support for more information.", "error")
+        elif user.get("status") == "banned":
+            flash("Your account has been banned from this platform.", "error")
         else:
             session.clear()
             session["user_id"] = user["id"]
@@ -73,7 +77,12 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().get_by_id("Users", user_id)
+        user = get_db().get_by_id("Users", user_id)
+        if user and user.get("status") in ["suspended", "banned"]:
+            session.clear()
+            g.user = None
+        else:
+            g.user = user
 
 @bp.route("/logout")
 def logout():

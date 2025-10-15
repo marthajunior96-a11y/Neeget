@@ -552,10 +552,10 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
             if (dateTimeInput.value) {
                 const [date] = dateTimeInput.value.split('T');
-                dateTimeInput.value = `${date}T${this.dataset.time}:00`;
+                dateTimeInput.value = `৳{date}T৳{this.dataset.time}:00`;
             } else {
                 const today = new Date().toISOString().split('T')[0];
-                dateTimeInput.value = `${today}T${this.dataset.time}:00`;
+                dateTimeInput.value = `৳{today}T৳{this.dataset.time}:00`;
             }
         });
     });
@@ -607,7 +607,7 @@ function useCurrentLocation() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-            document.getElementById('location').value = `Current Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+            document.getElementById('location').value = `Current Location (৳{lat.toFixed(4)}, ৳{lng.toFixed(4)})`;
         }, function(error) {
             alert('Unable to get your location. Please enter manually.');
         });

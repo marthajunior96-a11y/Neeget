@@ -343,6 +343,11 @@ def suspend_user(user_id):
     try:
         db.update('Users', user_id, {'status': 'suspended'})
         log_admin_activity(g.user['id'], 'user_suspend', 'user', user_id, {'user_name': user['name']})
+        db.add('Notifications', {
+            'user_id': user_id,
+            'notification_type': 'in_app',
+            'message': f'Your account has been suspended. Please contact support for more information.'
+        })
         flash(f'User {user["name"]} has been suspended.', 'success')
     except Exception as e:
         flash(f'Error suspending user: {str(e)}', 'error')
@@ -368,6 +373,11 @@ def ban_user(user_id):
     try:
         db.update('Users', user_id, {'status': 'banned'})
         log_admin_activity(g.user['id'], 'user_ban', 'user', user_id, {'user_name': user['name']})
+        db.add('Notifications', {
+            'user_id': user_id,
+            'notification_type': 'in_app',
+            'message': f'Your account has been banned from this platform.'
+        })
         flash(f'User {user["name"]} has been banned.', 'success')
     except Exception as e:
         flash(f'Error banning user: {str(e)}', 'error')
@@ -389,6 +399,11 @@ def activate_user(user_id):
     try:
         db.update('Users', user_id, {'status': 'active'})
         log_admin_activity(g.user['id'], 'user_activate', 'user', user_id, {'user_name': user['name']})
+        db.add('Notifications', {
+            'user_id': user_id,
+            'notification_type': 'in_app',
+            'message': f'Your account has been activated. You can now use all platform features.'
+        })
         flash(f'User {user["name"]} has been activated.', 'success')
     except Exception as e:
         flash(f'Error activating user: {str(e)}', 'error')
@@ -413,6 +428,11 @@ def verify_user(user_id):
             'nid_verified': True
         })
         log_admin_activity(g.user['id'], 'user_verify', 'user', user_id, {'user_name': user['name']})
+        db.add('Notifications', {
+            'user_id': user_id,
+            'notification_type': 'in_app',
+            'message': f'Congratulations! Your account has been verified.'
+        })
         flash(f'User {user["name"]} has been verified.', 'success')
     except Exception as e:
         flash(f'Error verifying user: {str(e)}', 'error')
@@ -443,6 +463,11 @@ def flag_user(user_id):
             })
             log_admin_activity(g.user['id'], 'user_flag', 'user', user_id, 
                              {'user_name': user['name'], 'reason': form.reason.data})
+            db.add('Notifications', {
+                'user_id': user_id,
+                'notification_type': 'in_app',
+                'message': f'Your account has been flagged for review. Our team will investigate and contact you if needed.'
+            })
             flash(f'User {user["name"]} has been flagged for investigation.', 'success')
             return redirect(url_for('admin.user_detail', user_id=user_id))
         except Exception as e:
@@ -579,6 +604,11 @@ def flag_service(service_id):
             })
             log_admin_activity(g.user['id'], 'service_flag', 'service', service_id,
                              {'service_name': service['service_name'], 'reason': form.reason.data})
+            db.add('Notifications', {
+                'user_id': service['provider_id'],
+                'notification_type': 'in_app',
+                'message': f'Your service "{service["service_name"]}" has been flagged for review. Reason: {form.reason.data}'
+            })
             flash(f'Service "{service["service_name"]}" has been flagged.', 'success')
             return redirect(url_for('admin.manage_services'))
         except Exception as e:
