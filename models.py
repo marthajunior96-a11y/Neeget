@@ -6,7 +6,7 @@ def get_current_timestamp():
 
 class User:
     def __init__(self, name, email, contact_number, nid_number, password_hash, role,
-                 email_verified=False, nid_verified=False, status=\'active\',
+                 email_verified=False, nid_verified=False, status='active',
                  profile_picture_url=None, age=None, profession=None, address=None,
                  professional_description=None, expertise=None, preferred_locations=None,
                  portfolio_url=None, created_at=None, updated_at=None):
@@ -54,7 +54,7 @@ class Service:
         return self.__dict__
 
 class Booking:
-    def __init__(self, user_id, service_id, provider_id, service_date, booking_status=\'pending\',
+    def __init__(self, user_id, service_id, provider_id, service_date, booking_status='pending',
                  booking_date=None, otp_code=None):
         self.user_id = user_id
         self.service_id = service_id
@@ -69,7 +69,7 @@ class Booking:
 
 class Payment:
     def __init__(self, booking_id, payment_method, payment_amount, platform_fee, total_amount,
-                 transaction_id=None, payment_status=\'pending\', payment_date=None):
+                 transaction_id=None, payment_status='pending', payment_date=None):
         self.booking_id = booking_id
         self.payment_method = payment_method
         self.payment_amount = payment_amount
@@ -117,7 +117,7 @@ class Notification:
         return self.__dict__
 
 class SupportTicket:
-    def __init__(self, user_id, issue_description, status=\'open\', created_at=None, updated_at=None):
+    def __init__(self, user_id, issue_description, status='open', created_at=None, updated_at=None):
         self.user_id = user_id
         self.issue_description = issue_description
         self.status = status
