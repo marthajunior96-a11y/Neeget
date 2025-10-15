@@ -57,7 +57,12 @@ def login():
             session.clear()
             session["user_id"] = user["id"]
             flash("Logged in successfully!", "success")
-            return redirect(url_for("index"))
+            
+            # Redirect based on user role
+            if user.get("role") == "admin":
+                return redirect(url_for("admin.dashboard"))
+            else:
+                return redirect(url_for("index"))
 
     return render_template("auth/login.html", form=form)
 
