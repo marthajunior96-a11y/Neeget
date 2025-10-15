@@ -1,0 +1,92 @@
+[
+    {
+        "booking_id": 1,
+        "payment_method": "bkash",
+        "payment_amount": 22.0,
+        "platform_fee": 2.2,
+        "total_amount": 24.2,
+        "payment_status": "completed",
+        "id": 1
+    },
+    {
+        "booking_id": 1,
+        "payment_method": "bkash",
+        "payment_amount": 22.0,
+        "platform_fee": 2.2,
+        "total_amount": 24.2,
+        "payment_status": "pending",
+        "id": 2
+    },
+    {
+        "booking_id": 1,
+        "payment_method": "bkash",
+        "payment_amount": 22.0,
+        "platform_fee": 2.2,
+        "total_amount": 24.2,
+        "payment_status": "pending",
+        "id": 3
+    },
+    {
+        "booking_id": 2,
+        "payment_method": "bkash",
+        "payment_amount": 22.0,
+        "platform_fee": 2.2,
+        "total_amount": 24.2,
+        "payment_status": "completed",
+        "id": 4
+    },
+    {
+        "booking_id": 3,
+        "payment_method": "bkash",
+        "payment_amount": 22.0,
+        "platform_fee": 2.2,
+        "total_amount": 24.2,
+        "payment_status": "completed",
+        "id": 5
+    },
+    {
+        "booking_id": 4,
+        "payment_method": "bkash",
+        "payment_amount": 22.0,
+        "platform_fee": 2.2,
+        "total_amount": 24.2,
+        "payment_status": "completed",
+        "id": 6
+    },
+    {
+        "booking_id": 1,
+        "payment_method": "bkash",
+        "payment_amount": 22.0,
+        "platform_fee": 2.2,
+        "total_amount": 24.2,
+        "payment_status": "pending",
+        "id": 7
+    },
+    {
+        "booking_id": 2,
+        "payment_method": "bkash",
+        "payment_amount": 22.0,
+        "platform_fee": 2.2,
+        "total_amount": 24.2,
+        "payment_status": "pending",
+        "id": 8
+    },
+    {
+        "booking_id": 3,
+        "payment_method": "bkash",
+        "payment_amount": 22.0,
+        "platform_fee": 2.2,
+        "total_amount": 24.2,
+        "payment_status": "pending",
+        "id": 9
+    },
+    {
+        "booking_id": 4,
+        "payment_method": "bkash",
+        "payment_amount": 75.0,
+        "platform_fee": 7.5,
+        "total_amount": 82.5,
+        "payment_status": "pending",
+        "id": 10
+    }
+]

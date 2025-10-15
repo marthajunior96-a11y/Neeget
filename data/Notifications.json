@@ -1,0 +1,398 @@
+[
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for test",
+        "id": 1
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-11T03:11:57.181401",
+        "is_read": true,
+        "id": 2
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from service about booking #1",
+        "sent_at": "2025-07-11T03:13:35.793538",
+        "is_read": false,
+        "id": 3
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-11T03:13:56.614492",
+        "is_read": false,
+        "id": 4
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from service about booking #1",
+        "sent_at": "2025-07-11T03:14:06.153311",
+        "is_read": false,
+        "id": 5
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from service about booking #1",
+        "sent_at": "2025-07-11T03:14:09.705112",
+        "is_read": false,
+        "id": 6
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-11T03:14:17.881311",
+        "is_read": false,
+        "id": 7
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from service about booking #1",
+        "sent_at": "2025-07-11T03:14:25.765872",
+        "is_read": false,
+        "id": 8
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-11T22:59:18.513335",
+        "is_read": false,
+        "id": 9
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for test",
+        "id": 10
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for test",
+        "id": 11
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "Payment confirmed for booking by Zohir Rayhan",
+        "id": 12
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "Payment confirmed for booking by Zohir Rayhan",
+        "id": 13
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your payment for Basic Electrical Repair has been confirmed!",
+        "id": 14
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-12T00:19:34.386127",
+        "is_read": false,
+        "id": 15
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for Basic Electrical Repair",
+        "id": 16
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-12T04:02:56.394947",
+        "is_read": false,
+        "id": 17
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-12T04:03:03.522576",
+        "is_read": false,
+        "id": 18
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-12T04:03:06.464036",
+        "is_read": false,
+        "id": 19
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-12T04:34:25.043903",
+        "is_read": false,
+        "id": 20
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-12T04:34:30.342381",
+        "is_read": false,
+        "id": 21
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-12T04:40:19.254883",
+        "is_read": false,
+        "id": 22
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-07-12T04:51:06.739729",
+        "is_read": false,
+        "id": 23
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #2",
+        "sent_at": "2025-07-13T22:21:38.446165",
+        "is_read": false,
+        "id": 24
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from Electric Service Engineer about booking #2",
+        "sent_at": "2025-07-13T22:22:12.360270",
+        "is_read": false,
+        "id": 25
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #2",
+        "sent_at": "2025-07-13T22:22:22.484795",
+        "is_read": false,
+        "id": 26
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from Electric Service Engineer about booking #2",
+        "sent_at": "2025-07-13T22:22:36.107385",
+        "is_read": false,
+        "id": 27
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for Basic Electrical Repair",
+        "id": 28
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "Payment confirmed for booking by Zohir Rayhan",
+        "id": 29
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your payment for Basic Electrical Repair has been confirmed!",
+        "id": 30
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for Basic Electrical Repair",
+        "id": 31
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New paid booking request from Zohir Rayhan",
+        "id": 32
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your payment for Basic Electrical Repair has been confirmed!",
+        "id": 33
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "Booking has been cancelled by Zohir Rayhan",
+        "id": 34
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your booking has been accepted by Electric Service Engineer",
+        "id": 35
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your booking has been completed by Electric Service Engineer. Please leave a review!",
+        "id": 36
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for Basic Electrical Repair",
+        "id": 37
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New paid booking request from Zohir Rayhan",
+        "id": 38
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your payment for Basic Electrical Repair has been confirmed!",
+        "id": 39
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your booking has been accepted by Electric Service Engineer",
+        "id": 40
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your booking has been completed by Electric Service Engineer. Please leave a review!",
+        "id": 41
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for Basic Electrical Repair",
+        "id": 42
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New paid booking request from Zohir Rayhan",
+        "id": 43
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your payment for Basic Electrical Repair has been confirmed!",
+        "id": 44
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your booking has been accepted by Electric Service Engineer",
+        "id": 45
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your booking has been completed by Electric Service Engineer. Please leave a review!",
+        "id": 46
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for Basic Electrical Repair",
+        "id": 47
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New paid booking request from Zohir Rayhan",
+        "id": 48
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your payment for Basic Electrical Repair has been confirmed!",
+        "id": 49
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "New message from Sneha Worker about booking #3",
+        "sent_at": "2025-07-14T03:31:14.146355",
+        "is_read": false,
+        "id": 50
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #3",
+        "sent_at": "2025-07-14T03:31:27.558966",
+        "is_read": false,
+        "id": 51
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your booking has been accepted by Sneha Worker",
+        "id": 52
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your booking has been completed by Sneha Worker. Please leave a review!",
+        "id": 53
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #3",
+        "sent_at": "2025-07-14T03:34:57.217071",
+        "is_read": false,
+        "id": 54
+    },
+    {
+        "user_id": 4,
+        "notification_type": "in_app",
+        "message": "New booking request from Sneha Zaman for Basic Electrical Repair",
+        "id": 55
+    },
+    {
+        "user_id": 4,
+        "notification_type": "in_app",
+        "message": "New paid booking request from Sneha Zaman",
+        "id": 56
+    },
+    {
+        "user_id": 8,
+        "notification_type": "in_app",
+        "message": "Your payment for Basic Electrical Repair has been confirmed!",
+        "id": 57
+    },
+    {
+        "user_id": 4,
+        "notification_type": "in_app",
+        "message": "New message from Sneha Zaman about booking #4",
+        "sent_at": "2025-08-20T00:46:59.760389",
+        "is_read": false,
+        "id": 58
+    }
+]

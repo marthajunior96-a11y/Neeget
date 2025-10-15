@@ -1,0 +1,218 @@
+[
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "hi",
+        "sent_at": "2025-07-11T03:11:57.179892",
+        "is_read": true,
+        "id": 1
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "hello",
+        "sent_at": "2025-07-11T03:13:35.791527",
+        "is_read": true,
+        "id": 2
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "can you help me",
+        "sent_at": "2025-07-11T03:13:56.613521",
+        "is_read": true,
+        "id": 3
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "yes i can",
+        "sent_at": "2025-07-11T03:14:06.152314",
+        "is_read": true,
+        "id": 4
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "asd",
+        "sent_at": "2025-07-11T03:14:09.704610",
+        "is_read": true,
+        "id": 5
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "When can we schedule this service?",
+        "sent_at": "2025-07-11T03:14:17.880312",
+        "is_read": true,
+        "id": 6
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "yes",
+        "sent_at": "2025-07-11T03:14:25.765872",
+        "is_read": true,
+        "id": 7
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "hi",
+        "sent_at": "2025-07-11T22:59:18.512335",
+        "is_read": true,
+        "id": 8
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "Fuck you",
+        "sent_at": "2025-07-12T00:19:34.385127",
+        "is_read": true,
+        "id": 9
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "hi",
+        "sent_at": "2025-07-12T04:02:56.394447",
+        "is_read": true,
+        "id": 10
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "gi",
+        "sent_at": "2025-07-12T04:03:03.521573",
+        "is_read": true,
+        "id": 11
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "how are you",
+        "sent_at": "2025-07-12T04:03:06.462973",
+        "is_read": true,
+        "id": 12
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "f",
+        "sent_at": "2025-07-12T04:34:25.042895",
+        "is_read": true,
+        "id": 13
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "asd",
+        "sent_at": "2025-07-12T04:34:30.341382",
+        "is_read": true,
+        "id": 14
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "asd",
+        "sent_at": "2025-07-12T04:40:19.253876",
+        "is_read": true,
+        "id": 15
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "hi",
+        "sent_at": "2025-07-12T04:51:06.738722",
+        "is_read": true,
+        "id": 16
+    },
+    {
+        "booking_id": 2,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "hi",
+        "sent_at": "2025-07-13T22:21:38.445163",
+        "is_read": true,
+        "id": 17
+    },
+    {
+        "booking_id": 2,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "how are you",
+        "sent_at": "2025-07-13T22:22:12.359267",
+        "is_read": true,
+        "id": 18
+    },
+    {
+        "booking_id": 2,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "good",
+        "sent_at": "2025-07-13T22:22:22.483290",
+        "is_read": true,
+        "id": 19
+    },
+    {
+        "booking_id": 2,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "when are you available?",
+        "sent_at": "2025-07-13T22:22:36.106389",
+        "is_read": true,
+        "id": 20
+    },
+    {
+        "booking_id": 3,
+        "sender_id": 7,
+        "receiver_id": 5,
+        "message_content": "Amar taka beshi lagbe",
+        "sent_at": "2025-07-14T03:31:14.145356",
+        "is_read": true,
+        "id": 21
+    },
+    {
+        "booking_id": 3,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "Taka dibo na",
+        "sent_at": "2025-07-14T03:31:27.557966",
+        "is_read": true,
+        "id": 22
+    },
+    {
+        "booking_id": 3,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "hi",
+        "sent_at": "2025-07-14T03:34:57.216073",
+        "is_read": true,
+        "id": 23
+    },
+    {
+        "booking_id": 4,
+        "sender_id": 8,
+        "receiver_id": 4,
+        "message_content": "hi",
+        "sent_at": "2025-08-20T00:46:59.758889",
+        "is_read": false,
+        "id": 24
+    }
+]

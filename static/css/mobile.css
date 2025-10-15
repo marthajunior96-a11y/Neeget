@@ -1,0 +1,463 @@
+/* Mobile-specific enhancements for Neeget platform */
+
+/* Mobile Navigation */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+    
+    .navbar-nav .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .navbar-toggler {
+        border: none;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Mobile Cards and Content */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+        border-radius: 8px;
+    }
+    
+    .card-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-text {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+}
+
+/* Mobile Forms */
+@media (max-width: 768px) {
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-control {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 0.75rem;
+        border-radius: 6px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        border-radius: 6px;
+        min-height: 44px; /* Touch target size */
+    }
+    
+    .btn-lg {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        min-height: 48px;
+    }
+    
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        min-height: 36px;
+    }
+}
+
+/* Mobile Tables */
+@media (max-width: 768px) {
+    .table-responsive {
+        border: none;
+    }
+    
+    .table {
+        font-size: 0.8rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.5rem;
+        vertical-align: middle;
+    }
+    
+    /* Stack table cells on very small screens */
+    @media (max-width: 576px) {
+        .table-mobile-stack thead {
+            display: none;
+        }
+        
+        .table-mobile-stack tbody,
+        .table-mobile-stack tr,
+        .table-mobile-stack td {
+            display: block;
+            width: 100%;
+        }
+        
+        .table-mobile-stack tr {
+            border: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            padding: 0.5rem;
+        }
+        
+        .table-mobile-stack td {
+            border: none;
+            padding: 0.25rem 0;
+            text-align: left !important;
+        }
+        
+        .table-mobile-stack td:before {
+            content: attr(data-label) ": ";
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+        }
+    }
+}
+
+/* Mobile Chat Interface */
+@media (max-width: 768px) {
+    .chat-container {
+        height: calc(100vh - 200px);
+    }
+    
+    .chat-messages {
+        padding: 0.75rem;
+    }
+    
+    .message-content {
+        max-width: 90% !important;
+        font-size: 0.9rem;
+        padding: 0.75rem 1rem;
+    }
+    
+    .message-header {
+        font-size: 0.75rem;
+    }
+    
+    #messageInput {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* Mobile Dashboard */
+@media (max-width: 768px) {
+    .dashboard-card {
+        margin-bottom: 1rem;
+    }
+    
+    .dashboard-stat {
+        text-align: center;
+        padding: 1.5rem 1rem;
+    }
+    
+    .dashboard-stat h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .dashboard-stat h5 {
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+}
+
+/* Mobile Service Cards */
+@media (max-width: 768px) {
+    .service-card {
+        margin-bottom: 1rem;
+    }
+    
+    .service-card .card-body {
+        padding: 1rem;
+    }
+    
+    .service-price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #28a745;
+    }
+    
+    .service-location {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    
+    .service-rating {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile Booking Interface */
+@media (max-width: 768px) {
+    .booking-timeline {
+        padding: 1rem 0;
+    }
+    
+    .timeline-item {
+        padding: 0.5rem 0;
+        font-size: 0.9rem;
+    }
+    
+    .booking-actions .btn {
+        margin-bottom: 0.5rem;
+        width: 100%;
+    }
+}
+
+/* Mobile Admin Panel */
+@media (max-width: 768px) {
+    .admin-sidebar {
+        display: none;
+    }
+    
+    .admin-content {
+        padding: 1rem;
+    }
+    
+    .admin-stats .col-md-3 {
+        margin-bottom: 1rem;
+    }
+    
+    .admin-table .btn-group {
+        flex-direction: column;
+    }
+    
+    .admin-table .btn-group .btn {
+        margin-bottom: 0.25rem;
+        border-radius: 4px !important;
+    }
+}
+
+/* Mobile Search and Filters */
+@media (max-width: 768px) {
+    .search-filters {
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+    
+    .search-input {
+        margin-bottom: 0.75rem;
+    }
+    
+    .filter-group {
+        margin-bottom: 0.75rem;
+    }
+    
+    .filter-buttons .btn {
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Mobile Alerts and Notifications */
+@media (max-width: 768px) {
+    .alert {
+        font-size: 0.9rem;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+    }
+    
+    .notification-item {
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .notification-item:last-child {
+        border-bottom: none;
+    }
+}
+
+/* Mobile Modal Adjustments */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+    
+    .modal-header {
+        padding: 1rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .modal-footer {
+        padding: 1rem;
+        flex-direction: column;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .modal-footer .btn:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* Touch-friendly elements */
+@media (max-width: 768px) {
+    .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .clickable {
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Improve touch scrolling */
+    .scrollable {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+    }
+}
+
+/* Mobile-specific utilities */
+@media (max-width: 768px) {
+    .mobile-hidden {
+        display: none !important;
+    }
+    
+    .mobile-only {
+        display: block !important;
+    }
+    
+    .mobile-center {
+        text-align: center !important;
+    }
+    
+    .mobile-full-width {
+        width: 100% !important;
+    }
+    
+    .mobile-no-padding {
+        padding: 0 !important;
+    }
+    
+    .mobile-small-padding {
+        padding: 0.5rem !important;
+    }
+}
+
+/* Webview-specific optimizations */
+@media (max-width: 768px) {
+    /* Remove default margins for webview */
+    body {
+        margin: 0;
+        padding: 0;
+        -webkit-text-size-adjust: 100%;
+    }
+    
+    /* Optimize for webview scrolling */
+    .main-content {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+    }
+    
+    /* Prevent horizontal scrolling */
+    .container-fluid,
+    .container {
+        overflow-x: hidden;
+    }
+    
+    /* Optimize input focus for webview */
+    .form-control:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        border-color: #80bdff;
+    }
+}
+
+/* Dark mode support for mobile */
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+    .card {
+        background-color: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .form-control {
+        background-color: #4a5568;
+        border-color: #718096;
+        color: #e2e8f0;
+    }
+    
+    .form-control:focus {
+        background-color: #4a5568;
+        border-color: #63b3ed;
+        color: #e2e8f0;
+    }
+}
+
+/* Loading states for mobile */
+@media (max-width: 768px) {
+    .loading {
+        position: relative;
+        pointer-events: none;
+    }
+    
+    .loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin: -10px 0 0 -10px;
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+}
+
+/* Mobile-specific animations */
+@media (max-width: 768px) {
+    .fade-in {
+        animation: fadeIn 0.3s ease-in;
+    }
+    
+    .slide-up {
+        animation: slideUp 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+}
+

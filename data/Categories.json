@@ -1,0 +1,19 @@
+[
+    {
+        "id": 1,
+        "name": "Cleaning"
+    },
+    {
+        "id": 2,
+        "name": "Plumbing"
+    },
+    {
+        "id": 3,
+        "name": "Electrical"
+    },
+    {
+        "id": 4,
+        "name": "Other"
+    }
+]
+

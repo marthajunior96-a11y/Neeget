@@ -1,0 +1,28 @@
+[
+    {
+        "id": 1,
+        "category_name": "Home Cleaning",
+        "description": "Professional home cleaning services"
+    },
+    {
+        "id": 2,
+        "category_name": "Plumbing",
+        "description": "Plumbing repair and installation services"
+    },
+    {
+        "id": 3,
+        "category_name": "Electrical",
+        "description": "Electrical repair and installation services"
+    },
+    {
+        "id": 4,
+        "category_name": "Electrical",
+        "description": "Educational tutoring services"
+    },
+    {
+        "id": 5,
+        "category_name": "Pet Care",
+        "description": "Pet sitting and care services"
+    }
+]
+

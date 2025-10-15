@@ -1,0 +1,29 @@
+[
+    {
+        "booking_id": 1,
+        "user_id": 5,
+        "provider_id": 7,
+        "rating": 5,
+        "comment": "Good",
+        "created_at": "2025-07-13T23:21:18.607235",
+        "id": 1
+    },
+    {
+        "booking_id": 2,
+        "user_id": 5,
+        "provider_id": 7,
+        "rating": 5,
+        "comment": "Good Service",
+        "created_at": "2025-07-13T23:27:01.838949",
+        "id": 2
+    },
+    {
+        "booking_id": 3,
+        "user_id": 5,
+        "provider_id": 7,
+        "rating": 5,
+        "comment": "Test",
+        "created_at": "2025-07-14T03:33:27.230803",
+        "id": 3
+    }
+]
