@@ -1,5 +1,5 @@
-Project URL: https://workspace.codecompanion.repl.co
+Project URL: https://daacd371-673b-4a12-851e-5098311e5184-00-hnrs2vw05axl.riker.replit.dev
 
-This is the URL where you can access your service booking platform (Neeget).
+This is the replit.dev URL where you can access your service booking platform (Neeget).
 
 The application is currently running on port 5000 and is accessible through the above URL.
