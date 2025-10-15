@@ -1,284 +1,211 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %} | Neeget Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="admin-background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
 
-{% block extra_css %}
-<style>
-    /* Admin-specific styles matching the creative design */
-    .admin-container {
-        min-height: calc(100vh - 200px);
-        padding: 2rem 0;
-    }
-    
-    .admin-header {
-        background: var(--primary-gradient);
-        color: white;
-        padding: 2rem 0;
-        margin-bottom: 2rem;
-        border-radius: var(--radius-xl);
-    }
-    
-    .admin-card {
-        background: white;
-        border-radius: var(--radius-xl);
-        padding: 1.5rem;
-        box-shadow: var(--shadow-lg);
-        margin-bottom: 1.5rem;
-        transition: var(--transition-normal);
-    }
-    
-    .admin-card:hover {
-        box-shadow: var(--shadow-xl);
-        transform: translateY(-2px);
-    }
-    
-    .admin-stats-card {
-        background: white;
-        border-radius: var(--radius-lg);
-        padding: 1.5rem;
-        box-shadow: var(--shadow-md);
-        text-align: center;
-        height: 100%;
-        transition: var(--transition-normal);
-    }
-    
-    .admin-stats-card:hover {
-        box-shadow: var(--shadow-lg);
-        transform: translateY(-3px);
-    }
-    
-    .admin-stats-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1rem;
-        font-size: 1.5rem;
-        color: white;
-    }
-    
-    .admin-table {
-        background: white;
-        border-radius: var(--radius-lg);
-        overflow: hidden;
-        box-shadow: var(--shadow-md);
-    }
-    
-    .admin-table table {
-        margin-bottom: 0;
-    }
-    
-    .admin-table thead {
-        background: var(--primary-gradient);
-        color: white;
-    }
-    
-    .admin-table thead th {
-        border: none;
-        font-weight: 600;
-        padding: 1rem;
-    }
-    
-    .admin-table tbody tr {
-        transition: var(--transition-fast);
-    }
-    
-    .admin-table tbody tr:hover {
-        background: var(--light-bg);
-    }
-    
-    .admin-sidebar {
-        background: white;
-        border-radius: var(--radius-xl);
-        padding: 1.5rem;
-        box-shadow: var(--shadow-md);
-        position: sticky;
-        top: 100px;
-    }
-    
-    .admin-sidebar-item {
-        display: flex;
-        align-items: center;
-        padding: 0.75rem 1rem;
-        color: var(--text-primary);
-        text-decoration: none;
-        border-radius: var(--radius-md);
-        transition: var(--transition-fast);
-        margin-bottom: 0.5rem;
-    }
-    
-    .admin-sidebar-item:hover {
-        background: var(--light-bg);
-        color: var(--primary-color);
-        text-decoration: none;
-    }
-    
-    .admin-sidebar-item.active {
-        background: var(--primary-gradient);
-        color: white;
-    }
-    
-    .admin-sidebar-item i {
-        margin-right: 0.75rem;
-        width: 20px;
-    }
-    
-    .btn-admin-primary {
-        background: var(--primary-gradient);
-        border: none;
-        color: white;
-        padding: 0.5rem 1.5rem;
-        border-radius: var(--radius-md);
-        font-weight: 500;
-        transition: var(--transition-fast);
-    }
-    
-    .btn-admin-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-        color: white;
-    }
-    
-    .btn-admin-danger {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-        border: none;
-        color: white;
-        padding: 0.5rem 1.5rem;
-        border-radius: var(--radius-md);
-        font-weight: 500;
-        transition: var(--transition-fast);
-    }
-    
-    .btn-admin-danger:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-        color: white;
-    }
-    
-    .badge-admin-success {
-        background: var(--success-gradient);
-        color: white;
-        padding: 0.35rem 0.75rem;
-        border-radius: var(--radius-sm);
-        font-weight: 500;
-    }
-    
-    .badge-admin-warning {
-        background: var(--warning-gradient);
-        color: white;
-        padding: 0.35rem 0.75rem;
-        border-radius: var(--radius-sm);
-        font-weight: 500;
-    }
-    
-    .badge-admin-danger {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-        color: white;
-        padding: 0.35rem 0.75rem;
-        border-radius: var(--radius-sm);
-        font-weight: 500;
-    }
-    
-    .badge-admin-info {
-        background: var(--accent-gradient);
-        color: white;
-        padding: 0.35rem 0.75rem;
-        border-radius: var(--radius-sm);
-        font-weight: 500;
-    }
-    
-    .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-    }
-    
-    .admin-page-title {
-        font-family: var(--font-display);
-        font-weight: 700;
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 1.5rem;
-    }
-    
-    .filter-card {
-        background: white;
-        border-radius: var(--radius-lg);
-        padding: 1.5rem;
-        box-shadow: var(--shadow-md);
-        margin-bottom: 1.5rem;
-    }
-</style>
-{% endblock %}
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <i class="fas fa-shield-halved logo-icon"></i>
+                <h1 class="logo-text">Neeget Admin</h1>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
 
-{% block content %}
-<div class="admin-container">
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-lg-2 col-md-3 d-none d-md-block">
-                <div class="admin-sidebar">
-                    <h6 class="text-muted text-uppercase mb-3" style="font-size: 0.75rem;">Admin Panel</h6>
-                    <a href="{{ url_for('admin.dashboard') }}" class="admin-sidebar-item {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a>
-                    <a href="{{ url_for('admin.manage_users') }}" class="admin-sidebar-item {% if 'users' in request.endpoint %}active{% endif %}">
-                        <i class="fas fa-users"></i> Users
-                    </a>
-                    <a href="{{ url_for('admin.manage_services') }}" class="admin-sidebar-item {% if 'services' in request.endpoint %}active{% endif %}">
-                        <i class="fas fa-cogs"></i> Services
-                    </a>
-                    <a href="{{ url_for('admin.manage_categories') }}" class="admin-sidebar-item {% if 'categories' in request.endpoint %}active{% endif %}">
-                        <i class="fas fa-th-large"></i> Categories
-                    </a>
-                    <a href="{{ url_for('admin.manage_bookings') }}" class="admin-sidebar-item {% if 'bookings' in request.endpoint %}active{% endif %}">
-                        <i class="fas fa-calendar"></i> Bookings
-                    </a>
-                    <a href="{{ url_for('admin.manage_reviews') }}" class="admin-sidebar-item {% if 'reviews' in request.endpoint %}active{% endif %}">
-                        <i class="fas fa-star"></i> Reviews
-                    </a>
-                    <a href="{{ url_for('admin.fraud_monitoring') }}" class="admin-sidebar-item {% if 'fraud' in request.endpoint %}active{% endif %}">
-                        <i class="fas fa-shield-alt"></i> Fraud Detection
-                    </a>
-                    <a href="{{ url_for('admin.analytics') }}" class="admin-sidebar-item {% if 'analytics' in request.endpoint %}active{% endif %}">
-                        <i class="fas fa-chart-line"></i> Analytics
-                    </a>
-                    <a href="{{ url_for('admin.settings') }}" class="admin-sidebar-item {% if 'settings' in request.endpoint %}active{% endif %}">
-                        <i class="fas fa-cog"></i> Settings
-                    </a>
-                    <a href="{{ url_for('admin.support_tickets') }}" class="admin-sidebar-item {% if 'support' in request.endpoint %}active{% endif %}">
-                        <i class="fas fa-life-ring"></i> Support
-                    </a>
-                    <a href="{{ url_for('admin.activity_log') }}" class="admin-sidebar-item {% if 'activity' in request.endpoint %}active{% endif %}">
-                        <i class="fas fa-history"></i> Activity Log
-                    </a>
-                    <hr class="my-3">
-                    <a href="{{ url_for('index') }}" class="admin-sidebar-item">
-                        <i class="fas fa-home"></i> Back to Site
-                    </a>
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('admin.dashboard') }}" class="nav-item {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Management</div>
+                
+                <a href="{{ url_for('admin.users') }}" class="nav-item {% if 'users' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                
+                <a href="{{ url_for('admin.services') }}" class="nav-item {% if 'services' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-concierge-bell"></i>
+                    <span>Services</span>
+                </a>
+                
+                <a href="{{ url_for('admin.categories') }}" class="nav-item {% if 'categories' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Categories</span>
+                </a>
+                
+                <a href="{{ url_for('admin.bookings') }}" class="nav-item {% if 'bookings' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Bookings</span>
+                </a>
+                
+                <a href="{{ url_for('admin.reviews') }}" class="nav-item {% if 'reviews' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-star"></i>
+                    <span>Reviews</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">System</div>
+                
+                <a href="{{ url_for('admin.fraud_detection') }}" class="nav-item {% if 'fraud' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Fraud Detection</span>
+                </a>
+                
+                <a href="{{ url_for('admin.analytics') }}" class="nav-item {% if 'analytics' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Analytics</span>
+                </a>
+                
+                <a href="{{ url_for('admin.support_tickets') }}" class="nav-item {% if 'support' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </a>
+                
+                <a href="{{ url_for('admin.settings') }}" class="nav-item {% if 'settings' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                
+                <a href="{{ url_for('admin.activity_log') }}" class="nav-item {% if 'activity' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-history"></i>
+                    <span>Activity Log</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{{ url_for('dashboard') }}" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Back to Site</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main" id="adminMain">
+        <!-- Top Header Bar -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="breadcrumb">
+                    {% block breadcrumb %}
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                    {% endblock %}
                 </div>
             </div>
-            
-            <!-- Main Content -->
-            <div class="col-lg-10 col-md-9">
-                <!-- Flash Messages -->
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
+
+            <div class="header-right">
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="action-btn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="action-btn" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+
+                <!-- User Menu -->
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ session.get('user_name', 'Admin') }}</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                    <button class="user-dropdown-toggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    
+                    <div class="user-dropdown">
+                        <a href="{{ url_for('profile.view_profile') }}" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            Profile
+                        </a>
+                        <a href="{{ url_for('admin.settings') }}" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('auth.logout') }}" class="dropdown-item text-danger">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="admin-content">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
                         {% for category, message in messages %}
-                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="close" data-dismiss="alert">
-                                    <span>&times;</span>
+                            <div class="alert alert-{{ category }} fade-in">
+                                <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                                <span>{{ message }}</span>
+                                <button class="alert-close" onclick="this.parentElement.remove()">
+                                    <i class="fas fa-times"></i>
                                 </button>
                             </div>
                         {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                
-                {% block admin_content %}{% endblock %}
-            </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Page Header -->
+            {% block page_header %}{% endblock %}
+
+            <!-- Page Body -->
+            {% block content %}{% endblock %}
         </div>
-    </div>
-</div>
-{% endblock %}
+
+        <!-- Footer -->
+        <footer class="admin-footer">
+            <div class="footer-content">
+                <div class="footer-left">
+                    © 2025 Neeget. All rights reserved.
+                </div>
+                <div class="footer-right">
+                    <span>Version 1.0.0</span>
+                    <span class="separator">•</span>
+                    <a href="#">Documentation</a>
+                    <span class="separator">•</span>
+                    <a href="#">Support</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
