@@ -121,10 +121,28 @@
             <div class="header-right">
                 <!-- Quick Actions -->
                 <div class="quick-actions">
-                    <a href="{{ url_for('admin.activity_log') }}" class="action-btn" title="View Activity & Notifications">
-                        <i class="fas fa-bell"></i>
-                        <span class="badge">{{ pending_count if pending_count else 0 }}</span>
-                    </a>
+                    <div class="notification-wrapper">
+                        <button class="action-btn" title="Notifications" onclick="toggleNotifications(event)">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge">{{ pending_count if pending_count else 0 }}</span>
+                        </button>
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                <h6>Recent Activity</h6>
+                            </div>
+                            <div class="notification-body">
+                                <div class="notification-item">
+                                    <i class="fas fa-info-circle text-primary"></i>
+                                    <div>
+                                        <p>Check Activity Log for all notifications</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="notification-footer">
+                                <a href="{{ url_for('admin.activity_log') }}">View All Activity</a>
+                            </div>
+                        </div>
+                    </div>
                     <a href="{{ url_for('admin.settings') }}" class="action-btn" title="Platform Settings">
                         <i class="fas fa-cog"></i>
                     </a>
@@ -144,10 +162,12 @@
                     </button>
                     
                     <div class="user-dropdown">
-                        <a href="{{ url_for('profile.view') }}" class="dropdown-item">
+                        {% if g.user %}
+                        <a href="{{ url_for('profile.view', user_id=g.user.id) }}" class="dropdown-item">
                             <i class="fas fa-user"></i>
                             Profile
                         </a>
+                        {% endif %}
                         <a href="{{ url_for('admin.settings') }}" class="dropdown-item">
                             <i class="fas fa-cog"></i>
                             Settings

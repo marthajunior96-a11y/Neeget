@@ -346,3 +346,28 @@ window.adminUtils = {
     formatDate,
     debounce
 };
+
+/* ============================================
+   NOTIFICATION DROPDOWN
+   ============================================ */
+
+function toggleNotifications(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('notificationDropdown');
+    
+    if (dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
+    } else {
+        dropdown.classList.add('show');
+    }
+}
+
+// Close notification dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('notificationDropdown');
+    const notificationWrapper = document.querySelector('.notification-wrapper');
+    
+    if (dropdown && notificationWrapper && !notificationWrapper.contains(e.target)) {
+        dropdown.classList.remove('show');
+    }
+});
