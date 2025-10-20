@@ -25,6 +25,10 @@
                     <td>{{ provider.review_count }}</td>
                     <td><a href="{{ url_for('admin.user_detail', user_id=provider.id) }}" class="btn btn-sm btn-info"><i class="fas fa-search"></i> Investigate</a></td>
                 </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No providers with low ratings detected</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -46,6 +50,10 @@
                     <td><span class="badge badge-admin-warning">{{ user.cancellation_count }}</span></td>
                     <td><a href="{{ url_for('admin.flag_user', user_id=user.id) }}" class="btn btn-sm btn-warning"><i class="fas fa-flag"></i> Flag</a></td>
                 </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No users with multiple cancellations detected</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -54,18 +62,22 @@
 
 <div class="admin-card mb-4">
     <h5><i class="fas fa-copy"></i> Duplicate Accounts Detected</h5>
-    {% for dup in duplicate_accounts %}
-    <div class="alert alert-warning">
-        <strong>{{ dup.type }}: {{ dup.identifier }}</strong><br>
-        Found in {{ dup.users|length }} accounts:
-        {% for user in dup.users %}
-            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}">{{ user.name }}</a>{% if not loop.last %}, {% endif %}
+    {% if duplicate_accounts %}
+        {% for dup in duplicate_accounts %}
+        <div class="alert alert-warning">
+            <strong>{{ dup.type }}: {{ dup.identifier }}</strong><br>
+            Found in {{ dup.users|length }} accounts:
+            {% for user in dup.users %}
+                <a href="{{ url_for('admin.user_detail', user_id=user.id) }}">{{ user.name }}</a>{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </div>
         {% endfor %}
-    </div>
-    {% endfor %}
+    {% else %}
+        <p class="text-center text-muted py-3">No duplicate accounts detected</p>
+    {% endif %}
 </div>
 
-<div class="admin-card">
+<div class="admin-card mb-4">
     <h5><i class="fas fa-credit-card"></i> Suspicious Payment Patterns</h5>
     <div class="admin-table">
         <table class="table">
@@ -79,6 +91,36 @@
                     <td>{{ user.email }}</td>
                     <td><span class="badge badge-admin-danger">{{ user.failed_payment_count }}</span></td>
                     <td><a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-info"><i class="fas fa-search"></i> Investigate</a></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No suspicious payment patterns detected</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="admin-card">
+    <h5><i class="fas fa-robot"></i> Fake Review Suspects</h5>
+    <div class="admin-table">
+        <table class="table">
+            <thead>
+                <tr><th>Name</th><th>Email</th><th>Review Count</th><th>Pattern</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for user in fake_review_suspects %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td><span class="badge badge-admin-warning">{{ user.review_count }}</span></td>
+                    <td><small class="text-muted">{{ user.pattern }}</small></td>
+                    <td><a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-info"><i class="fas fa-search"></i> Investigate</a></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No fake review patterns detected</td>
                 </tr>
                 {% endfor %}
             </tbody>

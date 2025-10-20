@@ -5,6 +5,9 @@
 {% block mobile_title %}Provider Dashboard{% endblock %}
 
 {% block content %}
+<!-- Hidden CSRF token for JavaScript -->
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
 <!-- Provider Dashboard Hero Section -->
 <section class="py-4" style="background: var(--primary-gradient);   padding-top: 100px;">
     <div class="container">
@@ -464,53 +467,48 @@
 <script>
 function acceptBooking(bookingId) {
     if (confirm('Are you sure you want to accept this booking?')) {
-        // In a real app, make AJAX call to accept booking
-        fetch(`/bookings/accept/৳{bookingId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrf_token]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error accepting booking: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error accepting booking. Please try again.');
-        });
+        // Create a form and submit it
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/bookings/accept/${bookingId}`;
+        
+        // Add CSRF token
+        const csrfToken = document.querySelector('[name=csrf_token]');
+        if (csrfToken) {
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrf_token';
+            csrfInput.value = csrfToken.value;
+            form.appendChild(csrfInput);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
     }
 }
 
 function rejectBooking(bookingId) {
-    const reason = prompt('Please provide a reason for rejection (optional):');
-    if (reason !== null) {
-        // In a real app, make AJAX call to reject booking
-        fetch(`/bookings/reject/৳{bookingId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrf_token]').value
-            },
-            body: JSON.stringify({ reason: reason })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error rejecting booking: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error rejecting booking. Please try again.');
-        });
+    // Optional: Collect rejection reason for future use
+    const reason = prompt('Are you sure you want to reject this booking?\n\n You can optionally provide a reason (note: not stored yet):');
+    
+    if (reason !== null) {  // User clicked OK (even with empty reason)
+        // Create a form and submit it
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/bookings/reject/${bookingId}`;
+        
+        // Add CSRF token
+        const csrfToken = document.querySelector('[name=csrf_token]');
+        if (csrfToken) {
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrf_token';
+            csrfInput.value = csrfToken.value;
+            form.appendChild(csrfInput);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
     }
 }
 

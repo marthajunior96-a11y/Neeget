@@ -196,9 +196,9 @@ def create_app():
                 booking_requests.append({
                     "id": booking["id"],
                     "service_name": service["service_name"],
-                    "provider_name": user["name"],
-                    "booking_date": booking["booking_date"],
-                    "booking_time": booking["booking_date"].split("T")[1][:5] if "booking_date" in booking and "T" in booking["booking_date"] else "N/A",
+                    "user_name": user["name"],
+                    "booking_date": booking["booking_date"][:10] if booking.get("booking_date") else "N/A",
+                    "booking_time": booking["booking_date"].split("T")[1][:5] if booking.get("booking_date") and "T" in booking["booking_date"] else "N/A",
                     "status": booking["booking_status"]
                 })
         
