@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Request Custom Category{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-layer-group"></i> Request Custom Category</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        Can't find your service category? Request a custom category and our admin team will review it.
+                    </p>
+
+                    <form method="POST" action="{{ url_for('services.request_category') }}">
+                        {{ form.csrf_token }}
+                        
+                        <div class="form-group mb-3">
+                            <label for="category_name">
+                                <strong>Category Name</strong>
+                                <span class="text-danger">*</span>
+                            </label>
+                            {{ form.category_name(class="form-control", placeholder="e.g., Virtual Reality Development") }}
+                            {% if form.category_name.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.category_name.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="description">
+                                <strong>Description</strong>
+                            </label>
+                            {{ form.description(class="form-control", rows=4, placeholder="Describe what services this category should include...") }}
+                            {% if form.description.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.description.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ url_for('services.add') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Add Service
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mt-4 alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>Note:</strong> Your request will be reviewed by our admin team. You'll be notified once it's approved or if we need more information.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

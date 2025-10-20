@@ -194,3 +194,55 @@ def notifications():
     notifications.sort(key=lambda x: x.get("sent_at", ""), reverse=True)
 
     return render_template("profile/notifications.html", notifications=notifications)
+@bp.route("/support", methods=["GET", "POST"])
+@login_required
+def support():
+    """User support ticket submission"""
+    if not g.user:
+        flash("You must be logged in to submit a support ticket.", "error")
+        return redirect(url_for("auth.login"))
+    
+    from forms import SupportTicketForm
+    from datetime import datetime
+    
+    form = SupportTicketForm()
+    
+    if form.validate_on_submit():
+        try:
+            ticket_data = {
+                'user_id': g.user['id'],
+                'issue_description': form.issue_description.data,
+                'status': 'open',
+                'created_at': datetime.now().isoformat(),
+                'updated_at': datetime.now().isoformat()
+            }
+            ticket = current_app.db.add('Support_Tickets', ticket_data)
+            
+            # Notify all admin users
+            all_users = current_app.db.get_all('Users')
+            admin_users = [u for u in all_users if u.get('role') == 'admin']
+            for admin in admin_users:
+                current_app.db.add('Notifications', {
+                    'user_id': admin['id'],
+                    'notification_type': 'in_app',
+                    'message': f'New support ticket #{ticket["id"]} submitted by {g.user["name"]}'
+                })
+            
+            flash('Your support ticket has been submitted successfully. Our team will get back to you soon.', 'success')
+            return redirect(url_for('profile.support_tickets'))
+        except Exception as e:
+            flash(f'Error submitting ticket: {str(e)}', 'error')
+    
+    return render_template("profile/support.html", form=form)
+
+@bp.route("/support/tickets")
+@login_required
+def support_tickets():
+    """View user's support tickets"""
+    if not g.user:
+        return redirect(url_for("auth.login"))
+    
+    tickets = current_app.db.find_by_attribute("Support_Tickets", "user_id", g.user["id"])
+    tickets.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+    
+    return render_template("profile/support_tickets.html", tickets=tickets)

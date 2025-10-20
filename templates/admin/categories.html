@@ -14,31 +14,73 @@
     <a href="{{ url_for('admin.add_category') }}" class="btn btn-admin-primary"><i class="fas fa-plus"></i> Add Category</a>
 </div>
 
-<div class="admin-table">
-    <table class="table">
-        <thead>
-            <tr><th>ID</th><th>Name</th><th>Services</th><th>Order</th><th>Status</th><th>Actions</th></tr>
-        </thead>
-        <tbody>
-            {% for category in categories %}
-            <tr>
-                <td>{{ category.id }}</td>
-                <td>{{ category.category_name }}</td>
-                <td><span class="badge badge-admin-info">{{ category.service_count }}</span></td>
-                <td>{{ category.display_order }}</td>
-                <td>{% if category.is_active %}<span class="badge badge-admin-success">Active</span>{% else %}<span class="badge badge-admin-danger">Inactive</span>{% endif %}</td>
-                <td>
-                    <a href="{{ url_for('admin.edit_category', category_id=category.id) }}" class="btn btn-sm btn-admin-primary"><i class="fas fa-edit"></i></a>
-                    {% if category.service_count == 0 %}
-                        <form method="POST" action="{{ url_for('admin.delete_category', category_id=category.id) }}" style="display:inline;">
+<!-- Pending Category Requests -->
+{% if pending_requests %}
+<div class="admin-card mb-4">
+    <h5><i class="fas fa-clock"></i> Pending Category Requests ({{ pending_requests|length }})</h5>
+    <div class="admin-table">
+        <table class="table">
+            <thead>
+                <tr><th>Category Name</th><th>Description</th><th>Requested By</th><th>Date</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for request in pending_requests %}
+                <tr>
+                    <td><strong>{{ request.category_name }}</strong></td>
+                    <td>{{ request.description[:50] if request.description else 'No description' }}...</td>
+                    <td>{{ request.requester_name }}</td>
+                    <td>{{ request.created_at[:10] if request.created_at else 'N/A' }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('admin.approve_category', category_id=request.id) }}" style="display:inline;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                            <button type="submit" class="btn btn-sm btn-admin-danger" onclick="return confirm('Delete this category?')"><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-sm btn-admin-success" title="Approve">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
                         </form>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                        <form method="POST" action="{{ url_for('admin.reject_category', category_id=request.id) }}" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-sm btn-admin-danger" onclick="return confirm('Reject this category request?')" title="Reject">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- Active Categories -->
+<div class="admin-card">
+    <h5><i class="fas fa-list"></i> Active Categories</h5>
+    <div class="admin-table">
+        <table class="table">
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Services</th><th>Order</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                <tr>
+                    <td>{{ category.id }}</td>
+                    <td>{{ category.category_name }}</td>
+                    <td><span class="badge badge-admin-info">{{ category.service_count }}</span></td>
+                    <td>{{ category.display_order }}</td>
+                    <td>{% if category.is_active %}<span class="badge badge-admin-success">Active</span>{% else %}<span class="badge badge-admin-danger">Inactive</span>{% endif %}</td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_category', category_id=category.id) }}" class="btn btn-sm btn-admin-primary"><i class="fas fa-edit"></i></a>
+                        {% if category.service_count == 0 %}
+                            <form method="POST" action="{{ url_for('admin.delete_category', category_id=category.id) }}" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-sm btn-admin-danger" onclick="return confirm('Delete this category?')"><i class="fas fa-trash"></i></button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

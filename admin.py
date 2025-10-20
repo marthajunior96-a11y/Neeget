@@ -685,17 +685,27 @@ def delete_service(service_id):
 def manage_categories():
     """Manage service categories"""
     db = get_db()
-    categories = db.get_all('Service_Categories')
+    all_categories = db.get_all('Service_Categories')
+    
+    # Separate pending requests from approved categories
+    pending_requests = [c for c in all_categories if c.get('status') == 'pending_approval']
+    categories = [c for c in all_categories if c.get('status') != 'pending_approval']
     
     # Sort by display order
     categories.sort(key=lambda x: x.get('display_order', 999))
+    pending_requests.sort(key=lambda x: x.get('created_at', ''), reverse=True)
     
     # Count services in each category
     all_services = db.get_all('Services')
     for category in categories:
         category['service_count'] = len([s for s in all_services if s['category_id'] == category['id']])
     
-    return render_template('admin/categories.html', categories=categories)
+    # Get requester info for pending requests
+    for request in pending_requests:
+        requester = db.get_by_id('Users', request.get('requested_by'))
+        request['requester_name'] = requester['name'] if requester else 'Unknown'
+    
+    return render_template('admin/categories.html', categories=categories, pending_requests=pending_requests)
 
 @bp.route('/categories/add', methods=['GET', 'POST'])
 @login_required
@@ -1358,3 +1368,71 @@ def activity_log():
     
     return render_template('admin/activity_log.html', logs=paginated_logs, 
                           page=page, total_logs=len(logs), per_page=per_page)
+
+@bp.route('/categories/<int:category_id>/approve', methods=['POST'])
+@login_required
+@admin_required
+def approve_category(category_id):
+    """Approve a pending category request"""
+    db = get_db()
+    category = db.get_by_id('Service_Categories', category_id)
+    
+    if not category:
+        flash('Category not found.', 'error')
+        return redirect(url_for('admin.manage_categories'))
+    
+    try:
+        db.update('Service_Categories', category_id, {
+            'is_active': True,
+            'status': 'approved'
+        })
+        
+        # Notify the requester
+        requester_id = category.get('requested_by')
+        if requester_id:
+            db.add('Notifications', {
+                'user_id': requester_id,
+                'notification_type': 'in_app',
+                'message': f'Your custom category request "{category["category_name"]}" has been approved!'
+            })
+        
+        log_admin_activity(g.user['id'], 'category_approve', 'category', category_id,
+                         {'category_name': category['category_name']})
+        flash(f'Category "{category["category_name"]}" has been approved!', 'success')
+    except Exception as e:
+        flash(f'Error approving category: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.manage_categories'))
+
+@bp.route('/categories/<int:category_id>/reject', methods=['POST'])
+@login_required
+@admin_required
+def reject_category(category_id):
+    """Reject a pending category request"""
+    db = get_db()
+    category = db.get_by_id('Service_Categories', category_id)
+    
+    if not category:
+        flash('Category not found.', 'error')
+        return redirect(url_for('admin.manage_categories'))
+    
+    try:
+        # Notify the requester
+        requester_id = category.get('requested_by')
+        if requester_id:
+            db.add('Notifications', {
+                'user_id': requester_id,
+                'notification_type': 'in_app',
+                'message': f'Your custom category request "{category["category_name"]}" has been rejected. Please contact support for more information.'
+            })
+        
+        # Delete the pending request
+        db.delete('Service_Categories', category_id)
+        
+        log_admin_activity(g.user['id'], 'category_reject', 'category', category_id,
+                         {'category_name': category['category_name']})
+        flash(f'Category request "{category["category_name"]}" has been rejected.', 'warning')
+    except Exception as e:
+        flash(f'Error rejecting category: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.manage_categories'))

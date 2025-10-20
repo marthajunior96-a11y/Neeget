@@ -91,6 +91,12 @@
                                 <a class="dropdown-item" href="{{ url_for('profile.view', user_id=g.user.id) }}">
                                     <i class="fas fa-user-circle"></i> Profile
                                 </a>
+                                <a class="dropdown-item" href="{{ url_for('profile.notifications') }}">
+                                    <i class="fas fa-bell"></i> Notifications
+                                </a>
+                                <a class="dropdown-item" href="{{ url_for('profile.support') }}">
+                                    <i class="fas fa-headset"></i> Support
+                                </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
                                     <i class="fas fa-sign-out-alt"></i> Logout

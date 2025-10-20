@@ -64,6 +64,12 @@
                             <div class="form-group">
                                 {{ form.category_id.label(class="form-label") }}
                                 {{ form.category_id(class="form-control") }}
+                                <small class="form-text text-muted">
+                                    Can't find your category? 
+                                    <a href="{{ url_for('services.request_category') }}" class="text-primary">
+                                        <i class="fas fa-plus-circle"></i> Request a custom category
+                                    </a>
+                                </small>
                                 {% if form.category_id.errors %}
                                     <div class="text-danger">
                                         {% for error in form.category_id.errors %}

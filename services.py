@@ -345,3 +345,48 @@ def add_category():
     
     return render_template('services/add_category.html')
 
+
+@bp.route('/request-category', methods=['GET', 'POST'])
+@login_required
+def request_category():
+    """Request a new custom category"""
+    if g.user['role'] != 'service_provider':
+        flash('Only service providers can request custom categories.', 'error')
+        return redirect(url_for('index'))
+    
+    from forms import CategoryForm
+    from datetime import datetime
+    
+    form = CategoryForm()
+    
+    if form.validate_on_submit():
+        try:
+            db = get_db()
+            
+            # Create category with pending status
+            category_data = {
+                'category_name': form.category_name.data,
+                'description': form.description.data,
+                'is_active': False,  # Not active until approved
+                'display_order': form.display_order.data or 999,
+                'requested_by': g.user['id'],
+                'status': 'pending_approval',
+                'created_at': datetime.now().isoformat()
+            }
+            db.add('Service_Categories', category_data)
+            
+            # Notify admin
+            db.add('Activity_Log', {
+                'admin_id': None,
+                'action_type': 'category_request',
+                'action_description': f'New category "{form.category_name.data}" requested by {g.user["name"]}',
+                'target_type': 'category',
+                'timestamp': datetime.now().isoformat()
+            })
+            
+            flash('Your custom category request has been submitted for admin approval!', 'success')
+            return redirect(url_for('services.manage'))
+        except Exception as e:
+            flash(f'Error submitting category request: {str(e)}', 'error')
+    
+    return render_template('services/request_category.html', form=form)

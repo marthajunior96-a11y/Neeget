@@ -10,64 +10,68 @@
 {% block content %}
 <h1 class="admin-page-title"><i class="fas fa-chart-line"></i> Platform Analytics</h1>
 
-<div class="admin-card mb-4">
-    <h5><i class="fas fa-users"></i> User Statistics</h5>
-    <div class="row">
-        <div class="col-md-4"><p><strong>Total Users:</strong> {{ analytics.user_stats.total_users }}</p></div>
-        <div class="col-md-4"><p><strong>Total Providers:</strong> {{ analytics.user_stats.total_providers }}</p></div>
-        <div class="col-md-4"><p><strong>Verified Users:</strong> {{ analytics.user_stats.verified_users }}</p></div>
-    </div>
-    <div class="row">
-        <div class="col-md-4"><p><strong>Active:</strong> <span class="badge badge-admin-success">{{ analytics.user_stats.active_users }}</span></p></div>
-        <div class="col-md-4"><p><strong>Suspended:</strong> <span class="badge badge-admin-warning">{{ analytics.user_stats.suspended_users }}</span></p></div>
-        <div class="col-md-4"><p><strong>Banned:</strong> <span class="badge badge-admin-danger">{{ analytics.user_stats.banned_users }}</span></p></div>
-    </div>
-</div>
-
-<div class="admin-card mb-4">
-    <h5><i class="fas fa-calendar-check"></i> Booking Statistics</h5>
-    <div class="row">
-        <div class="col-md-3"><p><strong>Total:</strong> {{ analytics.booking_stats.total_bookings }}</p></div>
-        <div class="col-md-3"><p><strong>Completed:</strong> {{ analytics.booking_stats.completed_bookings }}</p></div>
-        <div class="col-md-3"><p><strong>Cancelled:</strong> {{ analytics.booking_stats.cancelled_bookings }}</p></div>
-        <div class="col-md-3"><p><strong>Pending:</strong> {{ analytics.booking_stats.pending_bookings }}</p></div>
-    </div>
-    <div class="row">
-        <div class="col-md-4"><p><strong>Completion Rate:</strong> <span class="badge badge-admin-success">{{ analytics.booking_stats.completion_rate }}%</span></p></div>
-        <div class="col-md-4"><p><strong>Cancellation Rate:</strong> <span class="badge badge-admin-warning">{{ analytics.booking_stats.cancellation_rate }}%</span></p></div>
-        <div class="col-md-4"><p><strong>Acceptance Rate:</strong> <span class="badge badge-admin-info">{{ analytics.booking_stats.acceptance_rate }}%</span></p></div>
-    </div>
-</div>
-
-<div class="admin-card mb-4">
-    <h5><i class="fas fa-dollar-sign"></i> Revenue Statistics</h5>
-    <div class="row">
-        <div class="col-md-3"><p><strong>Total Revenue:</strong> ৳{{ analytics.revenue_stats.total_revenue }}</p></div>
-        <div class="col-md-3"><p><strong>Platform Fees:</strong> ৳{{ analytics.revenue_stats.platform_fees }}</p></div>
-        <div class="col-md-3"><p><strong>Pending:</strong> ৳{{ analytics.revenue_stats.pending_payments }}</p></div>
-        <div class="col-md-3"><p><strong>Avg Booking:</strong> ৳{{ analytics.avg_booking_value }}</p></div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="admin-card">
-            <h5><i class="fas fa-chart-pie"></i> Service Popularity</h5>
-            <div class="admin-table">
-                <table class="table">
-                    <thead><tr><th>Category</th><th>Bookings</th></tr></thead>
-                    <tbody>
-                        {% for category, count in analytics.service_popularity.items() %}
-                        <tr>
-                            <td>{{ category }}</td>
-                            <td><span class="badge badge-admin-success">{{ count }}</span></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+<!-- Summary Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="admin-card text-center">
+            <h6 class="text-muted">Total Users</h6>
+            <h2 class="text-primary">{{ analytics.user_stats.total_users + analytics.user_stats.total_providers }}</h2>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="admin-card text-center">
+            <h6 class="text-muted">Total Bookings</h6>
+            <h2 class="text-success">{{ analytics.booking_stats.total_bookings }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card text-center">
+            <h6 class="text-muted">Platform Revenue</h6>
+            <h2 class="text-info">৳{{ analytics.revenue_stats.platform_fees }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card text-center">
+            <h6 class="text-muted">Completion Rate</h6>
+            <h2 class="text-warning">{{ analytics.booking_stats.completion_rate }}%</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 1 -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="admin-card">
+            <h5><i class="fas fa-users"></i> User Distribution</h5>
+            <canvas id="userDistributionChart" style="max-height: 300px;"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="admin-card">
+            <h5><i class="fas fa-calendar-check"></i> Booking Status</h5>
+            <canvas id="bookingStatusChart" style="max-height: 300px;"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 2 -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="admin-card">
+            <h5><i class="fas fa-chart-pie"></i> Service Popularity by Category</h5>
+            <canvas id="serviceCategoryChart" style="max-height: 300px;"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="admin-card">
+            <h5><i class="fas fa-credit-card"></i> Payment Method Distribution</h5>
+            <canvas id="paymentMethodChart" style="max-height: 300px;"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Tables -->
+<div class="row">
     <div class="col-md-6">
         <div class="admin-card">
             <h5><i class="fas fa-trophy"></i> Top Providers</h5>
@@ -87,5 +91,156 @@
             </div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="admin-card">
+            <h5><i class="fas fa-dollar-sign"></i> Revenue Breakdown</h5>
+            <div class="row">
+                <div class="col-md-6"><p><strong>Total Revenue:</strong> ৳{{ analytics.revenue_stats.total_revenue }}</p></div>
+                <div class="col-md-6"><p><strong>Platform Fees:</strong> ৳{{ analytics.revenue_stats.platform_fees }}</p></div>
+                <div class="col-md-6"><p><strong>Pending Payments:</strong> ৳{{ analytics.revenue_stats.pending_payments }}</p></div>
+                <div class="col-md-6"><p><strong>Avg Booking Value:</strong> ৳{{ analytics.avg_booking_value }}</p></div>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// Chart.js default configuration
+Chart.defaults.font.family = 'Inter, sans-serif';
+Chart.defaults.color = '#64748b';
+
+// User Distribution Pie Chart
+const userDistCtx = document.getElementById('userDistributionChart');
+new Chart(userDistCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Regular Users', 'Service Providers', 'Admins'],
+        datasets: [{
+            data: [
+                {{ analytics.user_stats.total_users }},
+                {{ analytics.user_stats.total_providers }},
+                1
+            ],
+            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 15,
+                    usePointStyle: true
+                }
+            }
+        }
+    }
+});
+
+// Booking Status Bar Chart
+const bookingStatusCtx = document.getElementById('bookingStatusChart');
+new Chart(bookingStatusCtx, {
+    type: 'bar',
+    data: {
+        labels: ['Pending', 'Accepted', 'Completed', 'Cancelled', 'Rejected'],
+        datasets: [{
+            label: 'Bookings',
+            data: [
+                {{ analytics.booking_stats.pending_bookings }},
+                {{ analytics.booking_stats.accepted_bookings }},
+                {{ analytics.booking_stats.completed_bookings }},
+                {{ analytics.booking_stats.cancelled_bookings }},
+                {{ analytics.booking_stats.rejected_bookings }}
+            ],
+            backgroundColor: ['#fbbf24', '#3b82f6', '#10b981', '#ef4444', '#6b7280'],
+            borderRadius: 6,
+            borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// Service Category Chart
+const serviceCategoryCtx = document.getElementById('serviceCategoryChart');
+new Chart(serviceCategoryCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ analytics.service_popularity.keys()|list|tojson }},
+        datasets: [{
+            label: 'Bookings',
+            data: {{ analytics.service_popularity.values()|list|tojson }},
+            backgroundColor: '#8b5cf6',
+            borderRadius: 6,
+            borderSkipped: false
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// Payment Method Distribution
+const paymentMethodCtx = document.getElementById('paymentMethodChart');
+new Chart(paymentMethodCtx, {
+    type: 'pie',
+    data: {
+        labels: {{ analytics.payment_method_dist.keys()|list|tojson }},
+        datasets: [{
+            data: {{ analytics.payment_method_dist.values()|list|tojson }},
+            backgroundColor: ['#06b6d4', '#ec4899', '#8b5cf6', '#f59e0b'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 15,
+                    usePointStyle: true
+                }
+            }
+        }
+    }
+});
+</script>
 {% endblock %}
