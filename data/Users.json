@@ -187,5 +187,17 @@
         "nid_verified": false,
         "status": "active",
         "id": 10
+    },
+    {
+        "name": "Zohir Rayhan",
+        "email": "admin@aaaadmin.com",
+        "contact_number": "01314774485",
+        "nid_number": "65465456465456",
+        "password_hash": "$2b$12$CIlmbOLFy/jHqZXT123lkezysE96dS80UCktJFausLd2fWh0IbL3q",
+        "role": "service_provider",
+        "email_verified": false,
+        "nid_verified": false,
+        "status": "active",
+        "id": 11
     }
 ]

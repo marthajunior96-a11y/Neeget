@@ -8,7 +8,7 @@ TEST USER ACCOUNTS (Login Credentials)
 
 1. ADMIN USER (Full platform access)
    Email: admin@test.com
-   Password: password123
+   Password:  
    
 2. REGULAR USER (Can browse and book services)
    Email: john@example.com
