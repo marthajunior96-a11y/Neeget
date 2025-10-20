@@ -394,5 +394,23 @@
         "sent_at": "2025-08-20T00:46:59.760389",
         "is_read": false,
         "id": 58
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for Basic Electrical Repair",
+        "id": 59
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New paid booking request from Zohir Rayhan",
+        "id": 60
+    },
+    {
+        "user_id": 10,
+        "notification_type": "in_app",
+        "message": "Your payment for Basic Electrical Repair has been confirmed!",
+        "id": 61
     }
 ]

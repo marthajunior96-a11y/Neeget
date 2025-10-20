@@ -175,5 +175,17 @@
         "flagged_reason": null,
         "investigation_status": null,
         "flagged_date": null
+    },
+    {
+        "name": "Zohir Rayhan",
+        "email": "zohirrayhanweb@gmail.com",
+        "contact_number": "01748876529",
+        "nid_number": "12345678955",
+        "password_hash": "$2b$12$Lssdn2.Zwdky1Jt0DDWVfuAdznNKyZioe.c315Riw8xD75Ken2InS",
+        "role": "user",
+        "email_verified": false,
+        "nid_verified": false,
+        "status": "active",
+        "id": 10
     }
 ]

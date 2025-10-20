@@ -191,21 +191,21 @@ def confirm(booking_id):
         return redirect(url_for("bookings.payment", booking_id=booking_id))
     
     try:
-        db.update("Payments", payment["id"], {"payment_status": "completed"})
-       
+        # Payment remains 'pending' until manually verified by provider/admin
+        # Don't auto-complete payment status here
         
         db.add("Notifications", {
             "user_id": provider["id"] if provider else booking["provider_id"],
             "notification_type": "in_app",
-            "message": f"New paid booking request from {g.user['name']}"
+            "message": f"New booking request from {g.user['name']} for {service['service_name'] if service else 'your service'}"
         })
         db.add("Notifications", {
             "user_id": booking["user_id"],
             "notification_type": "in_app",
-            "message": f"Your payment for {service['service_name'] if service else 'this service'} has been confirmed!"
+            "message": f"Your booking for {service['service_name'] if service else 'this service'} has been confirmed! Payment is pending verification."
         })
         
-        flash("Service Requested For Booking successfully!", "success")
+        flash("Booking confirmed successfully! Payment is pending verification.", "success")
         return redirect(url_for("bookings.detail", booking_id=booking_id))
     except Exception as e:
         flash(f"Error confirming payment: {str(e)}", "error")

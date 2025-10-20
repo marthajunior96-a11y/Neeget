@@ -88,5 +88,14 @@
         "total_amount": 82.5,
         "payment_status": "pending",
         "id": 10
+    },
+    {
+        "booking_id": 5,
+        "payment_method": "\"nagad\"",
+        "payment_amount": 22.0,
+        "platform_fee": 22.0,
+        "total_amount": 44.0,
+        "payment_status": "completed",
+        "id": 11
     }
 ]

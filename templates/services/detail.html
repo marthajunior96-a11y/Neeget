@@ -426,7 +426,12 @@
 {% block extra_js %}
 <script>
 function startChat() {
-    window.location.href = "{{ url_for('chat.conversations') }}";
+    {% if g.user %}
+        window.location.href = "{{ url_for('services.start_chat', service_id=service.id) }}";
+    {% else %}
+        alert('Please login to start chatting with the provider.');
+        window.location.href = "{{ url_for('auth.login') }}";
+    {% endif %}
 }
 
 function callProvider() {

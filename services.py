@@ -17,21 +17,38 @@ def browse():
     categories = db.get_all('Service_Categories')
     
     # Filter to show only active services from active providers
+    # Also show provider's own pending services
     services = []
+    current_user_id = g.user['id'] if g.user else None
+    
     for service in all_services:
-        if service.get('status') != 'active':
+        # Show service if it's active OR if it belongs to the current user (pending services)
+        is_own_service = current_user_id and service.get('provider_id') == current_user_id
+        is_active = service.get('status') == 'active'
+        
+        if not (is_active or is_own_service):
             continue
+            
         provider = db.get_by_id('Users', service.get('provider_id'))
         if provider and provider.get('status') == 'active':
             services.append(service)
     
     # Get filter parameters
+    search_query = request.args.get('q', '').strip()
     category_filter = request.args.get('category')
     location_filter = request.args.get('location')
     min_price = request.args.get('min_price', type=float)
     max_price = request.args.get('max_price', type=float)
+    sort_by = request.args.get('sort', 'popular')
     
-    # Apply filters
+    # Apply search filter
+    if search_query:
+        services = [s for s in services if 
+                   search_query.lower() in s.get('service_name', '').lower() or
+                   search_query.lower() in s.get('description', '').lower() or
+                   search_query.lower() in s.get('location', '').lower()]
+    
+    # Apply other filters
     if category_filter:
         services = [s for s in services if s.get('category_id') == int(category_filter)]
     
@@ -51,6 +68,25 @@ def browse():
         service['category_name'] = category.get('category_name') if category else 'Unknown'
         service['provider_name'] = provider.get('name') if provider else 'Unknown'
         service['provider_email'] = provider.get('email') if provider else 'Unknown'
+        
+        # Get average rating for sorting
+        reviews = [r for r in db.get_all('Reviews') if r.get('service_id') == service['id']]
+        if reviews:
+            service['avg_rating'] = sum(r.get('rating', 0) for r in reviews) / len(reviews)
+            service['review_count'] = len(reviews)
+        else:
+            service['avg_rating'] = 0
+            service['review_count'] = 0
+    
+    # Apply sorting
+    if sort_by == 'popular':
+        services.sort(key=lambda s: (s.get('review_count', 0), s.get('avg_rating', 0)), reverse=True)
+    elif sort_by == 'price_low':
+        services.sort(key=lambda s: s.get('price', 0))
+    elif sort_by == 'price_high':
+        services.sort(key=lambda s: s.get('price', 0), reverse=True)
+    elif sort_by == 'newest':
+        services.sort(key=lambda s: s.get('created_at', ''), reverse=True)
     
     # Filter to show only active categories
     categories = [c for c in categories if c.get('is_active', True)]
@@ -99,6 +135,33 @@ def detail(service_id):
     service['provider'] = provider
     
     return render_template('services/detail.html', service=service, reviews=reviews, average_rating=average_rating, review_count=review_count, completed_jobs=completed_jobs)
+
+@bp.route('/<int:service_id>/start-chat')
+@login_required
+def start_chat(service_id):
+    """Find or prompt to create a booking to start chat"""
+    db = get_db()
+    service = db.get_by_id('Services', service_id)
+    
+    if not service:
+        flash('Service not found.', 'error')
+        return redirect(url_for('services.browse'))
+    
+    # Find existing booking between user and this service's provider
+    all_bookings = db.get_all('Bookings')
+    user_bookings = [b for b in all_bookings 
+                    if b.get('user_id') == g.user['id'] 
+                    and b.get('service_id') == service_id
+                    and b.get('booking_status') in ['pending', 'confirmed', 'completed']]
+    
+    if user_bookings:
+        # Use the most recent booking
+        booking = sorted(user_bookings, key=lambda x: x.get('created_at', ''), reverse=True)[0]
+        return redirect(url_for('chat.booking_chat', booking_id=booking['id']))
+    else:
+        # No booking exists, prompt user to book first
+        flash('Please book this service first to start chatting with the provider.', 'info')
+        return redirect(url_for('bookings.book_service', service_id=service_id))
 
 @bp.route('/manage')
 @login_required
@@ -151,9 +214,19 @@ def add():
                 'service_name': form.service_name.data,
                 'description': form.description.data,
                 'price': float(form.price.data),
-                'location': form.location.data
+                'location': form.location.data,
+                'status': 'pending'
             })
-            flash('Service added successfully!', 'success')
+            
+            # Create notification for admin
+            db.add('Notifications', {
+                'user_id': 1,  # Admin user ID
+                'message': f'New service "{form.service_name.data}" submitted by {g.user.get("name")} for approval.',
+                'notification_type': 'service_approval',
+                'is_read': False
+            })
+            
+            flash('Service added successfully and submitted for admin approval!', 'success')
             return redirect(url_for('services.manage'))
         except Exception as e:
             flash(f'Error adding service: {str(e)}', 'error')
