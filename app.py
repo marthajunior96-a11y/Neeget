@@ -49,7 +49,30 @@ def create_app():
                 return redirect(url_for("provider_dashboard"))
             else:
                 return redirect(url_for("user_dashboard"))
-        return render_template("index.html")
+        
+        # Calculate real platform statistics
+        all_users = app.db.get_all("Users")
+        all_reviews = app.db.get_all("Reviews")
+        all_bookings = app.db.get_all("Bookings")
+        
+        # Count active users (not banned/suspended)
+        active_users = len([u for u in all_users if u.get('status') == 'active'])
+        total_reviews = len(all_reviews)
+        
+        # Calculate average rating from all reviews
+        if total_reviews > 0:
+            avg_rating = sum([r.get('rating', 0) for r in all_reviews]) / total_reviews
+        else:
+            avg_rating = 0
+        
+        platform_stats = {
+            'total_users': active_users,
+            'total_reviews': total_reviews,
+            'average_rating': round(avg_rating, 1),
+            'total_bookings': len([b for b in all_bookings if b.get('booking_status') == 'completed'])
+        }
+        
+        return render_template("index.html", platform_stats=platform_stats)
     
     @app.route("/user_dashboard")
     def user_dashboard():
@@ -143,9 +166,16 @@ def create_app():
                 if service:
                     total_earnings += service["price"]
 
-        response_rate = 95  # Placeholder
+        # Calculate real response rate (% of bookings accepted or rejected vs pending)
+        responded_bookings = len([b for b in provider_bookings if b["booking_status"] in ["accepted", "rejected", "completed", "cancelled"]])
+        response_rate = (responded_bookings / total_bookings * 100) if total_bookings else 0
+        
+        # Calculate real completion rate
         completion_rate = len([b for b in provider_bookings if b["booking_status"] == "completed"]) / total_bookings * 100 if total_bookings else 0
-        satisfaction_rate = 96  # Placeholder
+        
+        # Calculate real customer satisfaction (% of 4+ star reviews)
+        high_rated_reviews = len([r for r in my_reviews if r.get("rating", 0) >= 4])
+        satisfaction_rate = (high_rated_reviews / len(my_reviews) * 100) if my_reviews else 0
 
         provider_stats = {
             "total_services": total_services,

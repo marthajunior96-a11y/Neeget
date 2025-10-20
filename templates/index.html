@@ -12,7 +12,7 @@
         <div class="creative-hero-content">
             <div class="hero-badge">
                 <i class="fas fa-star"></i>
-                <span>Trusted by 10,000+ Users</span>
+                <span>Trusted by {{ platform_stats.total_users if platform_stats else 0 }}+ Users</span>
             </div>
             
             <h1 class="creative-hero-title">
@@ -278,7 +278,7 @@
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
-                            <span class="rating-text">4.8 (89)</span>
+                            <span class="rating-text">{{ platform_stats.average_rating if platform_stats else 0 }} ({{ platform_stats.total_reviews if platform_stats else 0 }})</span>
                         </div>
                     </div>
                     
