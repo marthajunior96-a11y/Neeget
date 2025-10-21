@@ -28,7 +28,7 @@
             <div class="col-lg-4 mt-3 mt-lg-0 text-lg-right">
                 {% if g.user.role == 'service_provider' %}
                     <a href="{{ url_for('services.manage') }}" class="btn btn-light btn-lg px-4">
-                        <i class="fas fa-plus mr-2"></i>Add New Service
+                        <i class="fas fa-plus mr-2"></i>Add new services
                     </a>
                 {% else %}
                     <a href="{{ url_for('services.browse') }}" class="btn btn-light btn-lg px-4">
