@@ -552,10 +552,10 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
             if (dateTimeInput.value) {
                 const [date] = dateTimeInput.value.split('T');
-                dateTimeInput.value = `৳{date}T৳{this.dataset.time}:00`;
+                dateTimeInput.value = `${date}T${this.dataset.time}:00`;
             } else {
                 const today = new Date().toISOString().split('T')[0];
-                dateTimeInput.value = `৳{today}T৳{this.dataset.time}:00`;
+                dateTimeInput.value = `${today}T${this.dataset.time}:00`;
             }
         });
     });
