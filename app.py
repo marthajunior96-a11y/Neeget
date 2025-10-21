@@ -205,10 +205,11 @@ def create_app():
         # Prepare my services data for display
         my_services_display = []
         for service in my_services:
+            category = app.db.get_by_id("Categories", service.get("category_id"))
             my_services_display.append({
                 "id": service["id"],
                 "service_name": service["service_name"],
-                "category_name": app.db.get_by_id("Categories", service["category_id"])["name"],
+                "category_name": category["name"] if category else "Unknown Category",
                 "status": service["status"],
                 "views": service.get("views", 0),
                 "price": service["price"]

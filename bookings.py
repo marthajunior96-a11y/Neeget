@@ -109,7 +109,8 @@ def book_service(service_id):
         try:
             service_price = float(service["price"])
             platform_fee = calculate_platform_fee(service_price)
-            total_amount = service_price + platform_fee
+            tax_amount = service_price * 0.08
+            total_amount = service_price + platform_fee + tax_amount
             
             booking = db.add("Bookings", {
                 "user_id": g.user["id"],
@@ -125,9 +126,10 @@ def book_service(service_id):
             
             payment = db.add("Payments", {
                 "booking_id": booking["id"],
-                "payment_method": form.payment_method.data,
+                "payment_method": str(form.payment_method.data).strip('"'),
                 "payment_amount": service_price,
                 "platform_fee": platform_fee,
+                "tax_amount": tax_amount,
                 "total_amount": total_amount,
                 "payment_status": "pending"
             })
@@ -387,6 +389,12 @@ def cancel_booking(booking_id):
             "user_id": booking["provider_id"],
             "notification_type": "in_app",
             "message": f"Booking has been cancelled by {g.user['name']}"
+        })
+        
+        db.add("Notifications", {
+            "user_id": g.user["id"],
+            "notification_type": "in_app",
+            "message": f"You have successfully cancelled your booking"
         })
         
         flash("Booking cancelled successfully.", "success")

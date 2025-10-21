@@ -199,5 +199,17 @@
         "nid_verified": false,
         "status": "active",
         "id": 11
+    },
+    {
+        "name": "AL STERN",
+        "email": "rmukshed@gmail.com",
+        "contact_number": "01314854749",
+        "nid_number": "654654352453456",
+        "password_hash": "$2b$12$irWR27N9yr3Pn.ISZlyv9OkUeCnE.Bml69zp0j9dKbqtQar4VRyL.",
+        "role": "user",
+        "email_verified": false,
+        "nid_verified": false,
+        "status": "active",
+        "id": 12
     }
 ]

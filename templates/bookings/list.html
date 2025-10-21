@@ -26,9 +26,15 @@
                 </p>
             </div>
             <div class="col-lg-4 mt-3 mt-lg-0 text-lg-right">
-                <a href="{{ url_for('services.browse') }}" class="btn btn-light btn-lg px-4">
-                    <i class="fas fa-plus mr-2"></i>Book New Service
-                </a>
+                {% if g.user.role == 'service_provider' %}
+                    <a href="{{ url_for('services.manage') }}" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-plus mr-2"></i>Add New Service
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('services.browse') }}" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-plus mr-2"></i>Book New Service
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>

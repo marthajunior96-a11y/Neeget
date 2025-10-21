@@ -470,7 +470,7 @@ function acceptBooking(bookingId) {
         // Create a form and submit it
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/bookings/accept/${bookingId}`;
+        form.action = `/bookings/${bookingId}/accept`;
         
         // Add CSRF token
         const csrfToken = document.querySelector('[name=csrf_token]');
@@ -495,7 +495,7 @@ function rejectBooking(bookingId) {
         // Create a form and submit it
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/bookings/reject/${bookingId}`;
+        form.action = `/bookings/${bookingId}/reject`;
         
         // Add CSRF token
         const csrfToken = document.querySelector('[name=csrf_token]');

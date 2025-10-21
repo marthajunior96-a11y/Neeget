@@ -134,7 +134,7 @@
                         </div>
                         <div class="creative-form-group">
                             <label class="creative-form-label">Tax (8%)</label>
-                            <input type="text" class="creative-form-control" value="৳{{ '%.2f'|format(service.price * 0.08 if service and service.get('price') else 0) }}" readonly>
+                            <input type="text" class="creative-form-control" value="৳{{ '%.2f'|format(payment.tax_amount if payment and payment.get('tax_amount') else 0) }}" readonly>
                         </div>
                         <hr>
                         <div class="creative-form-group">
@@ -195,7 +195,7 @@
                     <div class="detail-item mb-2">
                         <div class="d-flex justify-content-between">
                             <span class="text-muted">Tax:</span>
-                            <span>৳{{ '%.2f'|format(service.price * 0.08 if service and service.get('price') else 0) }}</span>
+                            <span>৳{{ '%.2f'|format(payment.tax_amount if payment and payment.get('tax_amount') else 0) }}</span>
                         </div>
                     </div>
                     <hr>

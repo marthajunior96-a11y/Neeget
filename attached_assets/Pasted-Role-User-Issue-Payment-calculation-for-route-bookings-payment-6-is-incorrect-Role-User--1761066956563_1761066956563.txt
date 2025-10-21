@@ -1,0 +1,93 @@
+Role: User
+Issue: Payment calculation for route bookings/payment/6 is incorrect.
+
+
+
+Role: User
+Issue: In route bookings/book/5, the payment dropdown appears incorrect for the third bracket and shows double quotation marks ("").
+
+
+
+
+
+
+
+
+Role: User
+Issue: The previous problem is also occurring in route bookings/6.
+
+
+Role: User
+Issue: In route profile/notifications, when a user cancels a booking, the cancellation notification does not appear in the user's notification section. Can this be addressed?
+
+
+
+
+Role: User
+Issue: In route bookings/book/6, the sub-segment "Popular Times" under Booking Details is not functional.
+
+
+
+
+Role: User
+Issue: In route user_dashboard, the three pop-up buttons in the Recommended segment are non-functional and currently serve as placeholders.
+
+
+
+
+
+
+
+
+
+Role: Service Provider
+Issue: In route provider_dashboard, the segments for Average Rating, Response Rate, Completion Rate, and Customer Satisfaction are not functional and display random placeholder data. The Top Performer badge is also non-functional.
+
+
+
+
+
+
+
+Role: Service Provider
+Issue: In route provider_dashboard, I encountered a problem while adding new services. The first two additions worked, but after adding a third service, the dashboard stopped loading and now displays an error. Whenever I try to log in with the same account, only the error page appears. Other service providers can log in and view their dashboards without issues.
+
+
+
+
+
+
+
+
+Role: User
+Issue: In route services/, the option to chat with the provider before booking is missing, so users cannot communicate with the provider prior to making a booking. Can this be fixed?
+
+
+
+
+
+Role: Service Provider
+Issue: In route provider_dashboard, the service provider cannot accept bookings directly from the dashboard. They must open the full booking view to accept or reject. Clicking "Accept" on the dashboard leads to an error page at route bookings/accept/7.
+
+
+
+
+ 
+
+
+Role: Service Provider
+Issue: In path bookings/, there is currently a button to book new services. Since this is a service provider's profile, the button should instead allow adding new services and link to services/manage.
+
+
+
+
+
+
+Role: Admin
+Issue: In path admin/fraud, the "Duplicate Accounts Detected" segment is not displaying results correctly and appears to be glitching.
+
+
+
+
+
+

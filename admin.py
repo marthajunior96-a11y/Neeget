@@ -1127,38 +1127,42 @@ def fraud_monitoring():
     
     # 3. Duplicate accounts detection (same NID or phone)
     duplicate_accounts = []
-    nid_map = {}
-    phone_map = {}
+    nid_groups = {}
+    phone_groups = {}
     
+    # Group users by NID
     for user in users:
         nid = user.get('nid_number')
-        phone = user.get('contact_number')
-        
         if nid:
-            if nid in nid_map:
-                if nid not in [d['identifier'] for d in duplicate_accounts]:
-                    duplicate_accounts.append({
-                        'type': 'NID',
-                        'identifier': nid,
-                        'users': [nid_map[nid], user]
-                    })
-                else:
-                    # Add to existing duplicate group
-                    for dup in duplicate_accounts:
-                        if dup['identifier'] == nid:
-                            dup['users'].append(user)
-            else:
-                nid_map[nid] = user
-        
+            if nid not in nid_groups:
+                nid_groups[nid] = []
+            nid_groups[nid].append(user)
+    
+    # Group users by phone
+    for user in users:
+        phone = user.get('contact_number')
         if phone:
-            if phone in phone_map and phone not in [d['identifier'] for d in duplicate_accounts]:
-                duplicate_accounts.append({
-                    'type': 'Phone',
-                    'identifier': phone,
-                    'users': [phone_map[phone], user]
-                })
-            else:
-                phone_map[phone] = user
+            if phone not in phone_groups:
+                phone_groups[phone] = []
+            phone_groups[phone].append(user)
+    
+    # Add NID duplicates
+    for nid, users_list in nid_groups.items():
+        if len(users_list) > 1:
+            duplicate_accounts.append({
+                'type': 'NID',
+                'identifier': nid,
+                'users': users_list
+            })
+    
+    # Add phone duplicates
+    for phone, users_list in phone_groups.items():
+        if len(users_list) > 1:
+            duplicate_accounts.append({
+                'type': 'Phone',
+                'identifier': phone,
+                'users': users_list
+            })
     
     # 4. Suspicious payment patterns (multiple failed payments)
     user_failed_payments = {}
