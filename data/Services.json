@@ -30,7 +30,7 @@
         "description": "test",
         "price": 33.0,
         "location": "Dhaka,Bangladesh",
-        "status": "pending",
+        "status": "active",
         "id": 7
     }
 ]
