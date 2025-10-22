@@ -110,10 +110,11 @@ def create_app():
                 if review:
                     reviews.append(review)
             average_rating = sum([r.get("rating", 0) for r in reviews]) / len(reviews) if reviews else 0
+            category = app.db.get_by_id("Service_Categories", service.get("category_id")) if service.get("category_id") else None
             recommended_services.append({
                 "id": service["id"],
                 "service_name": service["service_name"],
-                "category_name": app.db.get_by_id("Categories", service.get("category_id", None))["name"] if service.get("category_id") else "Unknown Category",
+                "category_name": category.get("category_name") if category else "Unknown Category",
                 "price": service.get("price", 0.00),
                 "provider_name": provider.get("name", "Unknown Provider") if provider else "Unknown Provider",
                 "rating": round(average_rating, 1) if average_rating > 0 else None
@@ -205,11 +206,11 @@ def create_app():
         # Prepare my services data for display
         my_services_display = []
         for service in my_services:
-            category = app.db.get_by_id("Categories", service.get("category_id"))
+            category = app.db.get_by_id("Service_Categories", service.get("category_id"))
             my_services_display.append({
                 "id": service["id"],
                 "service_name": service["service_name"],
-                "category_name": category["name"] if category else "Unknown Category",
+                "category_name": category.get("category_name") if category else "Unknown Category",
                 "status": service["status"],
                 "views": service.get("views", 0),
                 "price": service["price"]

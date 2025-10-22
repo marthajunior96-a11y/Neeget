@@ -16,17 +16,17 @@ def browse():
     all_services = db.get_all('Services')
     categories = db.get_all('Service_Categories')
     
-    # Filter to show only active services from active providers
-    # Also show provider's own pending services
+    # Filter to show only active/approved services from active providers
+    # Also show provider's own pending/active services
     services = []
     current_user_id = g.user['id'] if g.user else None
     
     for service in all_services:
-        # Show service if it's active OR if it belongs to the current user (pending services)
+        # Show service if it's approved/active OR if it belongs to the current user (show own pending services)
         is_own_service = current_user_id and service.get('provider_id') == current_user_id
-        is_active = service.get('status') == 'active'
+        is_approved = service.get('status') in ['active', 'approved']
         
-        if not (is_active or is_own_service):
+        if not (is_approved or is_own_service):
             continue
             
         provider = db.get_by_id('Users', service.get('provider_id'))
