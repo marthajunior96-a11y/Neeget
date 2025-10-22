@@ -97,11 +97,21 @@ def create_app():
         }
 
         # Get recommended services with provider and rating information
-        # Get recommended services with provider and rating information
+        # Only show approved/active services from active providers with rating > 4.5
         all_services = app.db.get_all("Services")
         recommended_services = []
-        for service in all_services[:4]:  # Placeholder for actual recommendation logic
+        
+        for service in all_services:
+            # Only show approved/active services
+            if service.get('status') not in ['active', 'approved']:
+                continue
+                
             provider = app.db.get_by_id("Users", service.get("provider_id"))
+            
+            # Only show services from active providers
+            if not provider or provider.get('status') != 'active':
+                continue
+            
             # Fetch bookings for this service to get related reviews
             related_bookings = app.db.find_by_attribute("Bookings", "service_id", service.get("id"))
             reviews = []
@@ -109,7 +119,13 @@ def create_app():
                 review = app.db.get_by_id("Reviews", booking.get("id"))
                 if review:
                     reviews.append(review)
+            
             average_rating = sum([r.get("rating", 0) for r in reviews]) / len(reviews) if reviews else 0
+            
+            # Only show services with rating > 4.5
+            if average_rating <= 4.5:
+                continue
+            
             category = app.db.get_by_id("Service_Categories", service.get("category_id")) if service.get("category_id") else None
             recommended_services.append({
                 "id": service["id"],
@@ -117,8 +133,11 @@ def create_app():
                 "category_name": category.get("category_name") if category else "Unknown Category",
                 "price": service.get("price", 0.00),
                 "provider_name": provider.get("name", "Unknown Provider") if provider else "Unknown Provider",
-                "rating": round(average_rating, 1) if average_rating > 0 else None
+                "rating": round(average_rating, 1)
             })
+        
+        # Limit to top 4 recommended services
+        recommended_services = recommended_services[:4]
 
         # Prepare bookings data for display with debug printing
         bookings_display = []
