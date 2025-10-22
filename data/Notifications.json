@@ -426,5 +426,11 @@
         "sent_at": "2025-10-22T16:19:23.760734",
         "is_read": false,
         "id": 63
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for Basic Electrical Repair",
+        "id": 64
     }
 ]
