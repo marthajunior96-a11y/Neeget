@@ -436,7 +436,9 @@
 function startChat() {
     {% if g.user %}
         {% if user_has_booking %}
-            window.location.href = "{{ url_for('chat.conversations') }}";
+            if (confirm('Please go to your bookings to access the chat for this service.')) {
+                window.location.href = "{{ url_for('bookings.list_bookings') }}";
+            }
         {% else %}
             if (confirm('You need to book this service first before chatting with the provider.\n\nWould you like to book now?')) {
                 window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
