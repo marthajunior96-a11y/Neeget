@@ -444,5 +444,12 @@
         "notification_type": "in_app",
         "message": "Your booking for Basic Electrical Repair has been confirmed! Payment is pending verification.",
         "id": 66
+    },
+    {
+        "user_id": 1,
+        "message": "New service \"Test\" submitted by DHur for approval.",
+        "notification_type": "service_approval",
+        "is_read": false,
+        "id": 67
     }
 ]
