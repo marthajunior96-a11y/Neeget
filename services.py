@@ -143,6 +143,20 @@ def detail(service_id):
     service['contact_number'] = provider.get('contact_number') if provider else 'Not provided'
     service['provider'] = provider
     
+    # Add flash message for contact actions
+    if 'contact_action' in request.args:
+        action = request.args.get('contact_action')
+        if action == 'chat':
+            if user_has_booking:
+                flash('Access your booking to chat with the provider.', 'info')
+            else:
+                flash('Book this service first to chat with the provider.', 'info')
+        elif action == 'call':
+            if user_has_booking:
+                flash('Contact number not available for this provider.', 'warning')
+            else:
+                flash('Book this service first to call the provider.', 'info')
+    
     return render_template('services/detail.html', service=service, reviews=reviews, average_rating=average_rating, review_count=review_count, completed_jobs=completed_jobs, user_has_booking=user_has_booking)
 
 @bp.route('/<int:service_id>/start-chat')

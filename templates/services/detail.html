@@ -436,16 +436,11 @@
 function startChat() {
     {% if g.user %}
         {% if user_has_booking %}
-            if (confirm('Please go to your bookings to access the chat for this service.')) {
-                window.location.href = "{{ url_for('bookings.list_bookings') }}";
-            }
+            window.location.href = "{{ url_for('bookings.list_bookings') }}";
         {% else %}
-            if (confirm('You need to book this service first before chatting with the provider.\n\nWould you like to book now?')) {
-                window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
-            }
+            window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
         {% endif %}
     {% else %}
-        alert('Please login to start chatting with the provider.');
         window.location.href = "{{ url_for('auth.login') }}";
     {% endif %}
 }
@@ -457,15 +452,12 @@ function callProvider() {
             if (phone && phone !== 'Not provided') {
                 window.location.href = `tel:${phone}`;
             } else {
-                alert('Provider contact number is not available.');
+                window.location.href = "{{ url_for('bookings.list_bookings') }}";
             }
         {% else %}
-            if (confirm('You need to book this service first before calling the provider.\n\nWould you like to book now?')) {
-                window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
-            }
+            window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
         {% endif %}
     {% else %}
-        alert('Please login to contact the provider.');
         window.location.href = "{{ url_for('auth.login') }}";
     {% endif %}
 }
