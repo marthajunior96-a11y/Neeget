@@ -1092,7 +1092,7 @@ def fraud_monitoring():
     bookings = db.get_all('Bookings')
     payments = db.get_all('Payments')
     
-    # 1. Providers with low ratings
+    # 1. Providers with low ratings (exclude already suspended/banned)
     provider_ratings = {}
     for review in reviews:
         provider_id = review['provider_id']
@@ -1105,12 +1105,15 @@ def fraud_monitoring():
         avg_rating = sum(ratings) / len(ratings)
         if avg_rating < 2.5 and len(ratings) >= 3:
             provider = db.get_by_id('Users', provider_id)
-            if provider:
+            if provider and provider.get('status') == 'active':
                 provider['avg_rating'] = round(avg_rating, 2)
                 provider['review_count'] = len(ratings)
                 flagged_providers.append(provider)
     
-    # 2. Users with multiple cancellations
+    # Sort by lowest rating first
+    flagged_providers.sort(key=lambda x: x['avg_rating'])
+    
+    # 2. Users with multiple cancellations (exclude already suspended/banned)
     user_cancellations = {}
     for booking in bookings:
         if booking['booking_status'] == 'cancelled':
@@ -1121,19 +1124,24 @@ def fraud_monitoring():
     for user_id, cancellation_count in user_cancellations.items():
         if cancellation_count >= 3:
             user = db.get_by_id('Users', user_id)
-            if user:
+            if user and user.get('status') == 'active':
                 user['cancellation_count'] = cancellation_count
                 flagged_users.append(user)
     
-    # 3. Duplicate accounts detection (same NID or phone)
+    # Sort by most cancellations first
+    flagged_users.sort(key=lambda x: x['cancellation_count'], reverse=True)
+    
+    # 3. Duplicate accounts detection (same NID or phone) - improved with deduplication
     duplicate_accounts = []
+    processed_user_sets = set()  # Track user ID combinations to avoid duplicates
+    
     nid_groups = {}
     phone_groups = {}
     
     # Group users by NID
     for user in users:
         nid = user.get('nid_number')
-        if nid:
+        if nid and nid.strip():  # Check for non-empty NID
             if nid not in nid_groups:
                 nid_groups[nid] = []
             nid_groups[nid].append(user)
@@ -1141,7 +1149,7 @@ def fraud_monitoring():
     # Group users by phone
     for user in users:
         phone = user.get('contact_number')
-        if phone:
+        if phone and phone.strip():  # Check for non-empty phone
             if phone not in phone_groups:
                 phone_groups[phone] = []
             phone_groups[phone].append(user)
@@ -1149,39 +1157,59 @@ def fraud_monitoring():
     # Add NID duplicates
     for nid, users_list in nid_groups.items():
         if len(users_list) > 1:
-            duplicate_accounts.append({
-                'type': 'NID',
-                'identifier': nid,
-                'users': users_list
-            })
+            user_ids = frozenset(u['id'] for u in users_list)
+            if user_ids not in processed_user_sets:
+                duplicate_accounts.append({
+                    'type': 'NID',
+                    'identifier': nid,
+                    'users': users_list,
+                    'count': len(users_list),
+                    'severity': 'high' if len(users_list) > 2 else 'medium'
+                })
+                processed_user_sets.add(user_ids)
     
-    # Add phone duplicates
+    # Add phone duplicates (only if not already added via NID)
     for phone, users_list in phone_groups.items():
         if len(users_list) > 1:
-            duplicate_accounts.append({
-                'type': 'Phone',
-                'identifier': phone,
-                'users': users_list
-            })
+            user_ids = frozenset(u['id'] for u in users_list)
+            if user_ids not in processed_user_sets:
+                duplicate_accounts.append({
+                    'type': 'Phone',
+                    'identifier': phone,
+                    'users': users_list,
+                    'count': len(users_list),
+                    'severity': 'high' if len(users_list) > 2 else 'medium'
+                })
+                processed_user_sets.add(user_ids)
     
-    # 4. Suspicious payment patterns (multiple failed payments)
+    # Sort by count (most duplicates first)
+    duplicate_accounts.sort(key=lambda x: x['count'], reverse=True)
+    
+    # 4. Suspicious payment patterns (multiple failed payments) - improved error handling
     user_failed_payments = {}
     for payment in payments:
         if payment.get('payment_status') == 'failed':
-            booking = db.get_by_id('Bookings', payment['booking_id'])
-            if booking:
-                user_id = booking['user_id']
-                user_failed_payments[user_id] = user_failed_payments.get(user_id, 0) + 1
+            booking_id = payment.get('booking_id')
+            if booking_id:
+                booking = db.get_by_id('Bookings', booking_id)
+                if booking:
+                    user_id = booking.get('user_id')
+                    if user_id:
+                        user_failed_payments[user_id] = user_failed_payments.get(user_id, 0) + 1
     
     suspicious_payments = []
     for user_id, failed_count in user_failed_payments.items():
         if failed_count >= 3:
             user = db.get_by_id('Users', user_id)
-            if user:
+            if user and user.get('status') == 'active':
                 user['failed_payment_count'] = failed_count
+                user['severity'] = 'critical' if failed_count >= 5 else 'high'
                 suspicious_payments.append(user)
     
-    # 5. Fake reviews detection (very similar reviews from same user)
+    # Sort by most failed payments first
+    suspicious_payments.sort(key=lambda x: x['failed_payment_count'], reverse=True)
+    
+    # 5. Fake reviews detection (improved algorithm)
     user_reviews = {}
     for review in reviews:
         user_id = review['user_id']
@@ -1192,23 +1220,59 @@ def fraud_monitoring():
     fake_review_suspects = []
     for user_id, user_review_list in user_reviews.items():
         if len(user_review_list) >= 5:
-            # Check if all reviews have same rating and very short comments
             ratings = [r['rating'] for r in user_review_list]
-            if len(set(ratings)) == 1:  # All same rating
-                avg_comment_length = sum(len(r.get('comment', '')) for r in user_review_list) / len(user_review_list)
-                if avg_comment_length < 20:  # Very short comments
-                    user = db.get_by_id('Users', user_id)
-                    if user:
-                        user['review_count'] = len(user_review_list)
-                        user['pattern'] = f'All {ratings[0]}-star, short comments'
-                        fake_review_suspects.append(user)
+            comments = [r.get('comment', '') for r in user_review_list]
+            
+            # Multiple suspicious patterns
+            suspicious_score = 0
+            patterns = []
+            
+            # Pattern 1: All same rating (extreme)
+            if len(set(ratings)) == 1 and (ratings[0] == 5 or ratings[0] == 1):
+                suspicious_score += 3
+                patterns.append(f'All {ratings[0]}-star')
+            
+            # Pattern 2: Very short or no comments
+            avg_comment_length = sum(len(c) for c in comments) / len(comments) if comments else 0
+            if avg_comment_length < 15:
+                suspicious_score += 2
+                patterns.append('Very short comments')
+            
+            # Pattern 3: Reviews posted in quick succession (if timestamps available)
+            # This would require review timestamps - skip for now
+            
+            # Pattern 4: Too many reviews in short time
+            if len(user_review_list) >= 10:
+                suspicious_score += 2
+                patterns.append(f'{len(user_review_list)} reviews')
+            
+            if suspicious_score >= 4:
+                user = db.get_by_id('Users', user_id)
+                if user:
+                    user['review_count'] = len(user_review_list)
+                    user['pattern'] = ', '.join(patterns)
+                    user['suspicion_score'] = suspicious_score
+                    user['severity'] = 'critical' if suspicious_score >= 6 else 'high'
+                    fake_review_suspects.append(user)
+    
+    # Sort by suspicion score
+    fake_review_suspects.sort(key=lambda x: x['suspicion_score'], reverse=True)
+    
+    # Calculate summary statistics
+    fraud_stats = {
+        'total_indicators': len(flagged_providers) + len(flagged_users) + len(duplicate_accounts) + len(suspicious_payments) + len(fake_review_suspects),
+        'critical_count': len([p for p in suspicious_payments if p.get('severity') == 'critical']) + len([r for r in fake_review_suspects if r.get('severity') == 'critical']),
+        'high_count': len(flagged_providers) + len([d for d in duplicate_accounts if d.get('severity') == 'high']),
+        'medium_count': len(flagged_users) + len([d for d in duplicate_accounts if d.get('severity') == 'medium'])
+    }
     
     return render_template('admin/fraud.html',
                          flagged_providers=flagged_providers,
                          flagged_users=flagged_users,
                          duplicate_accounts=duplicate_accounts,
                          suspicious_payments=suspicious_payments,
-                         fake_review_suspects=fake_review_suspects)
+                         fake_review_suspects=fake_review_suspects,
+                         fraud_stats=fraud_stats)
 
 # ========== ANALYTICS ==========
 

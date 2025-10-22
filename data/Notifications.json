@@ -412,5 +412,11 @@
         "notification_type": "in_app",
         "message": "Your payment for Basic Electrical Repair has been confirmed!",
         "id": 61
+    },
+    {
+        "user_id": 4,
+        "notification_type": "in_app",
+        "message": "Your account has been flagged for review. Our team will investigate and contact you if needed.",
+        "id": 62
     }
 ]

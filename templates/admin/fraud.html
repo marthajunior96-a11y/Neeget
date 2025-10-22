@@ -8,26 +8,140 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="admin-page-title"><i class="fas fa-shield-alt"></i> Fraud Monitoring</h1>
+<h1 class="admin-page-title">
+    <i class="fas fa-shield-alt"></i> Fraud Monitoring Dashboard
+</h1>
 
+<!-- Summary Statistics -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="admin-card" style="border-left: 4px solid #e74c3c;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-1">Total Indicators</h6>
+                    <h2 class="mb-0">{{ fraud_stats.total_indicators }}</h2>
+                </div>
+                <div class="admin-icon" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card" style="border-left: 4px solid #c0392b;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-1">Critical</h6>
+                    <h2 class="mb-0 text-danger">{{ fraud_stats.critical_count }}</h2>
+                </div>
+                <div class="admin-icon" style="background: rgba(192, 57, 43, 0.1); color: #c0392b;">
+                    <i class="fas fa-skull-crossbones"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card" style="border-left: 4px solid #e67e22;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-1">High Priority</h6>
+                    <h2 class="mb-0 text-warning">{{ fraud_stats.high_count }}</h2>
+                </div>
+                <div class="admin-icon" style="background: rgba(230, 126, 34, 0.1); color: #e67e22;">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card" style="border-left: 4px solid #f39c12;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-1">Medium Priority</h6>
+                    <h2 class="mb-0" style="color: #f39c12;">{{ fraud_stats.medium_count }}</h2>
+                </div>
+                <div class="admin-icon" style="background: rgba(243, 156, 18, 0.1); color: #f39c12;">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter Bar -->
 <div class="admin-card mb-4">
-    <h5><i class="fas fa-exclamation-triangle"></i> Providers with Low Ratings</h5>
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <input type="text" id="fraudSearch" class="form-control" placeholder="Search by name, email, or identifier...">
+        </div>
+        <div class="col-md-6 text-right">
+            <button class="btn btn-secondary" onclick="exportFraudData()">
+                <i class="fas fa-download"></i> Export Report
+            </button>
+            <button class="btn btn-primary" onclick="refreshFraudData()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 1. Low Rating Providers -->
+<div class="admin-card mb-4 fraud-section" data-priority="high">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>
+            <span class="badge badge-admin-danger mr-2">HIGH</span>
+            <i class="fas fa-star-half-alt"></i> Providers with Low Ratings
+        </h5>
+        <span class="badge badge-secondary">{{ flagged_providers|length }} found</span>
+    </div>
     <div class="admin-table">
-        <table class="table">
+        <table class="table fraud-table">
             <thead>
-                <tr><th>Name</th><th>Avg Rating</th><th>Reviews</th><th>Actions</th></tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Avg Rating</th>
+                    <th>Reviews</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
                 {% for provider in flagged_providers %}
                 <tr>
-                    <td>{{ provider.name }}</td>
-                    <td><span class="badge badge-admin-danger">{{ provider.avg_rating }} ⭐</span></td>
-                    <td>{{ provider.review_count }}</td>
-                    <td><a href="{{ url_for('admin.user_detail', user_id=provider.id) }}" class="btn btn-sm btn-info"><i class="fas fa-search"></i> Investigate</a></td>
+                    <td>
+                        <strong>{{ provider.name }}</strong>
+                    </td>
+                    <td>{{ provider.email }}</td>
+                    <td>
+                        <span class="badge badge-admin-danger">
+                            {{ provider.avg_rating }} ⭐
+                        </span>
+                    </td>
+                    <td>{{ provider.review_count }} reviews</td>
+                    <td>
+                        <span class="badge badge-success">{{ provider.status }}</span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{ url_for('admin.user_detail', user_id=provider.id) }}" class="btn btn-sm btn-info" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button class="btn btn-sm btn-warning" onclick="suspendUser({{ provider.id }}, '{{ provider.name }}')" title="Suspend">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="banUser({{ provider.id }}, '{{ provider.name }}')" title="Ban">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="4" class="text-center text-muted">No providers with low ratings detected</td>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i><br>
+                        No providers with low ratings detected
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -35,24 +149,61 @@
     </div>
 </div>
 
-<div class="admin-card mb-4">
-    <h5><i class="fas fa-ban"></i> Users with Multiple Cancellations</h5>
+<!-- 2. Multiple Cancellations -->
+<div class="admin-card mb-4 fraud-section" data-priority="medium">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>
+            <span class="badge badge-admin-warning mr-2">MEDIUM</span>
+            <i class="fas fa-ban"></i> Users with Multiple Cancellations
+        </h5>
+        <span class="badge badge-secondary">{{ flagged_users|length }} found</span>
+    </div>
     <div class="admin-table">
-        <table class="table">
+        <table class="table fraud-table">
             <thead>
-                <tr><th>Name</th><th>Email</th><th>Cancellations</th><th>Actions</th></tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Cancellations</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
                 {% for user in flagged_users %}
                 <tr>
-                    <td>{{ user.name }}</td>
+                    <td><strong>{{ user.name }}</strong></td>
                     <td>{{ user.email }}</td>
-                    <td><span class="badge badge-admin-warning">{{ user.cancellation_count }}</span></td>
-                    <td><a href="{{ url_for('admin.flag_user', user_id=user.id) }}" class="btn btn-sm btn-warning"><i class="fas fa-flag"></i> Flag</a></td>
+                    <td>{{ user.contact_number or 'N/A' }}</td>
+                    <td>
+                        <span class="badge badge-admin-warning">
+                            {{ user.cancellation_count }} times
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-success">{{ user.status }}</span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-info" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ url_for('admin.flag_user', user_id=user.id) }}" class="btn btn-sm btn-warning" title="Flag User">
+                                <i class="fas fa-flag"></i>
+                            </a>
+                            <button class="btn btn-sm btn-secondary" onclick="dismissIndicator(this)" title="Dismiss">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="4" class="text-center text-muted">No users with multiple cancellations detected</td>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i><br>
+                        No users with multiple cancellations detected
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -60,41 +211,135 @@
     </div>
 </div>
 
-<div class="admin-card mb-4">
-    <h5><i class="fas fa-copy"></i> Duplicate Accounts Detected</h5>
-    {% if duplicate_accounts %}
-        {% for dup in duplicate_accounts %}
-        <div class="alert alert-warning">
-            <strong>{{ dup.type }}: {{ dup.identifier }}</strong><br>
-            Found in {{ dup.users|length }} accounts:
-            {% for user in dup.users %}
-                <a href="{{ url_for('admin.user_detail', user_id=user.id) }}">{{ user.name }}</a>{% if not loop.last %}, {% endif %}
-            {% endfor %}
-        </div>
-        {% endfor %}
-    {% else %}
-        <p class="text-center text-muted py-3">No duplicate accounts detected</p>
-    {% endif %}
+<!-- 3. Duplicate Accounts -->
+<div class="admin-card mb-4 fraud-section" data-priority="high">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>
+            <span class="badge badge-admin-danger mr-2">HIGH</span>
+            <i class="fas fa-copy"></i> Duplicate Accounts Detected
+        </h5>
+        <span class="badge badge-secondary">{{ duplicate_accounts|length }} groups found</span>
+    </div>
+    <div class="admin-table">
+        <table class="table fraud-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Identifier</th>
+                    <th>Accounts</th>
+                    <th>Severity</th>
+                    <th>User Names</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dup in duplicate_accounts %}
+                <tr>
+                    <td>
+                        <span class="badge badge-info">
+                            <i class="fas fa-{{ 'id-card' if dup.type == 'NID' else 'phone' }}"></i>
+                            {{ dup.type }}
+                        </span>
+                    </td>
+                    <td><code>{{ dup.identifier }}</code></td>
+                    <td>
+                        <span class="badge badge-admin-{{ 'danger' if dup.severity == 'high' else 'warning' }}">
+                            {{ dup.count }} accounts
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-admin-{{ 'danger' if dup.severity == 'high' else 'warning' }}">
+                            {{ dup.severity|upper }}
+                        </span>
+                    </td>
+                    <td>
+                        {% for user in dup.users %}
+                            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="badge badge-secondary mr-1">
+                                {{ user.name }}
+                            </a>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-primary" onclick="investigateDuplicates({{ dup.users|tojson|safe }})" title="Investigate All">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="banDuplicates({{ dup.users|tojson|safe }}, '{{ dup.type }}')" title="Ban All">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i><br>
+                        No duplicate accounts detected
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<div class="admin-card mb-4">
-    <h5><i class="fas fa-credit-card"></i> Suspicious Payment Patterns</h5>
+<!-- 4. Suspicious Payment Patterns -->
+<div class="admin-card mb-4 fraud-section" data-priority="critical">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>
+            <span class="badge" style="background: #c0392b; color: white;" class="mr-2">CRITICAL</span>
+            <i class="fas fa-credit-card"></i> Suspicious Payment Patterns
+        </h5>
+        <span class="badge badge-secondary">{{ suspicious_payments|length }} found</span>
+    </div>
     <div class="admin-table">
-        <table class="table">
+        <table class="table fraud-table">
             <thead>
-                <tr><th>Name</th><th>Email</th><th>Failed Payments</th><th>Actions</th></tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Failed Payments</th>
+                    <th>Severity</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
                 {% for user in suspicious_payments %}
-                <tr>
-                    <td>{{ user.name }}</td>
+                <tr class="{{ 'table-danger' if user.severity == 'critical' else '' }}">
+                    <td><strong>{{ user.name }}</strong></td>
                     <td>{{ user.email }}</td>
-                    <td><span class="badge badge-admin-danger">{{ user.failed_payment_count }}</span></td>
-                    <td><a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-info"><i class="fas fa-search"></i> Investigate</a></td>
+                    <td>{{ user.contact_number or 'N/A' }}</td>
+                    <td>
+                        <span class="badge badge-admin-danger">
+                            {{ user.failed_payment_count }} failures
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-admin-{{ 'danger' if user.severity == 'critical' else 'warning' }}">
+                            {{ user.severity|upper }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-info" title="Investigate">
+                                <i class="fas fa-search"></i>
+                            </a>
+                            <button class="btn btn-sm btn-warning" onclick="suspendUser({{ user.id }}, '{{ user.name }}')" title="Suspend">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="banUser({{ user.id }}, '{{ user.name }}')" title="Ban">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="4" class="text-center text-muted">No suspicious payment patterns detected</td>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i><br>
+                        No suspicious payment patterns detected
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -102,29 +347,200 @@
     </div>
 </div>
 
-<div class="admin-card">
-    <h5><i class="fas fa-robot"></i> Fake Review Suspects</h5>
+<!-- 5. Fake Review Suspects -->
+<div class="admin-card mb-4 fraud-section" data-priority="high">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>
+            <span class="badge badge-admin-danger mr-2">HIGH</span>
+            <i class="fas fa-robot"></i> Fake Review Suspects
+        </h5>
+        <span class="badge badge-secondary">{{ fake_review_suspects|length }} found</span>
+    </div>
     <div class="admin-table">
-        <table class="table">
+        <table class="table fraud-table">
             <thead>
-                <tr><th>Name</th><th>Email</th><th>Review Count</th><th>Pattern</th><th>Actions</th></tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Review Count</th>
+                    <th>Pattern</th>
+                    <th>Score</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
                 {% for user in fake_review_suspects %}
-                <tr>
-                    <td>{{ user.name }}</td>
+                <tr class="{{ 'table-danger' if user.severity == 'critical' else '' }}">
+                    <td><strong>{{ user.name }}</strong></td>
                     <td>{{ user.email }}</td>
-                    <td><span class="badge badge-admin-warning">{{ user.review_count }}</span></td>
-                    <td><small class="text-muted">{{ user.pattern }}</small></td>
-                    <td><a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-info"><i class="fas fa-search"></i> Investigate</a></td>
+                    <td>
+                        <span class="badge badge-admin-warning">
+                            {{ user.review_count }} reviews
+                        </span>
+                    </td>
+                    <td>
+                        <small class="text-muted">{{ user.pattern }}</small>
+                    </td>
+                    <td>
+                        <span class="badge badge-admin-{{ 'danger' if user.severity == 'critical' else 'warning' }}">
+                            {{ user.suspicion_score }}/10
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-sm btn-info" title="Investigate">
+                                <i class="fas fa-search"></i>
+                            </a>
+                            <button class="btn btn-sm btn-warning" onclick="flagUser({{ user.id }}, '{{ user.name }}')" title="Flag">
+                                <i class="fas fa-flag"></i>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="dismissIndicator(this)" title="Dismiss">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="5" class="text-center text-muted">No fake review patterns detected</td>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i><br>
+                        No fake review patterns detected
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<style>
+.fraud-table tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    cursor: pointer;
+}
+
+.fraud-section {
+    border-left: 4px solid #6c757d;
+    transition: all 0.3s ease;
+}
+
+.fraud-section[data-priority="critical"] {
+    border-left-color: #c0392b;
+}
+
+.fraud-section[data-priority="high"] {
+    border-left-color: #e74c3c;
+}
+
+.fraud-section[data-priority="medium"] {
+    border-left-color: #f39c12;
+}
+
+.admin-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.5rem;
+}
+
+.table-danger {
+    background-color: rgba(231, 76, 60, 0.1) !important;
+}
+
+.btn-group .btn {
+    margin: 0 2px;
+}
+
+code {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+}
+</style>
+
+<script>
+// Search functionality
+document.getElementById('fraudSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    document.querySelectorAll('.fraud-table tbody tr').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
+
+// Quick actions
+function suspendUser(userId, userName) {
+    if (confirm(`Are you sure you want to suspend user "${userName}"?`)) {
+        window.location.href = `/admin/users/${userId}/suspend`;
+    }
+}
+
+function banUser(userId, userName) {
+    if (confirm(`Are you sure you want to BAN user "${userName}"? This is a severe action!`)) {
+        window.location.href = `/admin/users/${userId}/ban`;
+    }
+}
+
+function flagUser(userId, userName) {
+    if (confirm(`Flag user "${userName}" for further investigation?`)) {
+        window.location.href = `/admin/users/${userId}/flag`;
+    }
+}
+
+function dismissIndicator(btn) {
+    if (confirm('Dismiss this fraud indicator?')) {
+        const row = btn.closest('tr');
+        row.style.opacity = '0.3';
+        row.style.textDecoration = 'line-through';
+        setTimeout(() => {
+            row.style.display = 'none';
+        }, 500);
+    }
+}
+
+function investigateDuplicates(users) {
+    const userLinks = users.map(u => `- ${u.name} (ID: ${u.id})`).join('\n');
+    alert(`Duplicate Account Group:\n\n${userLinks}\n\nOpening investigation tabs...`);
+    users.forEach(user => {
+        window.open(`/admin/users/${user.id}`, '_blank');
+    });
+}
+
+function banDuplicates(users, type) {
+    const userNames = users.map(u => u.name).join(', ');
+    if (confirm(`Ban ALL ${users.length} accounts with duplicate ${type}?\n\nAffected users: ${userNames}\n\nThis action is severe!`)) {
+        users.forEach(user => {
+            fetch(`/admin/users/${user.id}/ban`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                }
+            });
+        });
+        alert('Ban requests sent for all duplicate accounts. Refreshing page...');
+        setTimeout(() => location.reload(), 2000);
+    }
+}
+
+function exportFraudData() {
+    alert('Fraud report export feature coming soon!');
+}
+
+function refreshFraudData() {
+    location.reload();
+}
+
+// Auto-highlight critical rows
+document.addEventListener('DOMContentLoaded', function() {
+    const criticalRows = document.querySelectorAll('.table-danger');
+    criticalRows.forEach(row => {
+        row.style.animation = 'pulse 2s infinite';
+    });
+});
+</script>
 {% endblock %}
