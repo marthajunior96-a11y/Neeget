@@ -113,9 +113,9 @@
         "booking_id": 6,
         "payment_method": "bkash",
         "payment_amount": 22.0,
-        "platform_fee": 22.0,
+        "platform_fee": 2.2,
         "tax_amount": 1.76,
-        "total_amount": 45.76,
+        "total_amount": 25.96,
         "payment_status": "pending",
         "id": 12
     }
