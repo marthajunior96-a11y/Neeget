@@ -128,13 +128,22 @@ def detail(service_id):
     all_bookings = db.get_all("Bookings")
     completed_jobs = len([b for b in all_bookings if b["provider_id"] == service.get("provider_id") and b["booking_status"] == "completed"])
     
+    # Check if current user has an accepted/completed booking for this service
+    user_has_booking = False
+    if g.user and g.user.get('role') == 'user':
+        user_bookings = [b for b in all_bookings 
+                        if b.get('user_id') == g.user['id'] 
+                        and b.get('service_id') == service_id
+                        and b.get('booking_status') in ['accepted', 'completed']]
+        user_has_booking = len(user_bookings) > 0
+    
     service['category_name'] = category.get('category_name') if category else 'Unknown'
     service['provider_name'] = provider.get('name') if provider else 'Unknown'
     service['provider_email'] = provider.get('email') if provider else 'Not provided'
     service['contact_number'] = provider.get('contact_number') if provider else 'Not provided'
     service['provider'] = provider
     
-    return render_template('services/detail.html', service=service, reviews=reviews, average_rating=average_rating, review_count=review_count, completed_jobs=completed_jobs)
+    return render_template('services/detail.html', service=service, reviews=reviews, average_rating=average_rating, review_count=review_count, completed_jobs=completed_jobs, user_has_booking=user_has_booking)
 
 @bp.route('/<int:service_id>/start-chat')
 @login_required
