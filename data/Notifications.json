@@ -432,5 +432,17 @@
         "notification_type": "in_app",
         "message": "New booking request from Zohir Rayhan for Basic Electrical Repair",
         "id": 64
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New booking request from Zohir Rayhan for Basic Electrical Repair",
+        "id": 65
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "Your booking for Basic Electrical Repair has been confirmed! Payment is pending verification.",
+        "id": 66
     }
 ]
