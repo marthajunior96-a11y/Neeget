@@ -436,12 +436,18 @@
 function startChat() {
     {% if g.user %}
         {% if user_has_booking %}
-            window.location.href = "{{ url_for('bookings.list_bookings') }}";
+            if (confirm('Go to your bookings to access the chat?\n\nYou will be redirected to the bookings page.')) {
+                window.location.href = "{{ url_for('bookings.list_bookings') }}";
+            }
         {% else %}
-            window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
+            if (confirm('Book this service to start chatting?\n\nYou will be redirected to the booking page.')) {
+                window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
+            }
         {% endif %}
     {% else %}
-        window.location.href = "{{ url_for('auth.login') }}";
+        if (confirm('Login required to chat with provider.\n\nRedirect to login page?')) {
+            window.location.href = "{{ url_for('auth.login') }}";
+        }
     {% endif %}
 }
 
@@ -452,13 +458,19 @@ function callProvider() {
             if (phone && phone !== 'Not provided') {
                 window.location.href = `tel:${phone}`;
             } else {
-                window.location.href = "{{ url_for('bookings.list_bookings') }}";
+                if (confirm('Contact number not available.\n\nGo to your bookings to contact the provider?')) {
+                    window.location.href = "{{ url_for('bookings.list_bookings') }}";
+                }
             }
         {% else %}
-            window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
+            if (confirm('Book this service to call the provider?\n\nYou will be redirected to the booking page.')) {
+                window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
+            }
         {% endif %}
     {% else %}
-        window.location.href = "{{ url_for('auth.login') }}";
+        if (confirm('Login required to contact provider.\n\nRedirect to login page?')) {
+            window.location.href = "{{ url_for('auth.login') }}";
+        }
     {% endif %}
 }
 
