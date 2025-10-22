@@ -89,12 +89,14 @@ def book_service(service_id):
     payment_setting = next((s for s in settings if s['setting_key'] == 'payment_methods'), None)
     if payment_setting:
         methods = payment_setting['setting_value'].split(',')
-        # Clean up display: remove quotes, brackets, and extra spaces for better visualization
-        form.payment_method.choices = [
-            (m.strip().strip('"').strip("'").strip('[]').lower().replace(' ', '_'), 
-             m.strip().strip('"').strip("'").strip('[]').strip()) 
-            for m in methods
-        ]
+        # Clean up display: aggressively remove all quotes, brackets, and extra spaces
+        cleaned_methods = []
+        for m in methods:
+            # Strip whitespace, then remove all quotes and brackets
+            clean = m.strip().strip('"').strip("'").strip('[]').strip('"').strip("'").strip()
+            if clean:  # Only add non-empty methods
+                cleaned_methods.append((clean.lower().replace(' ', '_'), clean))
+        form.payment_method.choices = cleaned_methods
     
     # Create a dummy booking for GET request to avoid undefined error
     booking = {
