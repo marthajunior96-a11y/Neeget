@@ -240,41 +240,6 @@
                     
                 </div>
                 
-                <div class="performance-metrics">
-                    <div class="metric-item mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="metric-label">Response Rate</span>
-                            <span class="metric-value font-weight-bold">{{ provider_stats.response_rate or '95' }}%</span>
-                        </div>
-                        <div class="progress" style="height: 6px;">
-                            <div class="progress-bar bg-success" style="width: {{ provider_stats.response_rate or '95' }}%"></div>
-                        </div>
-                    </div>
-                    <div class="metric-item mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="metric-label">Completion Rate</span>
-                            <span class="metric-value font-weight-bold">{{ provider_stats.completion_rate or '98' }}%</span>
-                        </div>
-                        <div class="progress" style="height: 6px;">
-                            <div class="progress-bar bg-primary" style="width: {{ provider_stats.completion_rate or '98' }}%"></div>
-                        </div>
-                    </div>
-                    <div class="metric-item mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="metric-label">Customer Satisfaction</span>
-                            <span class="metric-value font-weight-bold">{{ provider_stats.satisfaction_rate or '96' }}%</span>
-                        </div>
-                        <div class="progress" style="height: 6px;">
-                            <div class="progress-bar bg-warning" style="width: {{ provider_stats.satisfaction_rate or '96' }}%"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="performance-badge text-center mt-3 p-3" style="background: rgba(40, 167, 69, 0.1); border-radius: var(--radius-lg);">
-                    <i class="fas fa-award text-success mb-2" style="font-size: 1.5rem;"></i>
-                    <p class="text-success font-weight-bold mb-0">Top Performer</p>
-                    <small class="text-muted">Keep up the excellent work!</small>
-                </div>
             </div>
 
             <!-- Recent Reviews -->
