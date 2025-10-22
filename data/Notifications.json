@@ -418,5 +418,13 @@
         "notification_type": "in_app",
         "message": "Your account has been flagged for review. Our team will investigate and contact you if needed.",
         "id": 62
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "New message from Zohir Rayhan about booking #1",
+        "sent_at": "2025-10-22T16:19:23.760734",
+        "is_read": false,
+        "id": 63
     }
 ]

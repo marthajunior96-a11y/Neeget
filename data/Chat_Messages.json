@@ -214,5 +214,14 @@
         "sent_at": "2025-08-20T00:46:59.758889",
         "is_read": false,
         "id": 24
+    },
+    {
+        "booking_id": 1,
+        "sender_id": 5,
+        "receiver_id": 7,
+        "message_content": "Hello! I have a question about the service.",
+        "sent_at": "2025-10-22T16:19:23.759911",
+        "is_read": false,
+        "id": 25
     }
 ]
