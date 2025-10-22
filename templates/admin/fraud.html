@@ -108,19 +108,29 @@
             </thead>
             <tbody>
                 {% for provider in flagged_providers %}
-                <tr>
+                <tr class="{{ 'table-danger' if provider.severity == 'critical' or provider.severity == 'high' else '' }}">
                     <td>
                         <strong>{{ provider.name }}</strong>
                     </td>
                     <td>{{ provider.email }}</td>
                     <td>
-                        <span class="badge badge-admin-danger">
-                            {{ provider.avg_rating }} ⭐
-                        </span>
+                        {% if provider.severity == 'critical' %}
+                            <span class="badge badge-admin-danger">{{ provider.avg_rating }} ⭐</span>
+                        {% elif provider.severity == 'high' %}
+                            <span class="badge badge-admin-warning">{{ provider.avg_rating }} ⭐</span>
+                        {% else %}
+                            <span class="badge badge-secondary">{{ provider.avg_rating }} ⭐</span>
+                        {% endif %}
                     </td>
                     <td>{{ provider.review_count }} reviews</td>
                     <td>
-                        <span class="badge badge-success">{{ provider.status }}</span>
+                        {% if provider.severity == 'critical' %}
+                            <span class="badge badge-admin-danger">CRITICAL</span>
+                        {% elif provider.severity == 'high' %}
+                            <span class="badge badge-admin-warning">HIGH</span>
+                        {% else %}
+                            <span class="badge badge-secondary">MEDIUM</span>
+                        {% endif %}
                     </td>
                     <td>
                         <div class="btn-group">
@@ -172,17 +182,27 @@
             </thead>
             <tbody>
                 {% for user in flagged_users %}
-                <tr>
+                <tr class="{{ 'table-danger' if user.severity == 'high' else '' }}">
                     <td><strong>{{ user.name }}</strong></td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.contact_number or 'N/A' }}</td>
                     <td>
-                        <span class="badge badge-admin-warning">
-                            {{ user.cancellation_count }} times
-                        </span>
+                        {% if user.severity == 'high' %}
+                            <span class="badge badge-admin-warning">{{ user.cancellation_count }} times</span>
+                        {% elif user.severity == 'medium' %}
+                            <span class="badge badge-secondary">{{ user.cancellation_count }} times</span>
+                        {% else %}
+                            <span class="badge badge-admin-info">{{ user.cancellation_count }} times</span>
+                        {% endif %}
                     </td>
                     <td>
-                        <span class="badge badge-success">{{ user.status }}</span>
+                        {% if user.severity == 'high' %}
+                            <span class="badge badge-admin-warning">HIGH</span>
+                        {% elif user.severity == 'medium' %}
+                            <span class="badge badge-secondary">MEDIUM</span>
+                        {% else %}
+                            <span class="badge badge-admin-info">LOW</span>
+                        {% endif %}
                     </td>
                     <td>
                         <div class="btn-group">

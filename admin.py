@@ -1108,6 +1108,13 @@ def fraud_monitoring():
             if provider and provider.get('status') == 'active':
                 provider['avg_rating'] = round(avg_rating, 2)
                 provider['review_count'] = len(ratings)
+                # Assign severity based on rating and review count
+                if avg_rating < 1.5:
+                    provider['severity'] = 'critical'
+                elif avg_rating < 2.0:
+                    provider['severity'] = 'high'
+                else:
+                    provider['severity'] = 'medium'
                 flagged_providers.append(provider)
     
     # Sort by lowest rating first
@@ -1126,6 +1133,13 @@ def fraud_monitoring():
             user = db.get_by_id('Users', user_id)
             if user and user.get('status') == 'active':
                 user['cancellation_count'] = cancellation_count
+                # Assign severity based on cancellation count
+                if cancellation_count >= 7:
+                    user['severity'] = 'high'
+                elif cancellation_count >= 5:
+                    user['severity'] = 'medium'
+                else:
+                    user['severity'] = 'low'
                 flagged_users.append(user)
     
     # Sort by most cancellations first
@@ -1261,9 +1275,23 @@ def fraud_monitoring():
     # Calculate summary statistics
     fraud_stats = {
         'total_indicators': len(flagged_providers) + len(flagged_users) + len(duplicate_accounts) + len(suspicious_payments) + len(fake_review_suspects),
-        'critical_count': len([p for p in suspicious_payments if p.get('severity') == 'critical']) + len([r for r in fake_review_suspects if r.get('severity') == 'critical']),
-        'high_count': len(flagged_providers) + len([d for d in duplicate_accounts if d.get('severity') == 'high']),
-        'medium_count': len(flagged_users) + len([d for d in duplicate_accounts if d.get('severity') == 'medium'])
+        'critical_count': (
+            len([p for p in flagged_providers if p.get('severity') == 'critical']) +
+            len([p for p in suspicious_payments if p.get('severity') == 'critical']) +
+            len([r for r in fake_review_suspects if r.get('severity') == 'critical'])
+        ),
+        'high_count': (
+            len([p for p in flagged_providers if p.get('severity') == 'high']) +
+            len([u for u in flagged_users if u.get('severity') == 'high']) +
+            len([d for d in duplicate_accounts if d.get('severity') == 'high']) +
+            len([p for p in suspicious_payments if p.get('severity') == 'high']) +
+            len([r for r in fake_review_suspects if r.get('severity') == 'high'])
+        ),
+        'medium_count': (
+            len([p for p in flagged_providers if p.get('severity') == 'medium']) +
+            len([u for u in flagged_users if u.get('severity') == 'medium']) +
+            len([d for d in duplicate_accounts if d.get('severity') == 'medium'])
+        )
     }
     
     return render_template('admin/fraud.html',

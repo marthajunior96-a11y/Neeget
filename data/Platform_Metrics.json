@@ -34,5 +34,14 @@
         "service_popularity": "{\"Home Cleaning\": 0, \"Plumbing\": 0, \"Electrical\": 4, \"Pet Care\": 0}",
         "recorded_at": "2025-10-20T15:02:51.295836",
         "id": 4
+    },
+    {
+        "total_users": 6,
+        "total_providers": 4,
+        "total_bookings": 5,
+        "total_revenue": 192.34,
+        "service_popularity": "{\"Home Cleaning\": 0, \"Plumbing\": 0, \"Electrical\": 4, \"Pet Care\": 0}",
+        "recorded_at": "2025-10-22T16:15:21.760985",
+        "id": 5
     }
 ]
