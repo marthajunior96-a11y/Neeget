@@ -63,7 +63,7 @@
         "user_id": 5,
         "service_id": 6,
         "provider_id": 7,
-        "booking_status": "pending",
+        "booking_status": "cancelled",
         "booking_date": "2025-10-22T16:22:44.066526",
         "service_date": "2025-10-23T09:00:00",
         "otp_code": "324357",

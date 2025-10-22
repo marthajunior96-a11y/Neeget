@@ -120,7 +120,7 @@
         <div class="row">
             {% for service in services %}
                 <div class="col-md-6 col-lg-4 mb-5">
-                    <div class="creative-card service-card h-100 animate-fade-in">
+                    <div class="creative-card service-card h-100 animate-fade-in" onclick="window.location.href='{{ url_for('services.detail', service_id=service.id) }}'" style="cursor: pointer;">
                         <div class="service-card-header p-3 mb-3" style="background: rgba(102, 126, 234, 0.1); border-radius: var(--radius-md) var(--radius-md) 0 0;">
                             <div class="d-flex align-items-center">
                                 <div class="service-icon mr-3" style="width: 40px; height: 40px; background: var(--primary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem;">
@@ -159,7 +159,7 @@
                                 <div class="price-display">
                                     <h4 class="text-gradient font-weight-bold mb-0">  ৳ {{ "%.2f"|format(service.price) }}</h4>
                                 </div>
-                                <a href="{{ url_for('bookings.book_service', service_id=service.id) }}" class="btn btn-creative-primary btn-sm">
+                                <a href="{{ url_for('bookings.book_service', service_id=service.id) }}" class="btn btn-creative-primary btn-sm" onclick="event.stopPropagation();">
                                     <i class="fas fa-calendar-plus mr-1"></i>Book
                                 </a>
                             </div>

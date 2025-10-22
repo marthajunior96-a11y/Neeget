@@ -451,5 +451,17 @@
         "notification_type": "service_approval",
         "is_read": false,
         "id": 67
+    },
+    {
+        "user_id": 7,
+        "notification_type": "in_app",
+        "message": "Booking has been cancelled by Zohir Rayhan",
+        "id": 68
+    },
+    {
+        "user_id": 5,
+        "notification_type": "in_app",
+        "message": "You have successfully cancelled your booking",
+        "id": 69
     }
 ]
