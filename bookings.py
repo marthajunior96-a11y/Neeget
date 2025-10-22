@@ -290,6 +290,8 @@ def accept_booking(booking_id):
     except Exception as e:
         flash(f"Error accepting booking: {str(e)}", "error")
     
+    if request.referrer and 'provider_dashboard' in request.referrer:
+        return redirect(url_for("provider_dashboard"))
     return redirect(url_for("bookings.detail", booking_id=booking_id))
 
 @bp.route("/<int:booking_id>/reject", methods=["POST"])
@@ -323,6 +325,8 @@ def reject_booking(booking_id):
     except Exception as e:
         flash(f"Error rejecting booking: {str(e)}", "error")
     
+    if request.referrer and 'provider_dashboard' in request.referrer:
+        return redirect(url_for("provider_dashboard"))
     return redirect(url_for("bookings.detail", booking_id=booking_id))
 
 @bp.route("/<int:booking_id>/complete", methods=["POST"])
