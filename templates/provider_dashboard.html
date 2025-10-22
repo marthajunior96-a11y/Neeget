@@ -22,7 +22,7 @@
                         <p class="text-white-50 mb-2">Manage your services and grow your business</p>
                         <div class="d-flex align-items-center">
                             <span class="badge badge-light mr-2">
-                                <i class="fas fa-star mr-1"></i>{{ provider_stats.average_rating or '4.9' }} Rating
+                                <i class="fas fa-star mr-1"></i>{% if provider_stats.average_rating > 0 %}{{ provider_stats.average_rating }}{% else %}No rating{% endif %}
                             </span>
                             <span class="text-white-50">
                                 <i class="fas fa-concierge-bell mr-1"></i>{{ provider_stats.total_services or 0 }} services
@@ -66,7 +66,7 @@
                 <div class="stat-icon mb-3" style="font-size: 2.5rem; color: var(--warning-color);">
                     <i class="fas fa-star"></i>
                 </div>
-                <h3 class="text-gradient font-weight-bold mb-1">{{ provider_stats.average_rating or '4.9' }}</h3>
+                <h3 class="text-gradient font-weight-bold mb-1">{% if provider_stats.average_rating > 0 %}{{ provider_stats.average_rating }}{% else %}0.0{% endif %}</h3>
                 <p class="text-muted mb-0">Average Rating</p>
             </div>
         </div>
