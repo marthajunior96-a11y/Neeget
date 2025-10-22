@@ -436,18 +436,51 @@
 function startChat() {
     {% if g.user %}
         {% if user_has_booking %}
-            if (confirm('Go to your bookings to access the chat?\n\nYou will be redirected to the bookings page.')) {
-                window.location.href = "{{ url_for('bookings.list_bookings') }}";
-            }
+            Swal.fire({
+                title: 'Access Chat',
+                text: 'Go to your bookings to access the chat with the provider.',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#667eea',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Go to Bookings',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ url_for('bookings.list_bookings') }}";
+                }
+            });
         {% else %}
-            if (confirm('Book this service to start chatting?\n\nYou will be redirected to the booking page.')) {
-                window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
-            }
+            Swal.fire({
+                title: 'Book Required',
+                text: 'You need to book this service first before chatting with the provider.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#667eea',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Book Now',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
+                }
+            });
         {% endif %}
     {% else %}
-        if (confirm('Login required to chat with provider.\n\nRedirect to login page?')) {
-            window.location.href = "{{ url_for('auth.login') }}";
-        }
+        Swal.fire({
+            title: 'Login Required',
+            text: 'Please login to chat with the provider.',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#667eea',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Login',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{{ url_for('auth.login') }}";
+            }
+        });
     {% endif %}
 }
 
@@ -458,19 +491,52 @@ function callProvider() {
             if (phone && phone !== 'Not provided') {
                 window.location.href = `tel:${phone}`;
             } else {
-                if (confirm('Contact number not available.\n\nGo to your bookings to contact the provider?')) {
-                    window.location.href = "{{ url_for('bookings.list_bookings') }}";
-                }
+                Swal.fire({
+                    title: 'Contact Not Available',
+                    text: 'Provider contact number is not available. Go to your bookings to contact them.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#667eea',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Go to Bookings',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ url_for('bookings.list_bookings') }}";
+                    }
+                });
             }
         {% else %}
-            if (confirm('Book this service to call the provider?\n\nYou will be redirected to the booking page.')) {
-                window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
-            }
+            Swal.fire({
+                title: 'Book Required',
+                text: 'You need to book this service first before calling the provider.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#667eea',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Book Now',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ url_for('bookings.book_service', service_id=service.id) }}";
+                }
+            });
         {% endif %}
     {% else %}
-        if (confirm('Login required to contact provider.\n\nRedirect to login page?')) {
-            window.location.href = "{{ url_for('auth.login') }}";
-        }
+        Swal.fire({
+            title: 'Login Required',
+            text: 'Please login to contact the provider.',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#667eea',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Login',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{{ url_for('auth.login') }}";
+            }
+        });
     {% endif %}
 }
 
